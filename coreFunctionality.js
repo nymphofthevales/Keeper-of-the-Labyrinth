@@ -96,15 +96,6 @@ function progression(current,destination_button_number) {
     }
 }
 function listen(buttonArray,current) {
-        /*var old_save_button = document.getElementById("save-button");
-        var new_save_button = old_save_button.cloneNode(true);
-        old_save_button.parentNode.replaceChild(new_save_button, old_save_button);
-        document.getElementById('save-button').addEventListener('click',()=>{save(current,page)})
-    if (initialized === false) {
-        document.getElementById('load-button').addEventListener('click',()=>{readSaves()})
-    }
-    initialized = true;*/
-        //clears past listeners for save button by cloning it and appending it to page again.
         window.onbeforeunload = () =>{save(current,page)}
     if (current.constructor.name === 'Sequence') {
         let btn = buttonArray[0];
@@ -138,23 +129,8 @@ function save(current,savedPage) {
     }
     let savedLocation = Object.assign({},current);
     document.cookie = `save={"title":"${savedLocation.title}","page":${savedPage},"visited":${savedVisitedArray}}`
-    /*
-    let scoreArray = Blades.generateScores();
-    let savedApathy = scoreArray[0], 
-    savedCowardice = scoreArray[1], 
-    savedDoubt = scoreArray[2];
-    document.cookie = `save={"title":"${savedLocation.title}","page":${savedPage},"apathy":${savedApathy},"cowardice":${savedCowardice},"doubt":${savedDoubt},"visited":${savedVisitedArray}}`
-    */
     console.log(document.cookie)
 }
-/*
-save data looks like this
-{
-	"title": "enterProper",
-	"page": 0,
-	"visited": ["enter", "REntry", "ante", "MoveOnAnte", "enterProper"]
-}
-*/
 function readSaves() {
     let savedArray = document.cookie.split(';')
     for (let i=0; i<savedArray.length; i++) {
@@ -172,9 +148,6 @@ function loadData(data) {
     let savedData = JSON.parse(data);
     page = savedData.page;
     visited = savedData.visited;
-    /*apathyScore = savedData.apathy;
-    cowardiceScore = savedData.cowardice;
-    doubtScore = savedData.doubt;*/
     let PageInstances = SequenceInstances.concat(StoryNodeInstances);
     for (let i=0; i<PageInstances.length; i++) {
         if (PageInstances[i].title === savedData.title) {

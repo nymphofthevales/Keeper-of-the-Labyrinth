@@ -1,15 +1,4 @@
-
-//keep track of apathyScore, cowardiceScore, and doubtScore scores for blades
-//keep track of choices in general and implement (secret) backtrack function
-//save/load function, with cookies?
-//in general page-specific actions such as extra styling, inserting images, changing ACD scores, etc
-
-//load function needs to reset current correctly
-
 visited = new Array();
-
-//fail if any one score is more than 2/3 of its maximum value?
-//e.g. if there are 6 options which would progress 'apathyScore', then score must be >= 4 in order to fail and => drowning
 
 scoredPages = [
     {
@@ -349,7 +338,6 @@ function checkSpecialActions(current) {
         }
     }
 }
-
 Blades.generateScores = function() {
     apathyScore = 0;
     cowardiceScore = 0;
@@ -378,7 +366,6 @@ Blades.generateScores = function() {
     }
     return [apathyScore,cowardiceScore,doubtScore]
 }
-
 Blades.checkFailures = function() {
     let totalApathy = 0;
     let totalCowardice = 0;
@@ -393,16 +380,7 @@ Blades.checkFailures = function() {
             } else if (scoredPages[i].type === 'doubt') {
                 totalDoubt += scoredPages[i].change[0];
             }
-        } /*else if (scoredPages[i].change[1] === '-') {
-            if (scoredPages[i].type === 'apathy') {
-                totalApathy -= scoredPages[i].change[0];
-            } else if (scoredPages[i].type === 'cowardice') {
-                totalCowardice -= scoredPages[i].change[0];
-            } else if (scoredPages[i].type === 'doubt') {
-                totalDoubt -= scoredPages[i].change[0];
-            }
-        }*/
-        //above code includes subtractive score changers in total. skews threshold lower.
+        }
     }
     let generateThreshold = (number) => Math.ceil(2.5*(number/5));
     let apathyThreshold = generateThreshold(totalApathy);
