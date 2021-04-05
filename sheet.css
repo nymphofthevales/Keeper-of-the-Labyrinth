@@ -1,0 +1,217 @@
+/*for styling non-unique story pages*/
+
+* {
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+  box-sizing: border-box;
+}
+
+html {
+  height: 100%;
+}
+
+body {
+  position: relative;
+  font-family: georgia, serif;
+  text-align: center;
+  font-size: 1em;
+  height: 100%;
+  color: white;
+  background-color: black;
+  line-height: 2;
+}
+
+p {
+  margin: 0 auto;
+  max-width: 620px;
+  padding: 10px;
+}
+
+ul {
+  text-align: left;
+  line-height: 2;
+  padding-left: 10px;
+  list-style-position: inside;
+  list-style-type: square;
+}
+
+button {
+  border: none;
+  color: white;
+  background-color: transparent;
+  padding: 25px;
+  margin: 10px;
+  text-align: center;
+  text-decoration: underline;
+  display: inline-block;
+  font-size: inherit;
+  font-family: georgia, serif;
+  cursor: pointer;
+}
+
+button:hover {
+  text-decoration: none;
+  outline: none;
+}
+
+button:focus {
+  text-decoration: none;
+  outline: none !important;
+}
+
+button:active {
+  text-decoration: none;
+  outline: none;
+}
+
+button:visited {
+  text-decoration: none;
+  outline: none;
+}
+
+img {
+  display: block;
+  max-height: 400px;
+  max-width: 70%;
+  margin: 0 auto;
+}
+
+#content {
+  max-width: 100vw;
+  min-width: 50vw;
+  width: 80vw;
+  height: fit-content;
+  /*overflow: scroll;*/
+  padding-top: 10%;
+  position: absolute;
+  left: 50vw;
+  -ms-transform: translate(-50%, 0);
+  transform: translate(-50%, 0);
+}
+
+#focus-clear {
+  display: none;
+}
+
+.invisible {
+  display: none;
+}
+
+.power {
+  color: purple;
+}
+
+#loadingGIF {
+  margin: 0 auto;
+  height: 300px;
+}
+
+#load {
+  position: absolute;
+  margin: 0;
+  top: 210px;
+  left: 30%;
+  right: 30%;
+}
+
+.tooltip {
+  position: relative;
+  display: inline;
+  border-bottom: 1px dotted white;
+  cursor: default;
+}
+
+.tooltip .tooltiptext {
+  visibility: hidden;
+  max-width: 250px;
+  width: 70vw;
+  background-color: black;
+  color: white;
+  text-align: center;
+  padding: 10px 0;
+  border-radius: 6px;
+  border: 1px solid white;
+  position: absolute;
+  z-index: 1;
+  top: 110%;
+  left: 10%;
+}
+
+.tooltip:hover .tooltiptext {
+  visibility: visible;
+}
+
+.tooltip:focus .tooltiptext {
+  visibility: visible;
+}
+
+.tooltip:focus {
+  outline: none !important;
+}
+
+/* menu code with save/load buttons
+
+footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  background-color: black;
+}
+
+#save-load-menu {
+  position: static;
+  padding: 3vw;
+  float: left;
+}
+
+#save-button {
+  background-image: url("./assets/save-button-square.png");
+}
+#load-button {
+  background-image: url("./assets/load-button.png");
+}
+#load-button:hover, #load-button:focus, #save-button:hover, #save-button:focus {
+  opacity: 60%;
+}
+#load-button, #save-button {
+  background-color: transparent;
+  border: none;
+  min-width: 20px;
+  width: 5vw;
+  margin: 0;
+  padding: none;
+  background-size: contain;
+  background-repeat: no-repeat;
+}
+*/
+
+#popup-menu {
+  height: 40vh;
+  width: 60vw;
+  min-height: fit-content;
+  min-width: 200px;
+  max-height: 200px;
+  max-width: 400px;
+  padding: 2px;
+  background-color: black;
+  z-index: 2;
+  position: absolute;
+  left: 50vw;
+  -ms-transform: translate(-50%, 50%);
+  transform: translate(-50%, 50%);
+}
+
+#popup-contents {
+  margin: 10% auto 10% auto;
+}
+
+.outline {
+  width: inherit;
+  height: inherit;
+  min-height: inherit;
+  min-width: inherit;
+  max-height: inherit;
+  max-width: inherit;
+  border: 1px solid white;
+  border-radius: 6px;
+}
