@@ -1,4 +1,11 @@
+//
+//For anything that prints to the document, 
+//and their pre-requisite functions for preparing 
+//data to be printed, including the save/load system.
+//
+
 'use strict'
+
 let page = 0;
 window.onload = () => {readSaves()}
 
@@ -64,14 +71,7 @@ function genActions(current) {
     let clr = document.getElementById('focus-clear');
     clr.focus();
     clr.blur();
-    /*window.scroll({
-        top: 0,
-        left: 0,
-        behavior: 'smooth'
-      });*/
-    if (visited.includes(current.title) === false) {
-        visited.push(current.title);
-    };
+    visit(current);
     checkSpecialActions(current);
 }
 function progression(current,destination_button_number) {

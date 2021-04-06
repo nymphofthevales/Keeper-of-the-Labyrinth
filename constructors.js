@@ -1,11 +1,16 @@
-function capitalize(s) {
-    //let str = s.toLowerCase();
-    return s.charAt(0).toUpperCase() + s.slice(1);
-}
+//
+//For all constructor functions and the global 
+//variables to store their results.
+//
+
+'use strict'
 
 let SequenceInstances = [];
 let StoryNodeInstances = [];
 
+function capitalize(s) {
+    return s.charAt(0).toUpperCase() + s.slice(1);
+}
 function Sequence() {
     this.title = String();
     this._pages = new Array(0),
@@ -24,7 +29,7 @@ Sequence.prototype.getPage = function(num) {
 },
 Sequence.prototype.addPage = function(/*string*/text,/*string*/button) {
     this._pages.push(`${text}`);
-    num = this._pages.length - 1;
+    let num = this._pages.length - 1;
     button = capitalize(button);
     this._buttons[num] = button;
 }

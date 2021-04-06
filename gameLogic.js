@@ -1,91 +1,17 @@
+//
+//For the scoring system, tracking visited pages, and
+//creating custom functionality on a per-page basis.
+//
+
 'use strict'
 
 let visited = new Array();
+function visit(current) {
+    if (visited.includes(current.title) === false) {
+        visited.push(current.title);
+    };
+};
 
-let scoredPages = [
-    {
-        type: 'apathy',
-        pages: [
-            {
-                pageObject: MoveOnAnte,
-                change: [2,'+'],
-            },
-            {
-                pageObject: LeaveAnte,
-                change: [1,'-']
-            },
-            {
-                pageObject: Fleeing,
-                change: [1,'+']
-            },
-            {
-                pageObject: investigateFleeing,
-                change: [1,'-']
-            },
-            {
-                pageObject: LeaveWall,
-                change: [1,'+']
-            },
-            {
-                pageObject: MoveOnGarden,
-                change: [3,'+']
-            },
-        ]
-    },
-    {
-        type: 'cowardice',
-        pages: [
-            {
-                pageObject: Fleeing,
-                change: [1,'+']
-            },
-            {
-                pageObject: turnFleeing,
-                change: [1,'-']
-            },
-            {
-                pageObject: Pressing,
-                change: [3,'+']
-            },
-            {
-                pageObject: Falling,
-                change: [1,'+']
-            },
-            {
-                pageObject: scorn,
-                change: [2,'+']
-            }
-        ]
-    },
-    {
-        type: 'doubt',
-        pages: [
-            {
-                pageObject: LeaveWall,
-                change: [1,'+']
-            },
-            {
-                pageObject: lost,
-                change: [3,'+']
-            },
-        ]
-    }
-]
-/*scored pages general format follows: 
-[
-    {
-        type: score1,
-        pages:[
-            {
-                pageObject: pointer, 
-                change: [number,'operator']
-            },
-            {page2}
-        ]
-    },
-    {score2}
-]
-*/
 let specialPages = [
     {
         pageObject: inventory, 
@@ -195,7 +121,7 @@ let specialPages = [
     {
         pageObject: Cut, 
         action: function() {
-            let failures = Blades.checkFailures(Blades.generateScores()).failures;
+            let failures = checkFailures(generateScores()).failures;
             if (failures.includes('apathyScore')) {
                 Cut.removeOption('Apathy')
                 Cut.removeOption('Cowardice')
@@ -364,7 +290,92 @@ function checkSpecialActions(current) {
         }
     }
 }
-Blades.generateScores = function() {
+
+let scoredPages = [
+    {
+        type: 'apathy',
+        pages: [
+            {
+                pageObject: MoveOnAnte,
+                change: [2,'+'],
+            },
+            {
+                pageObject: LeaveAnte,
+                change: [1,'-']
+            },
+            {
+                pageObject: Fleeing,
+                change: [1,'+']
+            },
+            {
+                pageObject: investigateFleeing,
+                change: [1,'-']
+            },
+            {
+                pageObject: LeaveWall,
+                change: [1,'+']
+            },
+            {
+                pageObject: MoveOnGarden,
+                change: [3,'+']
+            },
+        ]
+    },
+    {
+        type: 'cowardice',
+        pages: [
+            {
+                pageObject: Fleeing,
+                change: [1,'+']
+            },
+            {
+                pageObject: turnFleeing,
+                change: [1,'-']
+            },
+            {
+                pageObject: Pressing,
+                change: [3,'+']
+            },
+            {
+                pageObject: Falling,
+                change: [1,'+']
+            },
+            {
+                pageObject: scorn,
+                change: [2,'+']
+            }
+        ]
+    },
+    {
+        type: 'doubt',
+        pages: [
+            {
+                pageObject: LeaveWall,
+                change: [1,'+']
+            },
+            {
+                pageObject: lost,
+                change: [3,'+']
+            },
+        ]
+    }
+]
+/*scored pages general format follows: 
+[
+    {
+        type: score1,
+        pages:[
+            {
+                pageObject: pointer, 
+                change: [number,'operator']
+            },
+            {page2}
+        ]
+    },
+    {score2}
+]
+*/
+function generateScores() {
     let apathyScore = 0;
     let cowardiceScore = 0;
     let doubtScore = 0;
@@ -394,7 +405,7 @@ Blades.generateScores = function() {
     }
     return [apathyScore,cowardiceScore,doubtScore]
 }
-Blades.checkFailures = function(scoreArray) {
+function checkFailures(scoreArray) {
     let apathyScore = scoreArray[0];
     let cowardiceScore = scoreArray[1];
     let doubtScore = scoreArray[2];

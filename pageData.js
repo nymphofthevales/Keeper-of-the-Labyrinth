@@ -1,3 +1,9 @@
+//
+//For inserting all page data by using the Sequence 
+//and StoryNode constructors and their methods.
+//
+
+'use strict'
 
 const Altar = new Sequence();
 Altar.title="Altar"
