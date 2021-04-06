@@ -94,12 +94,3 @@ StoryNode.prototype.setText = function(text) {
 }
 
 
-
-let SequencesTest = {}
-function createSequence(name) {
-    name = name.toString();
-    SequencesTest[name] = new Sequence();
-    SequencesTest[name].title = `${name}`
-    return SequencesTest;
-}
-
