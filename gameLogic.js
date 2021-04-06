@@ -1,74 +1,92 @@
-visited = new Array();
+'use strict'
 
-scoredPages = [
+let visited = new Array();
+
+let scoredPages = [
     {
-        pageObject: MoveOnAnte,
         type: 'apathy',
-        change: [2,'+'],
+        pages: [
+            {
+                pageObject: MoveOnAnte,
+                change: [2,'+'],
+            },
+            {
+                pageObject: LeaveAnte,
+                change: [1,'-']
+            },
+            {
+                pageObject: Fleeing,
+                change: [1,'+']
+            },
+            {
+                pageObject: investigateFleeing,
+                change: [1,'-']
+            },
+            {
+                pageObject: LeaveWall,
+                change: [1,'+']
+            },
+            {
+                pageObject: MoveOnGarden,
+                change: [3,'+']
+            },
+        ]
     },
     {
-        pageObject: LeaveAnte,
-        type: 'apathy',
-        change: [1,'-']
-    },
-    {
-        pageObject: Fleeing,
-        type: 'apathy',
-        change: [1,'+']
-    },
-    {
-        pageObject: investigateFleeing,
-        type: 'apathy',
-        change: [1,'-']
-    },
-    {
-        pageObject: LeaveWall,
-        type: 'apathy',
-        change: [1,'+']
-    },
-    {
-        pageObject: MoveOnGarden,
-        type: 'apathy',
-        change: [3,'+']
-    },
-    {
-        pageObject: Fleeing,
         type: 'cowardice',
-        change: [1,'+']
+        pages: [
+            {
+                pageObject: Fleeing,
+                change: [1,'+']
+            },
+            {
+                pageObject: turnFleeing,
+                change: [1,'-']
+            },
+            {
+                pageObject: Pressing,
+                change: [3,'+']
+            },
+            {
+                pageObject: Falling,
+                change: [1,'+']
+            },
+            {
+                pageObject: scorn,
+                change: [2,'+']
+            }
+        ]
     },
     {
-        pageObject: turnFleeing,
-        type: 'cowardice',
-        change: [1,'-']
-    },
-    {
-        pageObject: Pressing,
-        type: 'cowardice',
-        change: [3,'+']
-    },
-    {
-        pageObject: Falling,
-        type: 'cowardice',
-        change: [1,'+']
-    },
-    {
-        pageObject: scorn,
-        type: 'cowardice',
-        change: [2,'+']
-    },
-    {
-        pageObject: LeaveWall,
         type: 'doubt',
-        change: [1,'+']
-    },
-    {
-        pageObject: lost,
-        type: 'doubt',
-        change: [3,'+']
-    },
+        pages: [
+            {
+                pageObject: LeaveWall,
+                change: [1,'+']
+            },
+            {
+                pageObject: lost,
+                change: [3,'+']
+            },
+        ]
+    }
 ]
-
-specialPages = [
+/*scored pages general format follows: 
+[
+    {
+        type: score1,
+        pages:[
+            {
+                pageObject: pointer, 
+                change: [number,'operator']
+            },
+            {page2}
+        ]
+    },
+    {score2}
+]
+*/
+let specialPages = [
     {
         pageObject: inventory, 
         action: function() {
@@ -177,7 +195,7 @@ specialPages = [
     {
         pageObject: Cut, 
         action: function() {
-            let failures = Blades.checkScores();
+            let failures = Blades.checkFailures(Blades.generateScores()).failures;
             if (failures.includes('apathyScore')) {
                 Cut.removeOption('Apathy')
                 Cut.removeOption('Cowardice')
@@ -322,7 +340,15 @@ specialPages = [
         }
     },
 ]
-
+/* special page general format follows:
+[
+    {
+        pageObject: pointer,
+        action: function() {}
+    },
+    {page2}
+]
+*/
 function actionFinishedAnte() {
     let anteNodes = [inventory,obelisk,finishCandleAnte,readRunes]
     for (let i = 0; i<anteNodes.length; i++) {
@@ -339,62 +365,70 @@ function checkSpecialActions(current) {
     }
 }
 Blades.generateScores = function() {
-    apathyScore = 0;
-    cowardiceScore = 0;
-    doubtScore = 0;
+    let apathyScore = 0;
+    let cowardiceScore = 0;
+    let doubtScore = 0;
     for (let i=0; i<scoredPages.length; i++) {
-        if (visited.includes(scoredPages[i].pageObject.title)) {
-            //if any scoredPages are in the visited array, follow the instructions there to add or subtract the amount specified to to the score specified.
-            if (scoredPages[i].change[1] === '+') {
-                if (scoredPages[i].type === 'apathy') {
-                    apathyScore += scoredPages[i].change[0];
-                } else if (scoredPages[i].type === 'cowardice') {
-                    cowardiceScore += scoredPages[i].change[0];
-                } else if (scoredPages[i].type === 'doubt') {
-                    doubtScore += scoredPages[i].change[0];
-                }
-            } else if (scoredPages[i].change[1] === '-') {
-                if (scoredPages[i].type === 'apathy') {
-                    apathyScore -= scoredPages[i].change[0];
-                } else if (scoredPages[i].type === 'cowardice') {
-                    cowardiceScore -= scoredPages[i].change[0];
-                } else if (scoredPages[i].type === 'doubt') {
-                    doubtScore -= scoredPages[i].change[0];
+        let pagesArray = scoredPages[i].pages;
+        for (let j=0; j<pagesArray.length; j++) {
+            if (visited.includes(pagesArray[j].pageObject.title)) {
+                if (pagesArray[j].change[1] === '+') {
+                    if (scoredPages[i].type === 'apathy') {
+                        apathyScore += pagesArray[j].change[0];
+                    } else if (scoredPages[i].type === 'cowardice') {
+                        cowardiceScore += pagesArray[j].change[0];
+                    } else if (scoredPages[i].type === 'doubt') {
+                        doubtScore += pagesArray[j].change[0];
+                    }
+                } else if (pagesArray[j].change[1] === '-') {
+                    if (scoredPages[i].type === 'apathy') {
+                        apathyScore -= pagesArray[j].change[0];
+                    } else if (scoredPages[i].type === 'cowardice') {
+                        cowardiceScore -= pagesArray[j].change[0];
+                    } else if (scoredPages[i].type === 'doubt') {
+                        doubtScore -= pagesArray[j].change[0];
+                    }
                 }
             }
         }
     }
     return [apathyScore,cowardiceScore,doubtScore]
 }
-Blades.checkFailures = function() {
-    let totalApathy = 0;
-    let totalCowardice = 0;
-    let totalDoubt = 0;
+Blades.checkFailures = function(scoreArray) {
+    let apathyScore = scoreArray[0];
+    let cowardiceScore = scoreArray[1];
+    let doubtScore = scoreArray[2];
+    let maximumApathy = 0;
+    let maximumCowardice = 0;
+    let maximumDoubt = 0;
     for (let i=0; i<scoredPages.length; i++) {
-        //for every page that affects a score positively in the scoredPages array, add its value to the possible total used to generate the threshold value for failure.
-        if (scoredPages[i].change[1] === '+') {
-            if (scoredPages[i].type === 'apathy') {
-                totalApathy += scoredPages[i].change[0];
-            } else if (scoredPages[i].type === 'cowardice') {
-                totalCowardice += scoredPages[i].change[0];
-            } else if (scoredPages[i].type === 'doubt') {
-                totalDoubt += scoredPages[i].change[0];
+        //for every page that affects a score positively in the scoredPages array, add its value to the possible maximum used to generate the FailureThreshold value for failure.
+        let pagesArray = scoredPages[i].pages;
+        for (let j=0; j<pagesArray.length; j++) {
+            if (pagesArray[j].change[1] === '+') {
+                if (scoredPages[i].type === 'apathy') {
+                    maximumApathy += pagesArray[j].change[0];
+                } else if (scoredPages[i].type === 'cowardice') {
+                    maximumCowardice += pagesArray[j].change[0];
+                } else if (scoredPages[i].type === 'doubt') {
+                    maximumDoubt += pagesArray[j].change[0];
+                }
             }
         }
     }
-    let generateThreshold = (number) => Math.ceil(2.5*(number/5));
-    let apathyThreshold = generateThreshold(totalApathy);
-    let cowardiceThreshold = generateThreshold(totalCowardice);
-    let doubtThreshold = generateThreshold(totalDoubt);
+    let generateFailureThreshold = (number) => Math.ceil(2.5*(number/5));
+    let apathyFailureThreshold = generateFailureThreshold(maximumApathy);
+    let cowardiceFailureThreshold = generateFailureThreshold(maximumCowardice);
+    let doubtFailureThreshold = generateFailureThreshold(maximumDoubt);
     let failures = [];
-    if (apathyScore >= apathyThreshold) {
+    if (apathyScore >= apathyFailureThreshold) {
         failures.push('apathyScore');
     }
-    if (cowardiceScore >= cowardiceThreshold) {
+    if (cowardiceScore >= cowardiceFailureThreshold) {
         failures.push('cowardiceScore');
     }
-    if (doubtScore >= doubtThreshold) {
+    if (doubtScore >= doubtFailureThreshold) {
         failures.push('doubtScore')
     }
-    return [failures,apathyScore,totalApathy,apathyThreshold,cowardiceScore,totalCowardice,cowardiceThreshold,doubtScore,totalDoubt,doubtThreshold];
+    return {"failures": failures,"apathy current,maximum,FailureThreshold": [apathyScore,maximumApathy,apathyFailureThreshold],"cowardice current,maximum,FailureThreshold": [cowardiceScore,maximumCowardice,cowardiceFailureThreshold],"doubt current,maximum,FailureThreshold": [doubtScore,maximumDoubt,doubtFailureThreshold]};
 }
