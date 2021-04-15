@@ -15,7 +15,7 @@ body {
   font-family: georgia, serif;
   text-align: center;
   font-size: 1em;
-  height: 100%;
+  height: fit-content;
   color: white;
   background-color: black;
   line-height: 2;
@@ -82,7 +82,7 @@ img {
   width: 80vw;
   height: fit-content;
   /*overflow: scroll;*/
-  padding-top: 10%;
+  padding: 10% 0 10% 0;
   position: absolute;
   left: 50vw;
   -ms-transform: translate(-50%, 0);

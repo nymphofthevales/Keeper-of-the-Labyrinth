@@ -1,0 +1,6 @@
+feafd62 Add constructor functions for Scores and ScoredPages
+e4ca346 Work on new node/sequence construction system
+e1be897 Modify node/sequence construction
+3e05a77 Add UTF-8 charset
+8ab62f2 Clean up comments
+6f99b44 Initial state.

@@ -51,7 +51,7 @@ let specialPages = [
     {
         pageObject: readRunes, 
         action: function() {
-            manageImage('print','top','./assets/runes.png')
+            manageImage('print','top','./assets/runes.png');
             if (visited.includes('obelisk') === true && visited.includes('inventory') === true && visited.includes('finishCandleAnte') === true && visited.includes('readRunes') === true) {
                 actionFinishedAnte();
             }
@@ -284,7 +284,9 @@ function actionFinishedAnte() {
 }
 function checkSpecialActions(current) {
     for (let i = 0; i < specialPages.length; i++) {
+        //if (visited.includes(specialPages[i].pageObject.title)) {
         if (current === specialPages[i].pageObject) {
+        //this doesn't work for running necessary actions from visited pages on a reload. needs to operate based on visited instead of current.
             specialPages[i].action(current);
             return true
         }

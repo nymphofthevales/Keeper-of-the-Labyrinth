@@ -1,3 +1,4 @@
+35c8833 Reorganize and add comments for clarity of purpose of each module
 2e6ad25 Merge branch 'scored-pages-reformat' Include completed reformat in main
 27fd872 Remove experimental code, see construction branch
 89ebb42 Restructure scored pages array and change references in scoring functions appropriately

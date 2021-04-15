@@ -1,0 +1,7 @@
+
+2021-04-05
+ * Remove experimental code, see construction branch
+ * Restructure scored pages array and change references in scoring functions appropriately
+ * Add UTF-8 charset
+ * Clean up comments
+ * Initial state.
