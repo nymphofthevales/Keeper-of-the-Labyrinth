@@ -97,23 +97,6 @@ img {
   display: none;
 }
 
-.power {
-  color: purple;
-}
-
-#loadingGIF {
-  margin: 0 auto;
-  height: 300px;
-}
-
-#load {
-  position: absolute;
-  margin: 0;
-  top: 210px;
-  left: 30%;
-  right: 30%;
-}
-
 .tooltip {
   position: relative;
   display: inline;
@@ -149,69 +132,30 @@ img {
   outline: none !important;
 }
 
-/* menu code with save/load buttons
-
-footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  background-color: black;
-}
-
-#save-load-menu {
-  position: static;
-  padding: 3vw;
-  float: left;
-}
-
-#save-button {
-  background-image: url("./assets/save-button-square.png");
-}
-#load-button {
-  background-image: url("./assets/load-button.png");
-}
-#load-button:hover, #load-button:focus, #save-button:hover, #save-button:focus {
-  opacity: 60%;
-}
-#load-button, #save-button {
-  background-color: transparent;
-  border: none;
-  min-width: 20px;
-  width: 5vw;
-  margin: 0;
-  padding: none;
+#text-frame {
+  background-image: url('./assets/text-frame.png');
+  width: calc(19*4vw);
+  height: calc(8*4vw);
+  /*original asset is in a 19:8 ratio*/
+  padding: 5vw;
+  /*margin: 0 auto;*/
   background-size: contain;
   background-repeat: no-repeat;
-}
-*/
-
-#popup-menu {
-  height: 40vh;
-  width: 60vw;
-  min-height: fit-content;
-  min-width: 200px;
-  max-height: 200px;
-  max-width: 400px;
-  padding: 2px;
-  background-color: black;
-  z-index: 2;
   position: absolute;
   left: 50vw;
-  -ms-transform: translate(-50%, 50%);
-  transform: translate(-50%, 50%);
+  top: 50vh;
+  -ms-transform: translate(-50vw, -50%);
+  transform: translate(-50vw, -50%);
 }
 
-#popup-contents {
-  margin: 10% auto 10% auto;
-}
-
-.outline {
-  width: inherit;
-  height: inherit;
-  min-height: inherit;
-  min-width: inherit;
-  max-height: inherit;
-  max-width: inherit;
-  border: 1px solid white;
-  border-radius: 6px;
+#text {
+  height: fit-content;
+  max-height: 100%;
+  width: 100%;
+  margin: 0 auto;
+  overflow-y: scroll;
+  position: relative;
+  top: 50%;
+  -ms-transform: translate(0, -50%);
+  transform: translate(0, -50%);
 }
