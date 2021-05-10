@@ -25,7 +25,8 @@
         .button-housing {
             display: grid;
             grid-template-rows: auto;
-            width: fit-content;
+            width: fit-content; 
+            width: -moz-fit-content;
             margin: 50px auto;
         }
         .middle-button-frame,.left-button-frame,.right-button-frame {
@@ -43,7 +44,7 @@
         }
         .middle-button-frame {
             background-image: url("./assets/ui/button_middle_frame.png");
-            width: fit-content;
+            width: fit-content, -moz-fit-content;
             border: none;
             background-repeat: repeat-x;
             min-width: calc(calc(40px/12) * 19);
