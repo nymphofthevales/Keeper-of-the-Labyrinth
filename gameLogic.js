@@ -244,8 +244,8 @@ let specialPages = [
             if (visited.includes('LeaveWall')) {
                 failDoubtVariableText + 'not when I doubted whether it was right to fix the gap in the wall, '
             }
-            if (visited.includes('lost')) {
-                failDoubtVariableText + 'not when I lost myself in the darkness, '
+            if (visited.includes('')) {
+                failDoubtVariableText + ', '
             }
             if (visited.includes('')) {
                 failDoubtVariableText + ', '
@@ -354,10 +354,6 @@ let scoredPages = [
             {
                 pageObject: LeaveWall,
                 change: [1,'+']
-            },
-            {
-                pageObject: lost,
-                change: [3,'+']
             },
         ]
     }

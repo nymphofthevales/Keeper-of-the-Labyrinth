@@ -97,8 +97,12 @@ img {
   display: none;
 }
 
-.power {
-  color: purple;
+.labyrinth-color {
+  color: #a02090;
+}
+
+.crow-color {
+  color: #6040c0;
 }
 
 #loadingGIF {
