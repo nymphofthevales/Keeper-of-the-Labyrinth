@@ -466,6 +466,7 @@ const leftDark1 = new Sequence();
 leftDark1.title="leftDark1"
 leftDark1.addPage('','');
 leftDark1.setNext(mothNode);
+//tbd
 
 const darkWindow = new Sequence();
 darkWindow.title="darkWindow"
@@ -476,11 +477,13 @@ const rightDark2 = new Sequence();
 rightDark2.title="rightDark2"
 rightDark2.addPage('','');
 rightDark2.setNext(darkWindow);
+//tbd
 
 const rightDark1 = new Sequence();
 rightDark1.title="rightDark1"
 rightDark1.addPage('','');
 rightDark1.setNext(darkWindow);
+//tbd
 
 const deadEnd = new StoryNode();
 deadEnd.title="deadEnd";

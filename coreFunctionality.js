@@ -157,6 +157,7 @@ function loadData(data) {
 };
 function loadPage(current,page_number) {
     genActions(current);
+    page = page_number
     print(current.getPage(page_number),current);
     console.log(`${current.title} ${page} was loaded`);
 };

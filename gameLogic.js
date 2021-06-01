@@ -260,6 +260,14 @@ let specialPages = [
         }
     },
     {
+        pageObject: drowningCistern, 
+        action: function(current) {
+            if (page === 2) {
+                redirect(2000,current)
+            }
+        }
+    },
+    {
         pageObject: 'object', 
         action: function() {
 
