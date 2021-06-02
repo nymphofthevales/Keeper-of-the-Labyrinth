@@ -119,6 +119,9 @@ function redirect(time,current) {
 }
 
 function save(current,savedPage) {
+    if (savedPage === undefined) {
+        savedPage = 0;
+    }
     let savedVisitedArray = "[]";
     if (visited.length > 0) {
         let jsonString = "["
@@ -175,3 +178,53 @@ function sendLoadPopup(saveData) {
         menu.classList.add('invisible');
     })
 }
+
+function populateJournal() {
+    let journal = document.getElementById("journal-contents");
+    journal.innerHTML = '';
+    let PageInstances = SequenceInstances.concat(StoryNodeInstances);
+    for (let i = 0; i < visited.length; i++) {
+        for (let j=0; j<PageInstances.length; j++) {
+            if (PageInstances[j].title === visited[i]) {
+                if (PageInstances[j].constructor === Sequence) {
+                    for (let k = 0; k < PageInstances[j]._pages.length; k++) {
+                        journal.appendChild(document.createElement('p')).id = PageInstances[j].title + [k];
+                        let a = document.getElementById(PageInstances[j].title + [k]);
+                        a.innerHTML = PageInstances[j].getPage(k)[0];
+                    }
+                } else if (PageInstances[j].constructor === StoryNode) {
+                    journal.appendChild(document.createElement('p')).id = PageInstances[j].title + '0';
+                        let a = document.getElementById(PageInstances[j].title + '0');
+                        a.innerHTML = PageInstances[j]._text;
+                }
+            }
+        }
+    }
+}
+
+function setupJournalButtons() {
+    let tableOfContents = ['intro','ante','castRunes','enterProper','Fleeing','BridgeWall','Watching','ApproachWall','Lines','Pressing','BridgeGarden','Garden','Approach','Wands','Ignoring','dyingLight','corpses','darkWindow','mothNode','darkApproachTree','Falling','darkNoises','darkContemplation','crow','pit','Lights','scorn','alone','fungus','fungusCistern','enterCistern','echoesCistern','Blades','Apathy','Cowardice','Doubt','failApathy','failCowardice','failDoubt','drowningCistern','freeCistern','tools','swimCaveCistern','enterCave','Waiting','Altar','egress']
+    for (let i = 0; i < tableOfContents.length; i++) {
+        let b = document.getElementById('contents-button-' + tableOfContents[i]);
+        let journal_entry = document.getElementById(tableOfContents[i] + '0');
+        if (journal_entry === null) {
+            b.classList.add('invisible');
+        } else {
+            b.classList.remove('invisible');
+            b.addEventListener('click',()=>{
+                document.getElementById(tableOfContents[i] + '0').scrollIntoView();
+            })
+        }
+    }
+}
+
+document.getElementById('journal-open').addEventListener('click',()=>{
+    populateJournal();
+    setupJournalButtons();
+    document.getElementById('content').classList.add('invisible')
+    document.getElementById('journal-overlay').classList.remove('invisible');
+});
+document.getElementById('journal-close').addEventListener('click',()=>{
+    document.getElementById('content').classList.remove('invisible')
+    document.getElementById('journal-overlay').classList.add('invisible')
+})

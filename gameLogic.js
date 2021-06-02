@@ -12,28 +12,6 @@ function visit(current) {
     };
 };
 
-function populateJournal() {
-    let journal = document.getElementById("journal-contents");
-    let PageInstances = SequenceInstances.concat(StoryNodeInstances);
-    for (let i = 0; i < visited.length; i++) {
-        for (let j=0; j<PageInstances.length; j++) {
-            if (PageInstances[j].title === visited[i]) {
-                if (PageInstances[j].constructor === Sequence) {
-                    for (let k = 0; k < PageInstances[j]._pages.length; k++) {
-                        journal.appendChild(document.createElement('p')).id = PageInstances[j].title + [k];
-                        let a = document.getElementById(PageInstances[j].title + [k]);
-                        a.innerHTML = PageInstances[j].getPage(k)[0];
-                    }
-                } else if (PageInstances[j].constructor === StoryNode) {
-                    journal.appendChild(document.createElement('p')).id = PageInstances[j].title;
-                        let a = document.getElementById(PageInstances[j].title);
-                        a.innerHTML = PageInstances[j]._text;
-                }
-            }
-        }
-    }
-}
-
 let specialPages = [
     {
         pageObject: inventory, 

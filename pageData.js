@@ -5,6 +5,14 @@
 
 'use strict'
 
+const credits = new StoryNode();
+
+const egress = new Sequence();
+egress.title="egress"
+egress.addBatchPage(['The lights of the village crest the hill before me. The glow of dawn caresses the horizon beyond them, and the sight whispers <em>home</em>.',' Already I can feel the warmth of the fires on my skin, the festival glow in the faces of my friends, smell the sweet honey-cakes we save to carry us through the winter. I sigh deeply into the night air, and for the first time since I set foot through the gate of the labyrinth, truly relax.','The twisting walls and passageways of the labyrinth cannot contain anything, only distort that which enters, twist it back around on itself, and bring unto them the unstoppable change which it embodies. I shall traverse that labyrinth again, but for this year, my task is done, and I can allow myself to rest.','I met my quarry in the centre, learned her gaze, contemplated her secrets. What more could I have done? I saw the borders between me and her, saw them dissolve, did my best to keep up with the shifting paradigms.','And here I stand, as a testament to my trial. Here I am still, though different from the woman who entered—and here I stand, on the precipice between the past and future, ready to redefine myself and find my path.'],'next');
+egress.addPage('Many turns await me.','Take another step, ever onward')
+egress.setNext(credits)
+
 const Altar = new Sequence();
 Altar.title="Altar"
 
@@ -24,13 +32,13 @@ Waiting.setNext(Cave);
 
 const enterCave = new Sequence();
 enterCave.title="enterCave"
+enterCave.addPage('As the ground slopes upward enough to stand, I step carefully forward until I emerge in front of the cave. The ceiling is comfortable enough to stand under, at least for now, and the depth of the cave awaits me.','enter');
 enterCave.addBatchPage(['It feels like it\'s unfinished somehow. Like the <span class="labyrinth-color">labyrinth</span> is still approaching its final form, still carving its walls here and the rough stone is only temporary. Like I\'m seeing something private.','And somehow, despite being soaked to the bone, I am warm here. In defiance of the winter beyond the walls of the <span class="labyrinth-color">labyrinth</span> this vast artery is full of warmth. The walls hum with it; pulsating the deepest energies of the <span class="labyrinth-color">labyrinth</span> toward its heart. It seems to me now that the end of my journey is in sight.'],'next');
 enterCave.setNext(Cave);
 
 const swimCaveCistern = new Sequence();
 swimCaveCistern.title="swimCaveCistern"
 swimCaveCistern.addBatchPage(['I turn in the water and begin the rhythmic motions of my arms to pull myself forward, kicking my legs in a frog like manner so as not to disturb the surface of the water with violent splashing. It would feel wrong to make so much noise in this place. After my struggle I want to savour the quiet somewhat.','I learned to swim when I was a child, in a little lake in the hills above the village. My father would take us on warm summer days, and my cousins and I would all play in the water, so joyful and carefree, then dry off in the sun and share a picnic lunch—fresh bread and fruit, not jam but the real thing, ripe and sweet and juicy.<br><br>It\'s been a long time since I\'ve swum. But it feels good to have the water against my skin.'],'next')
-swimCaveCistern.addPage('As the ground slopes upward enough to stand, I step carefully forward until I emerge in front of the cave. The ceiling is comfortable enough to stand under, at least for now, and the depth of the cave awaits me.','enter');
 swimCaveCistern.setNext(enterCave);
 
 const restWatersCistern = new Sequence();
@@ -45,14 +53,20 @@ freeCisternNode.setText('My eyes follow the natural curve of the ceiling and I r
 freeCisternNode.addOption('Rest in the waters a while longer',restWatersCistern);
 freeCisternNode.addOption('Swim towards the cave',swimCaveCistern);
 
+const tools = new Sequence();
+tools.title="tools"
+tools.addBatchPage(['I sheath my knife and consider my lost cloak and supplies. I wove that cloak myself—weaving was one of the first things my teacher taught me—and embroidered the symbol of the Keeper onto the collar just for this journey. Her cloak is one of the most personal magics a witch has, and the first layer of defense against any force that might harm her. Without it I feel somewhat bare.','My tools are a similar matter—the wand I carved myself when I was first learning direction and control of magic. The act of carving itself, creating the forms one desires from an unformed block of wood, was far more vital than any of the spells I was so eager to cast with it—though I didn\'t realize this at the time. True magic has a way of being more physical, more literal, than many people expect. I can make another. Perhaps it is time to do so, in any case.','The runes I inherited from my teacher, which I believe she came to own in the same way, by her teacher before her. They say the more generations a divining tool has passed through, the more accurate it becomes, guided by the wisdom of the ancestors through whose hands it has passed. Those are a great loss, but not irreplaceable. There are other links to the past, as well as the future. The important thing is not the tool itself but the link it represents.','I\'m glad I still have my knife, which my brother, an apprentice under the town smith, made for me. It will need to be oiled after this swim but there\'s no reason it can\'t continue to serve me well. This too, represents a link—between family, between artist and creation, between giver and receiver. I will continue to carry it with pride.'],'next')
+tools.setNext(freeCisternNode)
+
 const freeCistern = new Sequence();
 freeCistern.title="freeCistern"
 freeCistern.addPage('I did it—I bested them all! I\'m free!<br><br>I feel my chest heave, and race toward the surface. My heartbeat pounds in my waterlogged ears as I break the surface and gulp in the open air. I relax, and breathe deep and slow, then allow myself to drift onto my back and float freely for a moment.','rest')
-freeCistern.addBatchPage(['When I look up at the ceiling of the cistern, there are no stars. No drifting lights to surround me, no warmth to reach out for. I am alone. Yet that aloneness does not feel as strange as it once did—I feel that I am beginning to know myself now; that I can choose who I am, can become what I will, whether other see me or not. Their words may bolster me, may inform me, but not define me.<br><br>I am not cold here—the waters which surround me are oddly warm, and I am buoyant in them. I feel safe.','I sheath my knife and consider my lost cloak and supplies. I wove that cloak myself—weaving was one of the first things my teacher taught me—and embroidered the symbol of the Keeper onto the collar just for this journey. Her cloak is one of the most personal magics a witch has, and the first layer of defense against any force that might harm her. Without it I feel somewhat bare.','My tools are a similar matter—the wand I carved myself when I was first learning direction and control of magic. The act of carving itself, creating the forms one desires from an unformed block of wood, was far more vital than any of the spells I was so eager to cast with it—though I didn\'t realize this at the time. True magic has a way of being more physical, more literal, than many people expect. I can make another. Perhaps it is time to do so, in any case.','The runes I inherited from my teacher, which I believe she came to own in the same way, by her teacher before her. They say the more generations a divining tool has passed through, the more accurate it becomes, guided by the wisdom of the ancestors through whose hands it has passed. Those are a great loss, but not irreplaceable. There are other links to the past, as well as the future. The important thing is not the tool itself but the link it represents.','I\'m glad I still have my knife, which my brother, an apprentice under the town smith, made for me. It will need to be oiled after this swim but there\'s no reason it can\'t continue to serve me well. This too, represents a link—between family, between artist and creation, between giver and receiver. I will continue to carry it with pride.'],'next')
-freeCistern.setNext(freeCisternNode);
+freeCistern.addBatchPage(['When I look up at the ceiling of the cistern, there are no stars. No drifting lights to surround me, no warmth to reach out for. I am alone. Yet that aloneness does not feel as strange as it once did—I feel that I am beginning to know myself now; that I can choose who I am, can become what I will, whether other see me or not. Their words may bolster me, may inform me, but not define me.<br><br>I am not cold here—the waters which surround me are oddly warm, and I am buoyant in them. I feel safe.'],'next')
+freeCistern.setNext(tools);
 
 const drownedEnd = new Sequence();
 drownedEnd.title="drownedEnd"
+//content tbd
 
 const drownedContinue = new Sequence();
 drownedContinue.title="drownedContinue"
@@ -227,11 +241,26 @@ darkBenchNode.addOption('Let your feet continue carrying you',darkIgnoreBench);
 
 const darkApproachBench = new Sequence();
 darkApproachBench.title="darkApproachBench"
-darkApproachBench.addPage('The stone rises to meet me at every footfall, and I seen begin to feel like the labyrinth is doing the walking more than I am.<br><br>It\'s the strangest feeling, to be both in my body, but also above it in a way, as if I\'m watching myself move without making the choice to do so. Or the labyrinth makes the choice for me.','Make her take another step')
+darkApproachBench.addPage('The stone rises to meet me at every footfall, and I soon begin to feel like the labyrinth is doing the walking more than I am.<br><br>It\'s the strangest feeling, to be both in my body, but also above it in a way, as if I\'m watching myself move without making the choice to do so. Or the labyrinth makes the choice for me.','Make her take another step')
 darkApproachBench.addBatchPage(['A stone bench, built against the left wall of this passage, emerges out of the darkness. The seat is worn, as if many a person has sat here before, though I know that only the Keeper would have passed here, so deep in the halls of the labyrinth.',' Is it possible that every Keeper before me rested here? Passed through this exact spot? I suddenly don\'t feel so alone in my journey. I\'m alone now, but I\'m far from the only one to travel this path of exploration and doubt. Others have been here before.'],'next');
-darkApproachBench.setNext('darkBenchNode');
+darkApproachBench.setNext(darkBenchNode);
+
+const darkAnotherCandle = new Sequence();
+darkAnotherCandle.title="darkAnotherCandle"
+darkAnotherCandle.addPage('Pocketing the burnt-out stub, I bring out a fresh candle, and light my way once more.','Continue')
+darkAnotherCandle.setNext(darkApproachBench)
+
+const darkDescendTree = new StoryNode();
+darkDescendTree.title="darkDescendTree"
+darkDescendTree.setText('I leave, not sure what to think. I descend the wall in much the same manner as before and reach the bottom safely. When I do, I see that my candle has burned out. Thankfully, I have another few in my bag.');
+darkDescendTree.addOption('Carry on in the dark',Falling);
+darkDescendTree.addOption('Light another candle',darkAnotherCandle);
 
 const crowTurns = new Sequence();
+crowTurns.title="crowTurns"
+crowTurns.addBatchPage(['The crow turns away, preening its feathers, seeming satisfied with itself. It is silent. Perhaps it would have said such things, if it had spoken—or perhaps it did speak, but only in signs, in gaze and gesture, in feather and beak, in imagination, in silence.','I realize I\'m staring, and it side-eyes me, nestling its head into its feathers to sleep.'],'next');
+crowTurns.addPage('The stars begin to reveal themselves through gaps in the cloud overhead. I sit for a moment, watching them.','Descend the tree');
+crowTurns.setNext()
 //tbd
 
 const crow_1 = new StoryNode();
@@ -583,17 +612,21 @@ Approach.title="Approach"
 Approach.addPage('As I approach I see what must be causing her pain and indolence. A fungus, peppering her skin with bulbous blistery lesions, oozing bloody sap down her bark. How could I fault her for questioning her will to go on? She is wounded.','Next');
 Approach.setNext(Rowan);
 
-const Garden = new StoryNode();
+const GardenNode = new StoryNode();
+GardenNode.title="GardenNode"
+GardenNode.setText('For now the rowan is silent and seems as if it doesn\'t want to blossom, doesn\'t want to change, or perhaps doesn\'t have the energy to propel itself forward into the light. However brutal and cold it is, there\'s some part of it that wants to stay that way forever, feels no need to move on from its hibernal emptiness. And the worst part is that I know why she feels that way. Even when presented with the opportunity to be better, it\'s so easy, so comfortable to remain how one is, to give up, to scorn change.<br><br>But if this tree were not to blossom come spring it can only be considered dead. When the cold winter winds come there\'s nothing wrong with hibernation, with rest, but the time must come when one wakes up.');
+GardenNode.addOption('Move on',MoveOnGarden);
+GardenNode.addOption('Approach the rowan',Approach)
+
+const Garden = new Sequence();
 Garden.title="Garden"
-Garden.setText('For now the rowan is silent and seems as if it doesn\'t want to blossom, doesn\'t want to change, or perhaps doesn\'t have the energy to propel itself forward into the light. However brutal and cold it is, there\'s some part of it that wants to stay that way forever, feels no need to move on from its hibernal emptiness. And the worst part is that I know why she feels that way. Even when presented with the opportunity to be better, it\'s so easy, so comfortable to remain how one is, to give up, to scorn change.<br><br>But if this tree were not to blossom come spring it can only be considered dead. When the cold winter winds come there\'s nothing wrong with hibernation, with rest, but the time must come when one wakes up.');
-Garden.addOption('Move on',MoveOnGarden);
-Garden.addOption('Approach the rowan',Approach)
+Garden.addPage('Finally I come to another chamber, clothed in a soaring archway like the antechamber before it.','Enter');
+Garden.addBatchPage(['In an instant, I realize what this place is: a garden. The raised beds, constructed with rough stone walls, follow concentric lines around the chamber, three layers deep. A tree—rowan, with its bloody-red berries long since devoured by the winter birds—rises in the centre. The silhouette of its tangled snarl of branches is bleak against the overcast sky. One would be forgiven for thinking it dead, but I can see by the colour of its bark how vitality still flows beneath, merely dormant.','When I close my eyes I can imagine her filling the sky with green and setting out delicate white blossoms, preparing to share her fruits with the world, delivering forth a song of spring.<br><br>But it is a long time until spring.'],'Next');
+Garden.setNext(GardenNode)
 
 const BridgeGarden = new Sequence();
 BridgeGarden.title="BridgeGarden"
 BridgeGarden.addBatchPage(['My footsteps carry me deeper into the <span class="labyrinth-color">labyrinth</span>\'s halls, and with every step I feel a sense of growing unease. Despite being composed of naught but stone, this place does not feel still. Whether reality or hallucination, at times the walls seem to shift and move, to press in on me or bulge out like alveoli taking in breath. It seems to live. Is it growing, too? Forming new paths somewhere deep within? Or perhaps, right in front of me, as I traverse them? In some way every turn creates a new path, every stone only existing as it comes into my view.','As I navigate a nauseating series of passageways—left, right, right, left, straight, left—I wonder about what it is to be alive.<br><br>The very definition of life is antithetical to stagnation. Life is motion—blood pumping, waves crashing, lungs compressing, wind whistling, muscles contracting, predator pouncing, all a part of the great dance of the universe. Decay, too, is life. As one life ends and moves into another form it is part of the life of the world as a whole. If this change from one state to the next is life, then death and birth are the same on different scales. And as long as one part moves, the whole lives.','To live is to change.<br><br>To want to stay the same is, then, not only self-destructive but disruptive to the greater order of the universe. Then why do we crave so dearly that which is comfortable and safe? It is such a careful dance, to balance the desire for comfort and the need for growth.'],'Next');
-BridgeGarden.addPage('Finally I come to another chamber, clothed in a soaring archway like the antechamber before it.','Enter');
-BridgeGarden.addBatchPage(['In an instant, I realize what this place is: a garden. The raised beds, constructed with rough stone walls, follow concentric lines around the chamber, three layers deep. A tree—rowan, with its bloody-red berries long since devoured by the winter birds—rises in the centre. The silhouette of its tangled snarl of branches is bleak against the overcast sky. One would be forgiven for thinking it dead, but I can see by the colour of its bark how vitality still flows beneath, merely dormant.','When I close my eyes I can imagine her filling the sky with green and setting out delicate white blossoms, preparing to share her fruits with the world, delivering forth a song of spring.<br><br>But it is a long time until spring.'],'Next');
 BridgeGarden.setNext(Garden);
 
 const Pressing = new Sequence();
@@ -660,8 +693,6 @@ Watching.addPage('The ground here is lumpy and soft. Where the mushrooms prolife
 Watching.addPage('<br><br><br><br><br><br><br>','Hold its gaze');
 Watching.addPage('<br><br><br><br>','Hold its gaze');
 Watching.setNext(WatchingBlink);
-
-//redirect functionality tbd
 
 const NobodyWall = new StoryNode();
 NobodyWall.title="NobodyWall"
