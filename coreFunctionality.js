@@ -65,12 +65,14 @@ function manageImage(action,location,url) {
         }
     }
 };
-function genActions(current) {
-    manageImage('remove','all','');
-    //reset focus 
+function clearFocus() {
     let clr = document.getElementById('focus-clear');
     clr.focus();
     clr.blur();
+}
+function genActions(current) {
+    manageImage('remove','all','');
+    clearFocus();
     visit(current);
     checkSpecialActions(current);
 }
@@ -213,6 +215,7 @@ function setupJournalButtons() {
             b.classList.remove('invisible');
             b.addEventListener('click',()=>{
                 document.getElementById(tableOfContents[i] + '0').scrollIntoView();
+                clearFocus();
             })
         }
     }
@@ -228,3 +231,10 @@ document.getElementById('journal-close').addEventListener('click',()=>{
     document.getElementById('content').classList.remove('invisible')
     document.getElementById('journal-overlay').classList.add('invisible')
 })
+
+let cursor = document.getElementById('custom-cursor');
+let body = document.querySelector('body');
+body.addEventListener('mousemove', (e)=>{
+    cursor.style.top = `${e.pageY}px`;
+    cursor.style.left = `${e.pageX}px`;
+  });

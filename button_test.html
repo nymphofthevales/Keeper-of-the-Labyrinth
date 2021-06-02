@@ -7,7 +7,18 @@
             padding: 0 0 0 0;
             margin: 0 0 0 0;
             box-sizing: border-box;
+            cursor: none !important;
         }
+        #custom-cursor {
+  position: absolute;
+  background-image: url("./assets/ui/cursor_bold.png");
+  width: 70px;
+  height: 70px;
+  background-repeat: no-repeat;
+  background-size: contain;
+  z-index:3;
+  pointer-events: none;
+}
         p {
             font-style: normal;
             font-size: 1.5em;
@@ -36,7 +47,7 @@
             height: 40px;
         }
         .middle-button-frame {
-            padding: 0 30px;
+            padding: 0 10px;
         }
         .left-button-frame,.right-button-frame {
             background-repeat: no-repeat;
@@ -76,12 +87,12 @@
         <div class="right-button-frame" id="button-1-right"></div>
     </div>
     <div class="button-housing" id="button-housing-2">
-        <div class="left-button-frame" id="button-2-left"></div><button id="button-2-middle" class="middle-button-frame"><p>Continue on in the darkness</p></button><div class="right-button-frame" id="button-2-right"></div>
+        <div class="left-button-frame" id="button-2-left"></div><button id="button-2-middle" class="middle-button-frame"><p><i>About the world, and all that resides within it.</i></p></button><div class="right-button-frame" id="button-2-right"></div>
     </div>
     <div class="button-housing" id="button-housing-3">
         <div class="left-button-frame" id="button-3-left"></div>
             <button id="button-3-middle" class="middle-button-frame">
-                <p>Enter</p>
+                <p><i>About myself, and how others can know themselves too.</i></p>
             </button>
             <div class="right-button-frame" id="button-3-right"></div>
     </div>
@@ -92,5 +103,14 @@
         <div class="left-button-frame" id="button-5-left"></div><button id="button-5-middle" class="middle-button-frame"><p>Which is important bc the options in my game often have more text</p></button><div class="right-button-frame" id="button-5-right"></div>
     </div>
 -->
+    <div id="custom-cursor"></div>
+    <script>
+        let cursor = document.getElementById('custom-cursor');
+let body = document.querySelector('body');
+body.addEventListener('mousemove', (e)=>{
+    cursor.style.top = `${e.pageY}px`;
+    cursor.style.left = `${e.pageX}px`;
+  });
+  </script>
 </body>
 </html>
