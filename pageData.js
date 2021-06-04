@@ -260,26 +260,217 @@ const crowTurns = new Sequence();
 crowTurns.title="crowTurns"
 crowTurns.addBatchPage(['The crow turns away, preening its feathers, seeming satisfied with itself. It is silent. Perhaps it would have said such things, if it had spoken—or perhaps it did speak, but only in signs, in gaze and gesture, in feather and beak, in imagination, in silence.','I realize I\'m staring, and it side-eyes me, nestling its head into its feathers to sleep.'],'next');
 crowTurns.addPage('The stars begin to reveal themselves through gaps in the cloud overhead. I sit for a moment, watching them.','Descend the tree');
-crowTurns.setNext()
-//tbd
+crowTurns.setNext(darkDescendTree)
+
+const crow_1_3 = new Sequence();
+crow_1_3.title="crow_1_3"
+crow_1_3.addPage('<i>Perhaps you\'re right. But if so, what do I do?<br><span class="crow-color">You keep moving. You think, you stay attentive. You rest when you need.</span><br>Is that enough?<br><span class="crow-color">What else could you do?</span></i>','next')
+crow_1_3.setNext(crowTurns)
+
+const crow_1_2_b = new Sequence();
+crow_1_2_b.title="crow_1_2_b"
+crow_1_2_b.addPage('<i>Even so...<br><span class="crow-color">You\'re here—that\'s enough. You\'ll find your way in time. I\'m not worried about you.</span></i>','next')
+crow_1_2_b.setNext(crowTurns)
+
+const crow_1_2_a_2 = new Sequence();
+crow_1_2_a_2.title="crow_1_2_a_2"
+crow_1_2_a_2.addPage('<i>But I need direction, at least, don\'t I?!<br><span class="crow-color">You came this far without it. Perhaps you\'ll find it along the way, perhaps not—either way, you will go further.</span></i>','next')
+crow_1_2_a_2.setNext(crowTurns)
+
+const crow_1_2_a_1 = new Sequence();
+crow_1_2_a_1.title="crow_1_2_a_1"
+crow_1_2_a_1.addPage('<i><span class="crow-color">It is not the witch\'s job to know, little one—simply to be open to the truth. Be patient, and you will find your way.</span></i>','next')
+crow_1_2_a_1.setNext(crowTurns)
+
+const crow_1_2_a = new StoryNode();
+crow_1_2_a.title="crow_1_2_a"
+crow_1_2_a.setText('<i>But <em>I</em> need to! A witch\'s work centres around knowing.<br><span class="crow-color">No one can know all.</span></i>')
+crow_1_2_a.addOption('<i>~listen~</i>',crow_1_2_a_1)
+crow_1_2_a.addOption('<i>~interrupt~ But I need direction, at least, don\'t I?!</i>',crow_1_2_a_2)
+
+const crow_1_2 = new StoryNode();
+crow_1_2.title="crow_1_2"
+crow_1_2.setText('<i>Don\'t I? Not much of a witch if I don\'t know my work.<br><span class="crow-color">Few do. Fewer still do it.</span></i>')
+crow_1_2.addOption('<i>But <em>I</em> need to! A witch\'s work centres around knowing</i>',crow_1_2_a)
+crow_1_2.addOption('<i>~hesitate~ Even so...</i>',crow_1_2_b)
+
+const crow_1_1 = new Sequence();
+crow_1_1.title="crow_1_1"
+crow_1_1.addPage('<i>I feel as though I should. I feel very lost, without knowing.<br><span class="crow-color">We\'re all lost. But your feet will find the way if you trust them.</span></i>','next')
+crow_1_1.setNext(crowTurns)
 
 const crow_1 = new StoryNode();
 crow_1.title="crow_1"
-crow_1.setText('<i></i>')
-crow_1.addOption('<i></i>',)
-crow_1.addOption('<i></i>',)
+crow_1.setText('<i>I…I\'m not sure.<br><span class="crow-color">Only stone is sure. Even then, it crumbles. You do not need to know.</span></i>')
+crow_1.addOption('<i>I feel as though I should. I feel very lost, without knowing.</i>',crow_1_1)
+crow_1.addOption('<i>Don\'t I? Not much of a witch if I don\'t know my work.</i>',crow_1_2)
+crow_1.addOption('<i>Perhaps you\'re right. But if so, what do I do?</i>',crow_1_3)
+
+const crow_2_2 = new Sequence();
+crow_2_2.title="crow_2_2"
+crow_2_2.addPage('<i>What is, then?<br><span class="crow-color">It is your task to be changed, little one.</span></i>','next')
+crow_2_2.setNext(crowTurns)
+
+const crow_2_1_b_1 = new Sequence();
+crow_2_1_b_1.title="crow_2_1_b_1"
+crow_2_1_b_1.addPage('<i>Perhaps I mustn\'t—but I would rather be irreplaceable enough to have purpose.<br><span class="crow-color">Ah~ Then I can tell you one way in which you are: In that you are young. Very rarely does one get the opportunity to be young. It follows, therefore, that you can grow. Like any young thing upon the soil you have the chance to find your own way to the sun.</span></i>','next')
+crow_2_1_b_1.setNext(crowTurns)
+
+const crow_2_1_b_2 = new Sequence();
+crow_2_1_b_2.title="crow_2_1_b_2"
+crow_2_1_b_2.addPage('<i>It may be—but what my story is, I do not know.<br><span class="crow-color">In time you will see the signals and the signs, the soaring arias of each theme, the chorus singing out each triumph and failure, each romance and tragedy. Without a doubt, your story is the grandest there ever was, for it is every tale wrapped up in one. That is what it is to be human.</span></i>','next')
+crow_2_1_b_2.setNext(crowTurns)
+
+const crow_2_1_b = new StoryNode();
+crow_2_1_b.title="crow_2_1_b"
+crow_2_1_b.setText('<i>How am I, then? Special?<br><span class="crow-color">Must you be special? Is it not a great privilege to have something in common with everything else in the universe? Is it not a great comfort to know that your story has been told before?</span></i>')
+crow_2_1_b.addOption('<i>Perhaps I mustn\'t—but I would rather be irreplaceable enough to have purpose.</i>',crow_2_1_b_1)
+crow_2_1_b.addOption('<i>It may be—but what my story is, I do not know.</i>',crow_2_1_b_2)
+
+const crow_2_1_a_3 = new Sequence();
+crow_2_1_a_3.title="crow_2_1_a_3"
+crow_2_1_a_3.addPage('<i>Then tell me!<br><span class="crow-color">Your desperate need to know is heartening. Not all have that drive—fewer still are strong enough to voice it. Your reason for being here is just that: to ask that question. Someone needs to, after all.</span></i>','next')
+crow_2_1_a_3.setNext(crowTurns)
+
+const crow_2_1_a_2_2 = new Sequence();
+crow_2_1_a_2_2.title="crow_2_1_a_2_2"
+crow_2_1_a_2_2.addPage('<i>Please. Tell me. I don\'t know what to do on my own.<br><span class="crow-color">Aha. It takes strength to admit that: You just fulfilled it, your purpose, a little bit.</span><br>What?<br><span class="crow-color">Change, little one. Change.</span></i>','next')
+crow_2_1_a_2_2.setNext(crowTurns)
+
+const crow_2_1_a_2_1_b = new Sequence();
+crow_2_1_a_2_1_b.title="crow_2_1_a_2_1_b"
+crow_2_1_a_2_1_b.addPage('<i>No. I don\'t need to know.<br><span class="crow-color">Very well. It\'s all the same to me—travel in lightness, little one.</span></i>','next')
+crow_2_1_a_2_1_b.setNext(crowTurns)
+
+const crow_2_1_a_2_1_a = new Sequence();
+crow_2_1_a_2_1_a.title="crow_2_1_a_2_1_a"
+crow_2_1_a_2_1_a.addPage('<i>Yes, please.<br><span class="crow-color">You are special in that you are here—the wind passes through airily, the stone merely waits for you, but you: you are real when you are here. And you can change.</span></i>','next')
+crow_2_1_a_2_1_a.setNext(crowTurns)
+
+const crow_2_1_a_2_1 = new StoryNode();
+crow_2_1_a_2_1.title="crow_2_1_a_2_1"
+crow_2_1_a_2_1.setText('<i><span class="crow-color">It\'s natural to be afraid when confronted with that which you don\'t understand—just don\'t take it out on me. Do you want to know, or not?</span></i>')
+crow_2_1_a_2_1.addOption('<i>Yes, please.</i>',crow_2_1_a_2_1_a)
+crow_2_1_a_2_1.addOption('<i>No. I don\'t need to know.</i>',crow_2_1_a_2_1_b)
+
+const crow_2_1_a_2 = new StoryNode();
+crow_2_1_a_2.title="crow_2_1_a_2"
+crow_2_1_a_2.setText('<i>I\'m beginning to doubt you even know, bird.<br><span class="crow-color">If you\'re going to be so petulant, I need not tell you.</span></i>')
+crow_2_1_a_2.addOption('<i>~be silent~</i>',crow_2_1_a_2_1)
+crow_2_1_a_2.addOption('<i>~concede~ Please. Tell me. I don\'t know what to do on my own.</i>',crow_2_1_a_2_2)
+
+const crow_2_1_a_1 = new Sequence();
+crow_2_1_a_1.title="crow_2_1_a_1"
+crow_2_1_a_1.addPage('<i>I don\'t need to. It\'s the journey that matters.<br><span class="crow-color">Ah! So you do know after all, then! Good.</span></i>','next')
+crow_2_1_a_1.setNext(crowTurns)
+
+const crow_2_1_a = new StoryNode();
+crow_2_1_a.title="crow_2_1_a"
+crow_2_1_a.setText('<i>But I am human. That must stand for something.<br><span class="crow-color">Not for much. Don\'t be arrogant, now. You don\'t even know why you\'re here!</span></i>')
+crow_2_1_a.addOption('<i>I don\'t need to. It\'s the journey that matters.</i>',crow_2_1_a_1)
+crow_2_1_a.addOption('<i>~insult~ I\'m beginning to doubt you even know, bird.</i>',crow_2_1_a_2)
+crow_2_1_a.addOption('<i>~plead~ Then tell me!</i>',crow_2_1_a_3)
+
+const crow_2_1 = new StoryNode();
+crow_2_1.title="crow_2_1"
+crow_2_1.setText('<i>To see it, then. Wind cannot see.<br><span class="crow-color">Wind <em>can</em> see and stone can listen, little one. You are not special in that regard.</span></i>')
+crow_2_1.addOption('<i>But I am human. That must stand for something.</i>',crow_2_1_a)
+crow_2_1.addOption('<i>~plead~ How am I, then? Special?</i>',crow_2_1_b)
 
 const crow_2 = new StoryNode();
 crow_2.title="crow_2"
-crow_2.setText('<i></i>')
-crow_2.addOption('<i></i>',)
-crow_2.addOption('<i></i>',)
+crow_2.setText('<i>To pass through these halls and passages.<br><span class="crow-color">Wind can pass through. Spring can pass through. That is not your task.</span></i>')
+crow_2.addOption('<i>To see it, then. Wind cannot see.</i>',crow_2_1)
+crow_2.addOption('<i>What is, then?</i>',crow_2_2)
+
+const crow_3_2_c = new Sequence();
+crow_3_2_c.title="crow_3_2_c"
+crow_3_2_c.addPage('<i>I might not find anything.<br><span class="crow-color">There is no fear in being alone, unless you fear yourself. If you treat yourself gently she will have no need to fear you. Go forth with a lighter hand, little one.</span></i>','next')
+crow_3_2_c.setNext(crowTurns)
+
+const crow_3_2_b = new Sequence();
+crow_3_2_b.title="crow_3_2_b"
+crow_3_2_b.addPage('<i>I might find something I cannot help but love.<br><span class="crow-color">Is that so terrible a thing?</span></i>','next')
+crow_3_2_b.setNext(crowTurns)
+
+const crow_3_2_a_3 = new Sequence();
+crow_3_2_a_3.title="crow_3_2_a_3"
+crow_3_2_a_3.addPage('<i>It may <em>be</em> me.<br><span class="crow-color">It seems as though you already know that it will be. In which case, there is no advice I can give you that will mean anything—but at least know that she likely doesn\'t hate you as much as you hate her.</span></i>','next')
+crow_3_2_a_3.setNext(crowTurns)
+
+const crow_3_2_a_2 = new Sequence();
+crow_3_2_a_2.title="crow_3_2_a_2"
+crow_3_2_a_2.addPage('<i>It may be stronger than me.<br><span class="crow-color">In which case it will destroy you, whether you see it or not. But you only have a chance in overcoming it if you see it first.</span></i>','next')
+crow_3_2_a_2.setNext(crowTurns)
+
+const crow_3_2_a_1 = new Sequence();
+crow_3_2_a_1.title="crow_3_2_a_1"
+crow_3_2_a_1.addPage('<i>It may hurt me<br><span class="crow-color">It is good to not take hurt lightly—but do not let pain terrify you. Is it not a proof that you are real? At times, that may be what you need most.</span></i>','next')
+crow_3_2_a_1.setNext(crowTurns)
+
+const crow_3_2_a = new StoryNode();
+crow_3_2_a.title="crow_3_2_a"
+crow_3_2_a.setText('<i>I might find something I hate.<br><span class="crow-color">Would you rather it stalk you in the darkness, unknown and unseen? Why not confront it?</span></i>')
+crow_3_2_a.addOption('<i>It may hurt me.</i>',crow_3_2_a_1)
+crow_3_2_a.addOption('<i>It may be stronger than me.</i>',crow_3_2_a_2)
+crow_3_2_a.addOption('<i>It may <em>be</em> me.</i>',crow_3_2_a_3)
+
+const crow_3_2 = new StoryNode();
+crow_3_2.title="crow_3_2"
+crow_3_2.setText('<i>Because I am afraid of what I might see.<br><span class="crow-color">We all are, at times. But the universe inevitably calls upon us to see it. What do you fear seeing, if you were to look?</span></i>')
+crow_3_2.addOption('<i>I might find something I hate.</i>',crow_3_2_a)
+crow_3_2.addOption('<i>I might find something I cannot help but love.</i>',crow_3_2_b)
+crow_3_2.addOption('<i>I might not find anything.</i>',crow_3_2_c)
+
+const crow_3_1_b_2 = new Sequence();
+crow_3_1_b_2.title="crow_3_1_b_2"
+crow_3_1_b_2.addPage('<i>What if I wake up?<br><span class="crow-color">To do so would be to die. There is no world outside the dream. All is illusions. You wake into another dream: the play goes on, the curtain rises again. But what matters is that in that dream, you always see something you\'ve never seen before. You realize that, despite coming from you, it is beyond you. Always a step beyond.</span></i>','next')
+crow_3_1_b_2.setNext(crowTurns)
+
+const crow_3_1_b_1 = new Sequence();
+crow_3_1_b_1.title="crow_3_1_b_1"
+crow_3_1_b_1.addPage('<i>And what comes next?<br><span class="crow-color">Only you can know that. Take another step, and find out.</span></i>','next')
+crow_3_1_b_1.setNext(crowTurns)
+
+const crow_3_1_b = new StoryNode();
+crow_3_1_b.title="crow_3_1_b"
+crow_3_1_b.setText('<i>Where am I, then?</i><br><span class="crow-color">You are here, and now. You are wandering. You are dreaming. You are waiting for what comes next.</span>')
+crow_3_1_b.addOption('<i>And what comes next?</i>',crow_3_1_b_1)
+crow_3_1_b.addOption('<i>What if I wake up?</i>',crow_3_1_b_2)
+
+const crow_3_1_a_3 = new Sequence();
+crow_3_1_a_3.title="crow_3_1_a_3"
+crow_3_1_a_3.addPage('<i>Organs?<br><span class="crow-color">Every body must have some organs—a mouth to swallow you, a skin to keep it safe, perhaps wounded, perhaps scabbed, a diseased lung, whose branches look barren in winter, twisting arteries, a heart...</span></i>','next')
+crow_3_1_a_3.setNext(crowTurns)
+
+const crow_3_1_a_2 = new Sequence();
+crow_3_1_a_2.title="crow_3_1_a_2"
+crow_3_1_a_2.addPage('<i>Veins?<br><span class="crow-color">You saw it before, didn\'t you? How the energy of this place all flows to the heart, drawing you along with it? That truth is inescapable.</span></i>','next')
+crow_3_1_a_2.setNext(crowTurns)
+
+const crow_3_1_a_1 = new Sequence();
+crow_3_1_a_1.title="crow_3_1_a_1"
+crow_3_1_a_1.addPage('<i>Blood?<br><span class="crow-color">Certainly not stone. You are not so dead as you seem to believe.</span></i>','next')
+crow_3_1_a_1.setNext(crowTurns)
+
+const crow_3_1_a = new StoryNode();
+crow_3_1_a.title="crow_3_1_a"
+crow_3_1_a.setText('<i>What am I seeing, then?</i><br><span class="crow-color">Look again, and see the blood, the veins, the organs. That\'s what you\'re here for.</span>')
+crow_3_1_a.addOption('<i>Blood?</i>',crow_3_1_a_1)
+crow_3_1_a.addOption('<i>Veins?</i>',crow_3_1_a_2)
+crow_3_1_a.addOption('<i>Organs?</i>',crow_3_1_a_3)
+
+const crow_3_1 = new StoryNode();
+crow_3_1.title="crow_3_1"
+crow_3_1.setText('<i>Of course I am. I see…the walls, the passages, the chambers.<br><span class="crow-color">Child, the labyrinth is not here. It never was.</span></i>')
+crow_3_1.addOption('<i>What am I seeing, then?</i>',crow_3_1_a)
+crow_3_1.addOption('<i>Where am I, then?</i>',crow_3_1_b)
 
 const crow_3 = new StoryNode();
 crow_3.title="crow_3"
-crow_3.setText('<i></i>')
-crow_3.addOption('<i></i>',)
-crow_3.addOption('<i></i>',)
+crow_3.setText('<i>To see it, like I said. To find what I can within.<br><span class="crow-color">Then why aren\'t you looking?</span></i>')
+crow_3.addOption('<i>.Of course I am. I see…the walls, the passages, the chambers.</i>',crow_3_1)
+crow_3.addOption('<i>Because I am afraid of what I might see.</i>',crow_3_2)
 
 const crow_4_2_c_2 = new Sequence();
 crow_4_2_c_2.title="crow_4_2_c_2"
