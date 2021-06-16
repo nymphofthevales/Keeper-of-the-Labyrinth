@@ -8,8 +8,17 @@ let labyrinth_window;
 
 function createWindow() {
     labyrinth_window = new BrowserWindow({
-        width: 1200,
-        height: 1000,
+        width: 1366,
+        height: 768,
+
+        frame: false,
+        fullscreen: true,
+
+        show: false,
+        resizable: false,
+        alwaysOnTop: true,
+
+        title: "Keeper of the Labyrinth",
         webPreferences: {
             preload: path.join(__dirname, 'preload.js'),
             nodeIntegration: true,
@@ -17,6 +26,9 @@ function createWindow() {
         }
     })    
     labyrinth_window.loadFile('labyrinth.html')
+    labyrinth_window.once('ready-to-show', () => {
+        labyrinth_window.show()
+      })
 }
 
 app.whenReady().then(() => {
@@ -43,7 +55,7 @@ ipcMain.on('saveData', (event,arg)=>{
     latestSave.set(JSON.stringify(arg))
 })
 
-ipcMain.on('saveOptions',(event,arg)=>{
+ipcMain.on('adjustOptions',(event,opts)=>{
 
 })
 
@@ -54,10 +66,15 @@ ipcMain.on('requestOptions',(event)=>{
 ipcMain.on('requestSaveData',(event)=>{
     let latest = latestSave.data;
     //let win = BrowserWindow.getAllWindows()[0]
-    if (latest !== '') {
-        console.log(latestSave.data,'from main')
+    if (latestSave.data !== '' && latest !== undefined) {
+        console.log(latestSave.data,'from main') 
         labyrinth_window.webContents.send('recieveSaveData',latestSave.data)
     } else {
         labyrinth_window.webContents.send('recieveSaveData',false)
+        console.log('no save data available')
     }
+})
+
+ipcMain.on('quitGame',(event)=>{
+    labyrinth_window.close();
 })

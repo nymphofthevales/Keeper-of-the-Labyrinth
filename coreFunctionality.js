@@ -6,6 +6,10 @@
 
 'use strict'
 
+function generateButton(number,text) {
+    return `<div class=\"button-housing\" id=\"button-housing-${number}\"><div class=\"left-button-frame\" id=\"button-${number}-left\"></div><button id=\"button-${number}-middle\" class=\"middle-button-frame\"><p id=\"button-text-${number}\">${text}</p></button><div class=\"right-button-frame\" id=\"button-${number}-right\"></div></div>`
+}
+
 let page = 0;
 window.onload = () => {readSaves()}
 
@@ -17,18 +21,20 @@ function print(data,current) {
     textHouse.innerHTML = '';
     btnHouse.innerHTML = '';
     let p = () =>  document.createElement("p");
-    let btn = () => document.createElement("button");
+    //let btn = () => document.createElement("button");
     let text = data[0];
     textHouse.appendChild(p()).id="currentText";
     let currentText = document.getElementById("currentText");
     currentText.innerHTML = text;
     if (typeof data[1] === 'string') {
         //for printing pages from a sequence
-        let button = data[1];
-        btnHouse.appendChild(btn()).id="sequenceBtn";
-        let sequenceBtn = document.getElementById("sequenceBtn")
-        sequenceBtn.innerHTML = button;
-        sequenceBtn.tabIndex = '1'
+        //let buttonText = data[1];
+        //btnHouse.appendChild(btn()).id="sequenceBtn";
+        //let sequenceBtn = document.getElementById("sequenceBtn")
+        //sequenceBtn.innerHTML = button;
+        btnHouse.innerHTML = generateButton(1,data[1])
+        let sequenceBtn = document.getElementById('button-housing-1')
+        initializeButtons()
         listen([sequenceBtn],current)
     } else { 
         //for printing a StoryNode. saves id references in btnRefs array for later use.
@@ -98,7 +104,10 @@ function progression(current,destination_button_number) {
     }
 }
 function listen(buttonArray,current) {
-        window.onbeforeunload = () =>{save(current,page)}
+        window.onbeforeunload = () => {
+            save(current,page);
+            return undefined
+        }
     if (current.constructor.name === 'Sequence') {
         let btn = buttonArray[0];
         btn.addEventListener('click',() => {
@@ -114,6 +123,56 @@ function listen(buttonArray,current) {
         }
     }
 }
+
+function hoverOver(action,number) {
+    if (action === 'clear') {
+        let left = document.querySelectorAll('.left-button-frame');
+        let right = document.querySelectorAll('.right-button-frame');
+        let middle = document.querySelectorAll('.middle-button-frame')
+        for (let i = 0; i < left.length; i++) {
+            left[i].style.backgroundImage = "url(\"./assets/ui/button_left_small.png\")"
+            right[i].style.backgroundImage = "url(\"./assets/ui/button_right_small.png\")"
+            middle[i].style.backgroundImage = "url(\"./assets/ui/button_middle_frame.png\")"
+        }
+    } else if (action === 'hover') {
+        let middle = document.getElementById(`button-${number}-middle`);
+        let right = document.getElementById(`button-${number}-right`);
+        let left = document.getElementById(`button-${number}-left`);
+        middle.style.backgroundImage = "url(\"./assets/ui/button_middle_hover.png\")"
+        right.style.backgroundImage = 'url("./assets/ui/button_right_small_hover.png")';
+        left.style.backgroundImage = 'url("./assets/ui/button_left_small_hover.png")';
+    }
+}
+
+function clickButton(number) {
+    let middle = document.getElementById(`button-${number}-middle`);
+    let left = document.getElementById(`button-${number}-left`);
+    let right = document.getElementById(`button-${number}-right`);
+    middle.style.backgroundImage = "url(\"./assets/ui/button_middle_active.png\")"
+    right.style.backgroundImage = 'url("./assets/ui/button_right_small_active.png")';
+    left.style.backgroundImage = 'url("./assets/ui/button_left_small_active.png")';
+}
+
+function initializeButtons() {
+    let buttons = {}
+
+    for (let i=0; i<document.querySelectorAll('.button-housing').length; i++) {
+        buttons[`button_${i+1}`] = document.getElementById(`button-housing-${i+1}`);
+        buttons[`button_${i+1}`].addEventListener('mouseover',()=>{
+            hoverOver("hover",i+1);
+        });
+        buttons[`button_${i+1}`].addEventListener('mouseout',()=>{
+            hoverOver("clear",i+1);
+        })
+        buttons[`button_${i+1}`].addEventListener('mousedown',()=>{
+            clickButton(i+1)
+        })
+        buttons[`button_${i+1}`].addEventListener('mouseup',()=>{
+            hoverOver("hover",i+1)
+        })
+    }
+}
+
 
 function redirect(time,current) {
     console.log(`redirecting to next page in ${time/1000} seconds`)
@@ -166,75 +225,3 @@ function loadPage(current,page_number) {
     print(current.getPage(page_number),current);
     console.log(`${current.title} ${page} was loaded`);
 };
-function sendLoadPopup(saveData) {
-    let menu = document.getElementById('popup-menu');
-    menu.classList.remove('invisible');
-    let yes = document.getElementById('popup-yes');
-    let no = document.getElementById('popup-no');
-    yes.addEventListener('click',()=>{
-        loadData(`${saveData}`)
-        menu.classList.add('invisible');
-    })
-    no.addEventListener('click',()=>{
-        loadPage(intro,0);
-        menu.classList.add('invisible');
-    })
-}
-
-function populateJournal() {
-    let journal = document.getElementById("journal-contents");
-    journal.innerHTML = '';
-    let PageInstances = SequenceInstances.concat(StoryNodeInstances);
-    for (let i = 0; i < visited.length; i++) {
-        for (let j=0; j<PageInstances.length; j++) {
-            if (PageInstances[j].title === visited[i]) {
-                if (PageInstances[j].constructor === Sequence) {
-                    for (let k = 0; k < PageInstances[j]._pages.length; k++) {
-                        journal.appendChild(document.createElement('p')).id = PageInstances[j].title + [k];
-                        let a = document.getElementById(PageInstances[j].title + [k]);
-                        a.innerHTML = PageInstances[j].getPage(k)[0];
-                    }
-                } else if (PageInstances[j].constructor === StoryNode) {
-                    journal.appendChild(document.createElement('p')).id = PageInstances[j].title + '0';
-                        let a = document.getElementById(PageInstances[j].title + '0');
-                        a.innerHTML = PageInstances[j]._text;
-                }
-            }
-        }
-    }
-}
-
-function setupJournalButtons() {
-    let tableOfContents = ['intro','ante','castRunes','enterProper','Fleeing','BridgeWall','Watching','ApproachWall','Lines','Pressing','BridgeGarden','Garden','Approach','Wands','Ignoring','dyingLight','corpses','darkWindow','mothNode','darkApproachTree','Falling','darkNoises','darkContemplation','crow','pit','Lights','scorn','alone','fungus','fungusCistern','enterCistern','echoesCistern','Blades','Apathy','Cowardice','Doubt','failApathy','failCowardice','failDoubt','drowningCistern','freeCistern','tools','swimCaveCistern','enterCave','Waiting','Altar','egress']
-    for (let i = 0; i < tableOfContents.length; i++) {
-        let b = document.getElementById('contents-button-' + tableOfContents[i]);
-        let journal_entry = document.getElementById(tableOfContents[i] + '0');
-        if (journal_entry === null) {
-            b.classList.add('invisible');
-        } else {
-            b.classList.remove('invisible');
-            b.addEventListener('click',()=>{
-                document.getElementById(tableOfContents[i] + '0').scrollIntoView();
-                clearFocus();
-            })
-        }
-    }
-}
-
-document.getElementById('journal-open').addEventListener('click',()=>{
-    populateJournal();
-    setupJournalButtons();
-    document.getElementById('content').classList.add('invisible')
-    document.getElementById('journal-overlay').classList.remove('invisible');
-});
-document.getElementById('journal-close').addEventListener('click',()=>{
-    document.getElementById('content').classList.remove('invisible')
-    document.getElementById('journal-overlay').classList.add('invisible')
-})
-
-let cursor = document.getElementById('custom-cursor');
-let body = document.querySelector('body');
-body.addEventListener('mousemove', (e)=>{
-    cursor.style.top = `${e.pageY}px`;
-    cursor.style.left = `${e.pageX}px`;
-  });

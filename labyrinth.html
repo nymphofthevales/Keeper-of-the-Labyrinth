@@ -5,6 +5,7 @@
     <script src="constructors.js"></script>
     <script src="pageData.js"></script>
     <script src="coreFunctionality.js" defer></script>
+    <script src="handleOverlays.js" defer></script>
     <script src="gameLogic.js" defer></script>
     <link href="sheet.css" rel="stylesheet">
     <script src="localSave.js" type="module"></script>
@@ -12,18 +13,60 @@
 <body>
     <button id="focus-clear"></button>
     <div id="content">
-        <button id="journal-open">Journal</button>
         <section id="top-img"></section>
         <section id="text"></section>
         <section id="bottom-img"></section>
-        <section id="buttons"></section>
+        <section id="buttons">
+
+            <div class="button-housing" id="button-housing-1">
+                <div class="left-button-frame" id="button-1-left"></div>
+                    <button id="button-1-middle" class="middle-button-frame">
+                        <p id="button-text-1"></p>
+                    </button>
+                <div class="right-button-frame" id="button-1-right"></div>
+            </div>
+
+            <div class="button-housing" id="button-housing-2">
+                <div class="left-button-frame" id="button-2-left"></div>
+                    <button id="button-2-middle" class="middle-button-frame">
+                        <p id="button-text-2"></p>
+                    </button>
+                <div class="right-button-frame" id="button-2-right"></div>
+            </div>
+
+            <div class="button-housing" id="button-housing-3">
+                <div class="left-button-frame" id="button-3-left"></div>
+                    <button id="button-3-middle" class="middle-button-frame">
+                        <p id="button-text-3"></p>
+                    </button>
+                <div class="right-button-frame" id="button-3-right"></div>
+            </div>
+
+            <div class="button-housing" id="button-housing-4">
+                <div class="left-button-frame" id="button-4-left"></div>
+                    <button id="button-4-middle" class="middle-button-frame">
+                        <p id="button-text-4"></p>
+                    </button>
+                <div class="right-button-frame" id="button-4-right"></div>
+            </div>
+
+            <div class="button-housing" id="button-housing-5">
+                <div class="left-button-frame" id="button-5-left"></div>
+                    <button id="button-5-middle" class="middle-button-frame">
+                        <p id="button-text-5"></p>
+                    </button>
+                <div class="right-button-frame" id="button-5-right"></div>
+            </div>
+
+            <div class="button-housing" id="button-housing-6">
+                <div class="left-button-frame" id="button-6-left"></div>
+                    <button id="button-6-middle" class="middle-button-frame">
+                        <p id="button-text-6"></p>
+                    </button>
+                <div class="right-button-frame" id="button-6-right"></div>
+            </div>
+        </section>
     </div>
-    <!--<footer>
-        <div id="save-load-menu">
-            <button id="save-button" title="Save"></button>
-            <button id="load-button" title="Load"></button>
-        </div>
-    </footer>-->
     <div id="popup-menu" class="invisible">
         <div class="outline">
             <div id="popup-contents">
@@ -93,6 +136,50 @@
         </main>
         <div id="journal-gradient-cover"></div>
     </div> 
+    <div id="map-overlay" class="outline invisible">
+        <header>
+            <h1>Map</h1>
+        </header>
+    </div>
+    <div id="options-overlay" class="outline invisible">
+        <header>
+            <h1>Options</h1>
+        </header>
+    </div>
+    <div id="credits-overlay" class="outline invisible">
+        <header>
+            <h1>Credits</h1>
+        </header>
+    </div>
+    <div id="loading-overlay" class="invisible">
+        <img id="loading-image"/>
+    </div>
+    <div id="main-menu-overlay" class="">
+        <div id="main-menu">
+            <img id="background-parallax-back" src="./assets/labyrinth_gate_shadow.png"/>
+            <img id="background-parallax-front" src="./assets/labyrinth_gate.png"/>
+            <header id="main-menu-header">
+                <img id="main-title" src="./assets/labyrinth_title.png"/>
+                <img id="header-logo" src="./assets/labyrinth_logo.png"/>
+            </header>
+            <nav id="main-nav">
+                <button id="enter-button">Enter</button>
+                <button id="load-button" class="invisible">Continue</button>
+                <button id="map-button">Map</button>
+                <button id="options-button">Options</button>
+                <button id="credits-button">Credits</button>
+                <button id="main-quit-button">Quit</button>
+            </nav>
+        </div>
+    </div>
+    <div id="ingame-menu-overlay" class="invisible">
+        <nav>
+            <button id="continue-button">Continue</button>
+            <button id="journal-open">Journal</button>
+            <button id="options-button">Options</button>
+            <button id="ingame-quit-button">Quit</button>
+        </nav>
+    </div>
     <div id="custom-cursor"></div>
 </body>
 </html>
