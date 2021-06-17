@@ -37,7 +37,7 @@ body {
 
 p {
   margin: 0 auto;
-  max-width: 620px;
+  max-width: calc(3/5vw);
   padding: 10px;
 }
 
@@ -84,11 +84,14 @@ button:visited {
 }
 
 .button-housing {
-  display: grid;
+  display: inline-grid;
   grid-template-rows: auto;
   width: fit-content; 
   width: -moz-fit-content;
   margin: 50px auto;
+}
+.button-housing:focus {
+  outline: none !important;
 }
 .middle-button-frame,.left-button-frame,.right-button-frame {
   background-size: contain;
@@ -134,9 +137,7 @@ button:visited {
 }*/
 
 #content {
-  max-width: 100vw;
-  min-width: 50vw;
-  width: 80vw;
+  max-width: calc(3/5vw);
   height: fit-content;
   max-height: 100vh;
   /*overflow: scroll;*/
@@ -429,4 +430,9 @@ footer {
   max-width: inherit;
   border: 1px solid white;
   border-radius: 6px;
+}
+
+
+.noises-notes {
+  font-size: 2em;
 }

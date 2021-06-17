@@ -28,24 +28,27 @@ function print(data,current) {
     currentText.innerHTML = text;
     if (typeof data[1] === 'string') {
         //for printing pages from a sequence
-        //let buttonText = data[1];
+        let buttonText = data[1];
         //btnHouse.appendChild(btn()).id="sequenceBtn";
         //let sequenceBtn = document.getElementById("sequenceBtn")
         //sequenceBtn.innerHTML = button;
-        btnHouse.innerHTML = generateButton(1,data[1])
+        btnHouse.innerHTML = generateButton(1,buttonText)
         let sequenceBtn = document.getElementById('button-housing-1')
         initializeButtons()
         listen([sequenceBtn],current)
     } else { 
         //for printing a StoryNode. saves id references in btnRefs array for later use.
         let btnRefs = new Array();
+        let currentButtonHtml = ''
         for (let i=0; i<data[1].length; i++) {
-            let buttonTxt = data[1][i];
-            btnHouse.appendChild(btn()).id=`button${i}`
-            let ref = document.getElementById(`button${i}`)
+            let buttonText = data[1][i];
+            currentButtonHtml += generateButton(i+1,buttonText)
+        }
+        btnHouse.innerHTML = currentButtonHtml;
+        initializeButtons()
+        for (let i=0; i<data[1].length; i++) {
+            let ref = document.getElementById(`button-housing-${i+1}`)
             btnRefs.push(ref)
-            ref.innerHTML = `${buttonTxt}`
-            ref.tabIndex = `${i+6}`
         }
         listen(btnRefs,current);
     }
@@ -115,11 +118,9 @@ function listen(buttonArray,current) {
         });
     } else if (current.constructor.name === 'StoryNode') {
         for (let i=0; i<buttonArray.length; i++) {
-            buttonArray[i].addEventListener(
-                'click',()=>{
-                    progression(current,i)
-                }
-            )
+            buttonArray[i].addEventListener('click',()=>{
+                progression(current,i)
+            })
         }
     }
 }
@@ -172,7 +173,6 @@ function initializeButtons() {
         })
     }
 }
-
 
 function redirect(time,current) {
     console.log(`redirecting to next page in ${time/1000} seconds`)

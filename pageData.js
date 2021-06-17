@@ -469,7 +469,7 @@ crow_3_1.addOption('<i>Where am I, then?</i>',crow_3_1_b)
 const crow_3 = new StoryNode();
 crow_3.title="crow_3"
 crow_3.setText('<i>To see it, like I said. To find what I can within.<br><span class="crow-color">Then why aren\'t you looking?</span></i>')
-crow_3.addOption('<i>.Of course I am. I see…the walls, the passages, the chambers.</i>',crow_3_1)
+crow_3.addOption('<i>Of course I am. I see…the walls, the passages, the chambers.</i>',crow_3_1)
 crow_3.addOption('<i>Because I am afraid of what I might see.</i>',crow_3_2)
 
 const crow_4_2_c_2 = new Sequence();
@@ -646,8 +646,52 @@ darkApproachTree.addPage('This passage winds like a river, undulating left and r
 darkApproachTree.addBatchPage(['Something lashes out from the darkness, scratching my face and tangling in my hair. I feel a sharp and painful tug at my scalp, and a searing pain across my cheek, the skin sensitive in the cool air. I jump, turning rapidly to face whatever it is.','Where the light of my candle catches on it, a pattern spirals outward, like cracks upon a stone crumbling into the sea, lightning paused in mid-air, hovering just at eye level, dizzying in perspective, reaching toward and away from me, twisting and branching at regular intervals which must be geometrically perfect if only viewed from the right angle—but what vantage point could that be, how could the complexity of such a thing be seen all at once, be truly understood?','It\'s a tree, growing over and through the wall of the labyrinth. Its roots curl and grasp around the huge stones, sending it sprawling at odd angles, its branches filling the sky over the passageway.<br><br>I cannot quite tell what type of tree it is in the gloom—oak, perhaps? This must be the towering silhouette I noted before.'],'next')
 darkApproachTree.setNext(darkTreeNode);
 
+const darkNoisesGiveUp = new StoryNode();
+darkNoisesGiveUp.title="darkNoisesGiveUp"
+darkNoisesGiveUp.setText('I decide to give up—this song shall remain a mystery to me tonight. It still calls out behind me as I turn heel and return down the hall, but it recedes with every step. I reach the intersection, and another path remains open to me.');
+darkNoisesGiveUp.addOption('Follow the curving path',darkApproachTree);
+
+const darkNoisesFountain = new Sequence();
+darkNoisesFountain.title="darkNoisesFountain"
+darkNoisesFountain.addPage('The fountain rises from the darkness into my candle-light as I approach. It sprawls across the centre of the room like molten wax, its edges just rising a foot or so above the ground. It must be a few paces across and, kneeling, I can see its low walls composed of flat stones placed vertically and pasted with lime to seal their gaps enough to hold water. Its construction seems carefully conceived.','next')
+darkNoisesFountain.addPage('Currently it is dry. Squinting into the distance I can see a plinth rising in the middle.','Examine the plinth')
+darkNoisesFountain.addPage('I step into the circle of the fountain to get a close look at the plinth; a narrow shaft rising to shoulder height, gently molded and smoothed with lime cement and decorated with carved swooping and curling lines.<br><br>Atop, it holds a crest adorned with a symbol depicting four concentric rings.','Turn back to the rest of the chamber')
+
+const darkNoisesAnalysis = new Sequence();
+darkNoisesAnalysis.title="darkNoisesAnalysis"
+darkNoisesAnalysis.addPage('I\'m close enough now that I can hear the tracery of a pattern in those rippling bell-drops. They jump in a pseudo-random way, but the pattern of notes seems to almost orbit around a centre point. The ripples draw out from a centre which remains inaudible, unplayed, in each set. For each set of six notes, only five bells play—leaving one key unvoiced. It\'s as if these chiming voices want to tell me something through that which they do not say.','Listen')
+darkNoisesAnalysis.addPage('The pattern as far as I can hear plays like so:<span class="noises-notes"><br>••••&nbsp&nbsp•<br>••&nbsp&nbsp•••<br>•&nbsp&nbsp••••<br>•••&nbsp&nbsp••</span>','Turn back to the rest of the chamber')
+
+const darkNoiseArches = new StoryNode();
+darkNoiseArches.title="darkNoiseArches"
+darkNoiseArches.setText('I step toward the six archways. That ringing music whispers around me as I gaze upon them, but doesn\'t clearly grow in intensity from any one—which one would take me closer to the source, I wonder?');
+darkNoiseArches.addOption('The first.')
+darkNoiseArches.addOption('The second.')
+darkNoiseArches.addOption('The third.')
+darkNoiseArches.addOption('The fourth.')
+darkNoiseArches.addOption('The fifth.')
+darkNoiseArches.addOption('The sixth.')
+
+const darkNoisesChamber = new StoryNode();
+darkNoisesChamber.title="darkNoisesChamber"
+darkNoisesChamber.setText('Before me stand six archways, each one an echo of any other, a mirage presenting its own image, spaced around the edges of the round chamber. Each holds shadow within—I cannot see past their threshold. In the centre of the chamber a sprawling fountain crouches.')
+darkNoisesChamber.addOption('Examine the fountain',darkNoisesFountain)
+darkNoisesChamber.addOption('Puzzle out the pattern of tones',darkNoisesAnalysis)
+darkNoisesChamber.addOption('Enter one of the arches',darkNoiseArches)
+darkNoisesChamber.addOption('Return the way you came',)
+
+darkNoisesFountain.setNext(darkNoisesChamber)
+darkNoisesAnalysis.setNext(darkNoisesChamber)
+darkNoiseArches.addOption('Turn back to the rest of the chamber',darkNoisesChamber)
+
 const darkNoises = new Sequence();
-//content tbd
+darkNoises.title="darkNoises"
+darkNoises.addPage('Something rings out in the darkness, and I strain my ears to hear it. It continues, echoing through the halls of the labyrinth. What is that?','continue');
+darkNoises.addBatchPage(['As I step forth, the darkness draws me in, rippling like the surface of the sea, and rapidly those waves meet me, as sound.','It sounds like...a bell, ringing clear through the cool night air. It follows no rhythm, just calling out in its own inscrutable pattern, a lone note, then a pause, a cluster, a silence, a cacophony, a chord, all overlapping in their echoes. For now it seems distant, and I can barely make it out, but I get the sense that the source is somewhere ahead of me, and I will reach it if I keep walking.','Could the sound I\'m hearing be termed \"music\"? It\'s odd to think how many things there are in the world that are rhythmic and melodic, but not usually considered as such.'],'next')
+darkNoises.addPage('Could the falling of raindrops,<br><i>plink plink plink</i> upon the surface of a pond,<br>the gushing of a stream,<br>the swaying and whistling<br>of wind in the treetops heralding a storm,<br>the scurrying of little feet in the underbrush,<br>the silence of snow,<br><br>could these things be called music, if we let them?','next');
+darkNoises.addPage('My footsteps could be music too:<br>of soft padded footfalls,<br>the creaking of leather,<br>the scuff of my toe against stone,<br>the silence in shimmering air<br>of lifting to bring my next step forward,<br>the rhythm repeating again like a drumbeat,<br>a band of low tones,<br>a choir humming the music of travel.<br><br>I catch the song halfway through a drumbeat and it pauses, hovering around me.','listen again for the rippling song')
+darkNoises.addPage('In the suspense I listen once more for the rippling tones that called me here. They wash over me like the first raindrops of a summer storm. I feel very close to the source now, though not quite there. The hall extrudes itself into a chamber.','examine it')
+darkNoises.setNext(darkNoisesChamber)
 
 const darkIntersectionLeft = new StoryNode();
 darkIntersectionLeft.title = "darkIntersectionLeft"
