@@ -1,6 +1,4 @@
 
-const {ipcRenderer} = require('electron');
-
 //popup
 function sendLoadPopup(saveData) {
     let menu = document.getElementById('popup-menu');

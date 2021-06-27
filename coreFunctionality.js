@@ -1,8 +1,13 @@
 //
 //For anything that prints to the document, 
 //and their pre-requisite functions for preparing 
-//data to be printed, including the save/load system.
+//data to be printed.
 //
+
+const electron = require('electron');
+const path = require('path')
+const fs = require('fs')
+const {ipcRenderer} = require('electron');
 
 'use strict'
 
@@ -107,10 +112,16 @@ function progression(current,destination_button_number) {
     }
 }
 function listen(buttonArray,current) {
-        window.onbeforeunload = () => {
-            save(current,page);
-            return undefined
-        }
+     window.onbeforeunload = () => {
+        save(current,page);
+        return undefined
+    }
+    document.getElementById('button-housing-13').removeEventListener('click',()=>{
+        save(current,page);
+    })
+    document.getElementById('button-housing-13').addEventListener('click',()=>{
+        save(current,page);
+    })
     if (current.constructor.name === 'Sequence') {
         let btn = buttonArray[0];
         btn.addEventListener('click',() => {
@@ -201,17 +212,13 @@ function save(current,savedPage) {
     if (savedPage === undefined) {
         savedPage = 0;
     }
-    let savedVisitedArray = "[]";
+    let savedVisitedArray = [];
     if (visited.length > 0) {
-        let jsonString = "["
         for (let i=0; i<visited.length; i++) {
-            jsonString = jsonString + `\"${visited[i]}\"\,`;
+            savedVisitedArray.push(visited[i]);
         }
-        savedVisitedArray = jsonString.slice(0,-1) + "]";
     }
-    let savedLocation = Object.assign({},current);
-    document.cookie = `save={"title":"${savedLocation.title}","page":${savedPage},"visited":${savedVisitedArray}}`
-    console.log(document.cookie)
+    ipcRenderer.send('saveData',{"title":`${current.title}`,"page":savedPage,"visited":savedVisitedArray});
 }
 function readSaves() {
     let savedArray = document.cookie.split(';')
