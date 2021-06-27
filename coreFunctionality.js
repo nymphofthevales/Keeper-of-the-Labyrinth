@@ -156,8 +156,11 @@ function clickButton(number) {
 
 function initializeButtons() {
     let buttons = {}
+    let storyButtons = Array.from(document.querySelectorAll('.button-housing'));
+    let menuButtons = storyButtons.slice(-4);
+    storyButtons.splice(-4,4);
 
-    for (let i=0; i<document.querySelectorAll('.button-housing').length; i++) {
+    for (let i=0; i<storyButtons.length; i++) {
         buttons[`button_${i+1}`] = document.getElementById(`button-housing-${i+1}`);
         buttons[`button_${i+1}`].addEventListener('mouseover',()=>{
             hoverOver("hover",i+1);
@@ -170,6 +173,21 @@ function initializeButtons() {
         })
         buttons[`button_${i+1}`].addEventListener('mouseup',()=>{
             hoverOver("hover",i+1)
+        })
+    }
+    for (let i=0; i<menuButtons.length; i++) {
+        buttons[`button_${i+10}`] = document.getElementById(`button-housing-${i+10}`);
+        buttons[`button_${i+10}`].addEventListener('mouseover',()=>{
+            hoverOver("hover",i+10);
+        });
+        buttons[`button_${i+10}`].addEventListener('mouseout',()=>{
+            hoverOver("clear",i+10);
+        })
+        buttons[`button_${i+10}`].addEventListener('mousedown',()=>{
+            clickButton(i+10)
+        })
+        buttons[`button_${i+10}`].addEventListener('mouseup',()=>{
+            hoverOver("hover",i+10)
         })
     }
 }

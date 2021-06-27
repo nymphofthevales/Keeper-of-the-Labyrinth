@@ -37,7 +37,7 @@ body {
 
 p {
   margin: 0 auto;
-  max-width: calc(3/5vw);
+  max-width: calc(calc(3/5)*100vw);
   padding: 10px;
 }
 
@@ -95,13 +95,15 @@ button:visited {
 }
 .middle-button-frame,.left-button-frame,.right-button-frame {
   background-size: contain;
+  display: inline;
   position: relative;
   background-color: transparent;
   height: 40px;
+  margin: 0;
 }
 .left-button-frame,.right-button-frame {
   background-repeat: no-repeat;
-  width: calc(calc(40px/8) * 11);
+  width: calc(calc(40px/8) * 11) !important;
 }
 .middle-button-frame {
   padding: 0 10px;
@@ -137,7 +139,7 @@ button:visited {
 }*/
 
 #content {
-  max-width: calc(3/5vw);
+  max-width: calc(calc(3/5)*100vw);
   height: fit-content;
   max-height: 100vh;
   /*overflow: scroll;*/
@@ -268,6 +270,38 @@ footer {
   margin: 10% auto 10% auto;
 }
 
+#ingame-menu-overlay {
+  position: absolute;
+  z-index: 5;
+  height: 100vh;
+  width: 100vw;
+  background: #000000;
+}
+
+#ingame-nav {
+  width: auto;
+}
+
+#ingame-nav button {
+  text-align: center;
+  display: block;
+  margin: 0 auto;
+}
+
+#ingame-nav .button-housing {
+  display: block;
+  display: grid;
+}
+
+#journal-contents::-webkit-scrollbar-thumb {
+  background-color: black;
+}
+
+#journal-contents p {
+  width: 100%;
+  max-width: none;
+}
+
 #journal-overlay,#map-overlay,#options-overlay,#credits-overlay {
   text-align: center;
   z-index: 15;
@@ -278,12 +312,6 @@ footer {
   left: 5vw;
   top: 5vh;
   background-color: black;
-}
-
-#journal-open {
-  position: absolute;
-  top: 0;
-  left: 0;
 }
 
 #journal-close {
@@ -342,6 +370,7 @@ footer {
 
 #main-menu-overlay, #main-menu {
   position: absolute;
+  z-index: 10;
   width: 100vw;
   height: 100vh;
   background-color: black;
@@ -409,16 +438,6 @@ footer {
 *::-webkit-scrollbar-thumb {
   border-radius: 0px;
   background-color: white;
-}
-
-#journal-contents::-webkit-scrollbar-thumb {
-  background-color: black;
-}
-
-
-#journal-contents p {
-  width: 100%;
-  max-width: none;
 }
 
 .outline {

@@ -55,12 +55,6 @@ function setupJournalButtons() {
         }
     }
 }
-document.getElementById('journal-open').addEventListener('click',()=>{
-    populateJournal();
-    setupJournalButtons();
-    document.getElementById('content').classList.add('invisible')
-    document.getElementById('journal-overlay').classList.remove('invisible');
-});
 document.getElementById('journal-close').addEventListener('click',()=>{
     document.getElementById('content').classList.remove('invisible')
     document.getElementById('journal-overlay').classList.add('invisible')
@@ -73,7 +67,8 @@ let backgroundBack = document.getElementById('background-parallax-back')
 let main_nav = document.getElementById('main-nav')
 let ww = window.innerWidth;
 let wh = window.innerHeight;
-let menuOpen = true;
+let mainMenuOpen = true;
+let ingameMenuOpen = false;
 
 backgroundFront.style.left = `${(ww * 0.30) + 1}px`
 backgroundFront.style.top = `${+1}px`
@@ -85,13 +80,13 @@ let cursor = document.getElementById('custom-cursor');
 document.addEventListener('mousemove', (e)=>{
     cursor.style.top = `${e.pageY}px`;
     cursor.style.left = `${e.pageX}px`;
-    if (menuOpen === true) {
+    if (mainMenuOpen === true) {
         ww = window.innerWidth;
         wh = window.innerHeight;
         let x = e.pageX - (ww/2)
         let y = e.pageY - (wh/2)
-        x = Math.floor(x/(ww/15))
-        y = Math.floor(y/(wh/15))
+        x = x/(ww/15)
+        y = y/(wh/15)
         backgroundFront.style.left = `${(ww * 0.30) + x}px`
         backgroundFront.style.top = `${+y}px`
         backgroundBack.style.left = `${(ww * 0.30) - x}px`
@@ -108,7 +103,7 @@ document.getElementById('enter-button').addEventListener('click',()=>{
     loadPage(intro,0);
     runLoadingSequence();
     document.getElementById('main-menu-overlay').classList.add('invisible');
-    menuOpen = false;
+    mainMenuOpen = false;
 })
 document.getElementById('load-button').addEventListener('click',()=>{
     loadSaveGame();
@@ -131,15 +126,37 @@ document.getElementById('main-quit-button').addEventListener('click',()=>{
 let ingame_menu = document.getElementById('ingame-menu-overlay');
 document.addEventListener('keydown',(k)=>{
     if (k.code === 'Escape') {
-        ingame_menu.classList.remove('invisible')
+        if (ingameMenuOpen) {
+            ingame_menu.classList.add('invisible')
+            ingameMenuOpen = false;
+        } else if (!ingameMenuOpen) {
+            ingame_menu.classList.remove('invisible')
+            ingameMenuOpen = true;
+        }
     }
 })
-document.getElementById('continue-button').addEventListener('click',()=>{
+//ingame continue
+document.getElementById('button-housing-10').addEventListener('mouseup',()=>{
     ingame_menu.classList.add('invisible')
+    ingameMenuOpen = false;
 })
-document.getElementById('ingame-quit-button').addEventListener('click',()=>{
+//journal
+document.getElementById('button-housing-11').addEventListener('mouseup',()=>{
+    populateJournal();
+    setupJournalButtons();
+    document.getElementById('content').classList.add('invisible')
+    document.getElementById('journal-overlay').classList.remove('invisible');
+});
+//options
+document.getElementById('button-housing-12').addEventListener('mouseup',()=>{
+    showOverlay('options')
+})
+//ingame quit
+document.getElementById('button-housing-13').addEventListener('mouseup',()=>{
     ingame_menu.classList.add('invisible')
     main_menu.classList.remove('invisible')
+    mainMenuOpen = true;
+    ingameMenuOpen = false;
 })
 
 
