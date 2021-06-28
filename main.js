@@ -50,6 +50,13 @@ let latestSave = new Save({
     configName: 'save',
     default: ''
 })
+fs.readFile(latestSave.path,'utf8',function(err,data){
+    if (err===null) {
+        latestSave.data = JSON.parse(data)
+    } else {
+        latestSave.data = ''
+    }
+})
 
 ipcMain.on('saveData', (event,arg)=>{
     latestSave.set(JSON.stringify(arg))
@@ -67,11 +74,9 @@ ipcMain.on('requestSaveData',(event)=>{
     let latest = latestSave.data;
     //let win = BrowserWindow.getAllWindows()[0]
     if (latestSave.data !== '' && latest !== undefined) {
-        console.log(latestSave.data,'from main') 
         labyrinth_window.webContents.send('recieveSaveData',latestSave.data)
     } else {
         labyrinth_window.webContents.send('recieveSaveData',false)
-        console.log('no save data available')
     }
 })
 

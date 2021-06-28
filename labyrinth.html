@@ -5,10 +5,8 @@
     <script src="constructors.js"></script>
     <script src="pageData.js"></script>
     <script src="coreFunctionality.js" defer></script>
-    <script src="handleOverlays.js" defer></script>
     <script src="gameLogic.js" defer></script>
     <link href="sheet.css" rel="stylesheet">
-    <script src="localSave.js" type="module"></script>
 </head>
 <body>
     <button id="focus-clear"></button>
@@ -18,14 +16,12 @@
         <section id="bottom-img"></section>
         <section id="buttons"></section>
     </div>
-    <div id="popup-menu" class="invisible">
-        <div class="outline">
+    <div id="popup-menu" class="invisible outline">
             <div id="popup-contents">
                 <p>The <span class="labyrinth-color">labyrinth</span> remembers you. Would you like to continue where you left off?</p>
                 <button id="popup-yes">Yes, load my saved game</button>
                 <button id="popup-no">No, start from the beginning</button>
             </div>
-        </div>
     </div>
     <div id="journal-overlay" class="outline invisible">
         <header>

@@ -134,7 +134,7 @@ button:visited {
 /*img {
   display: block;
   max-height: 400px;
-  max-width: 70%;
+  max-width: 50vw;
   margin: 0 auto;
 }*/
 
@@ -142,12 +142,13 @@ button:visited {
   max-width: calc(calc(3/5)*100vw);
   height: fit-content;
   max-height: 100vh;
-  /*overflow: scroll;*/
-  padding: 10% 0 10% 0;
+  padding: 0;
   position: absolute;
   left: 50vw;
-  -ms-transform: translate(-50%, 0);
-  transform: translate(-50%, 0);
+  top: 50%;
+  transform: translateY(-50%);  
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
 }
 
 #focus-clear {
@@ -198,7 +199,7 @@ button:visited {
   border: 1px solid white;
   position: absolute;
   z-index: 3;
-  top: 110%;
+  bottom: 130%;
   left: 10%;
 }
 
@@ -214,51 +215,14 @@ button:visited {
   outline: none !important;
 }
 
-/* menu code with save/load buttons
-
-footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  background-color: black;
-}
-
-#save-load-menu {
-  position: static;
-  padding: 3vw;
-  float: left;
-}
-
-#save-button {
-  background-image: url("./assets/save-button-square.png");
-}
-#load-button {
-  background-image: url("./assets/load-button.png");
-}
-#load-button:hover, #load-button:focus, #save-button:hover, #save-button:focus {
-  opacity: 60%;
-}
-#load-button, #save-button {
-  background-color: transparent;
-  border: none;
-  min-width: 20px;
-  width: 5vw;
-  margin: 0;
-  padding: none;
-  background-size: contain;
-  background-repeat: no-repeat;
-}
-*/
-
 #popup-menu {
-  height: 40vh;
-  width: 60vw;
+  height: 20vw;
+  width: 45vw;
   min-height: fit-content;
   min-width: 200px;
-  max-height: 200px;
-  max-width: 400px;
   padding: 2px;
   background-color: black;
+  border-radius: 6px;
   z-index: 12;
   position: absolute;
   left: 50vw;
@@ -279,7 +243,12 @@ footer {
 }
 
 #ingame-nav {
-  width: auto;
+  width: fit-content -moz-fit-content;
+  height: fit-content -moz-fit-content;
+  position: absolute;
+  left: 50vw;
+  -ms-transform: translate(-50%, 50%);
+  transform: translate(-50%, 50%);
 }
 
 #ingame-nav button {
