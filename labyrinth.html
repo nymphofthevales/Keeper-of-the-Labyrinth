@@ -11,21 +11,22 @@
 <body>
     <button id="focus-clear"></button>
     <div id="content">
-        <section id="top-img"></section>
-        <section id="text"></section>
-        <section id="bottom-img"></section>
-        <section id="buttons"></section>
+        <section id="story-frame">
+            <section id="text"></section>
+            <section id="buttons"></section>
+        </section>
+        <section id="image-frame"></section>
     </div>
-    <div id="popup-menu" class="invisible outline">
+    <div id="popup-menu" class="invisible">
             <div id="popup-contents">
                 <p>The <span class="labyrinth-color">labyrinth</span> remembers you. Would you like to continue where you left off?</p>
                 <button id="popup-yes">Yes, load my saved game</button>
                 <button id="popup-no">No, start from the beginning</button>
             </div>
     </div>
-    <div id="journal-overlay" class="outline invisible">
+    <div id="journal-overlay" class="invisible">
         <header>
-            <button id="journal-close">Close</button>
+            <button id="journal-close" class="overlay-close"></button>
             <h1 id="journal-title">Journal</h1>
         </header>
         <main>
@@ -83,23 +84,73 @@
         </main>
         <div id="journal-gradient-cover"></div>
     </div> 
-    <div id="map-overlay" class="outline invisible">
+    <div id="map-overlay" class="invisible">
+        <button id="map-close" class="overlay-close"></button>
         <header>
             <h1>Map</h1>
         </header>
     </div>
-    <div id="options-overlay" class="outline invisible">
+    <div id="options-overlay" class="invisible">
+        <button id="options-close" class="overlay-close"></button>
         <header>
             <h1>Options</h1>
         </header>
+        <main>
+            <form id="options-form" action="javascript:void(0);">
+                <fieldset id="text-size-form-field">
+                    <legend>Text size</legend>
+                    <input type="radio" id="normal-text" value="normal-text" name="text" checked>
+                    <label for="normal">Normal</label>
+                    <input type="radio" id="medium-text" value="medium-text" name="text">
+                    <label for="medium-text">Medium</label>
+                    <input type="radio" id="large-text" value="large-text" name="text">
+                    <label for="large-text">Large</label>
+                </fieldset>
+                <fieldset id="music-form-field">
+                    <legend>Music</legend>
+                    <input type="radio" id="music-on" value="music-on" name="music" checked>
+                    <label for="music-on">On</label>
+                    <input type="radio" id="music-off" value="music-off" name="music">
+                    <label for="music-off">Off</label><br><br>
+                    <label for="volume-slider">Volume</label>
+                    <input type="range" id="volume-slider" min="0" max="50" name="volume">
+                </fieldset>
+                <fieldset id="content-warnings-form-field">
+                    <legend>Content warnings</legend>
+                    <input type="radio" id="content-warnings-on" value="content-warnings-on" name="warnings">
+                    <label for="content-warnings-on">On</label>
+                    <input type="radio" id="content-warnings-off" value="content-warnings-off" name="warnings" checked>
+                    <label for="content-warnings-off">Off</label>
+                    <div id="example-content-warning" class="">
+                        <p>Content warnings look like this:</p>
+                        <div id="content-warning-preview">
+                            <h4>Content Warning</h4>
+                            <p>This scene contains:</p>
+                            <ul>
+                                <li>Descriptions of gore/injury</li>
+                                <li>Self harm/self destructive behaviour</li>
+                            </ul>
+                            <button>Go back</button>
+                            <button>Skip past this scene</button>
+                            <button>Show me anyway</button>
+                        </div>
+                    </div>
+                </fieldset>
+                <input type="submit" id="submit-options" value="Save my changes">
+                <p id="save-notice">Your progress ingame will always be saved automatically unless the application is force quit or crashed. If you have a save, you will be asked upon entering if you want to load it or start from the beginning.</p>
+            </form>
+        </main>
     </div>
-    <div id="credits-overlay" class="outline invisible">
+    <div id="credits-overlay" class="invisible">
+        <button id="credits-close" class="overlay-close"></button>
         <header>
             <h1>Credits</h1>
+            <p><i>Keeper of the Labyrinth</i> was made by Athena Abbott through November 2020 - July 2021. All the writing, programming, artwork, and music is her work.</p>
+            <p>Thank you to all my gorgeous friends, family, and friends who feel more like family, who cheered me on and helped me with programming advice, good conversation, love, and patience as I made this project my heart and soul for these past eight months. I'm so grateful for the support. </p>
         </header>
     </div>
     <div id="loading-overlay" class="invisible">
-        <img id="loading-image"/>
+        <img id="loading-gif" src="./assets/labyrinth_animation_fast.gif"/>
     </div>
     <div id="main-menu-overlay" class="">
         <div id="main-menu">

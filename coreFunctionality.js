@@ -3,23 +3,23 @@
 //and their pre-requisite functions for preparing 
 //data to be printed.
 //
+'use strict'
 
 const electron = require('electron');
 const path = require('path')
 const fs = require('fs')
 const {ipcRenderer} = require('electron');
 
-'use strict'
-
-function generateButton(number,text) {
-    return `<div class=\"button-housing\" id=\"button-housing-${number}\"><div class=\"left-button-frame\" id=\"button-${number}-left\"></div><button id=\"button-${number}-middle\" class=\"middle-button-frame\"><p id=\"button-text-${number}\">${text}</p></button><div class=\"right-button-frame\" id=\"button-${number}-right\"></div></div>`
-}
+let hasSavedData = false;
+let overlayOpen = false;
+let mainMenuOpen = true;
+let ingameMenuOpen = false;
 
 let page = 0;
-//window.onload = () => {
-    ipcRenderer.send('requestSaveData')
-    console.log('requesting save data...')
-//}
+
+ipcRenderer.send('requestSaveData')
+console.log('requesting save data...')
+
 ipcRenderer.on('recieveSaveData',(event,data)=>{
     if (data !== false) {
         console.log(`save found, recieved ${data}`)
@@ -72,24 +72,14 @@ function print(data,current) {
     }
 };
 function manageImage(action,location,url) {
-    let top = document.getElementById('top-img');
-    let bottom = document.getElementById('bottom-img');
+    let frame = document.getElementById('image-frame');
     if (action === 'print') {
         let img = document.createElement('img');
-        if (location === 'top') {
-            top.appendChild(img).src = url;
-        } else if (location === 'bottom') {
-            bottom.appendChild(img).src = url;
-        };
+        frame.appendChild(img).id = 'currentImg';
+        currentImage = document.getElementById('currentImg');
+        currentImage.src = url;
     } else if (action === 'remove') {
-        if (location === 'top') {
-            top.innerHTML = '';
-        } else if (location === 'bottom') {
-            bottom.innerHTML = '';
-        } else if (location === 'all') {
-            top.innerHTML = '';
-            bottom.innerHTML = '';
-        }
+        frame.innerHTML = '';
     }
 };
 function clearFocus() {
@@ -123,6 +113,9 @@ function progression(current,destination_button_number) {
         print(current.getPage(0),current)
         console.log(`progressed to ${current.title} (${current.constructor.name})`)
     }
+}
+function generateButton(number,text) {
+    return `<div class=\"button-housing\" id=\"button-housing-${number}\"><div class=\"left-button-frame\" id=\"button-${number}-left\"></div><button id=\"button-${number}-middle\" class=\"middle-button-frame\"><p id=\"button-text-${number}\">${text}</p></button><div class=\"right-button-frame\" id=\"button-${number}-right\"></div></div>`
 }
 let preloadCurrent = undefined;
 function saveParameters(){
@@ -265,6 +258,7 @@ function sendLoadPopup() {
     })
     no.addEventListener('click',()=>{
         loadPage(intro,0);
+        visited = ['intro'];
         menu.classList.add('invisible');
         runLoadingSequence();
         document.getElementById('main-menu-overlay').classList.add('invisible');
@@ -310,10 +304,6 @@ function setupJournalButtons() {
         }
     }
 }
-document.getElementById('journal-close').addEventListener('click',()=>{
-    document.getElementById('content').classList.remove('invisible')
-    document.getElementById('journal-overlay').classList.add('invisible')
-})
 //
 //cursor and parallax
 //
@@ -322,8 +312,6 @@ let backgroundBack = document.getElementById('background-parallax-back')
 let main_nav = document.getElementById('main-nav')
 let ww = window.innerWidth;
 let wh = window.innerHeight;
-let mainMenuOpen = true;
-let ingameMenuOpen = false;
 
 backgroundFront.style.left = `${(ww * 0.30) + 1}px`
 backgroundFront.style.top = `${+1}px`
@@ -354,25 +342,27 @@ document.addEventListener('mousemove', (e)=>{
 //
 let main_menu = document.getElementById('main-menu-overlay');
 let loading_overlay = document.getElementById('loading-overlay')
-let hasSavedData = false;
 document.getElementById('enter-button').addEventListener('click',()=>{
     if (hasSavedData === false) {
         loadPage(intro,0);
-        runLoadingSequence();
+        showOverlay('loading')
+        visited = ['intro'];
         document.getElementById('main-menu-overlay').classList.add('invisible');
         mainMenuOpen = false;
     } else if (hasSavedData === true) {
         sendLoadPopup();
     }
+    ingame_menu.classList.add('invisible')
+    ingameMenuOpen = false;
 })
 document.getElementById('map-button').addEventListener('click',()=>{
-    showOverlay('map')
+    manageOverlays('show','map')
 })
 document.getElementById('options-button').addEventListener('click',()=>{
-    showOverlay('options')
+    manageOverlays('show','options')
 })
 document.getElementById('credits-button').addEventListener('click',()=>{
-    showOverlay('credits')
+    manageOverlays('show','credits')
 })
 document.getElementById('main-quit-button').addEventListener('click',()=>{
     ipcRenderer.send('quitGame');
@@ -383,12 +373,16 @@ document.getElementById('main-quit-button').addEventListener('click',()=>{
 let ingame_menu = document.getElementById('ingame-menu-overlay');
 document.addEventListener('keydown',(k)=>{
     if (k.code === 'Escape') {
-        if (ingameMenuOpen) {
-            ingame_menu.classList.add('invisible')
-            ingameMenuOpen = false;
-        } else if (!ingameMenuOpen) {
-            ingame_menu.classList.remove('invisible')
-            ingameMenuOpen = true;
+        if (overlayOpen === true) {
+            manageOverlays('hide','all')
+        } else if (overlayOpen === false) {
+            if (ingameMenuOpen) {
+                ingame_menu.classList.add('invisible')
+                ingameMenuOpen = false;
+            } else if (!ingameMenuOpen) {
+                ingame_menu.classList.remove('invisible')
+                ingameMenuOpen = true;
+            }
         }
     }
 })
@@ -401,12 +395,11 @@ document.getElementById('button-housing-10').addEventListener('mouseup',()=>{
 document.getElementById('button-housing-11').addEventListener('mouseup',()=>{
     populateJournal();
     setupJournalButtons();
-    document.getElementById('content').classList.add('invisible')
-    document.getElementById('journal-overlay').classList.remove('invisible');
+    manageOverlays('show','journal')
 });
 //options
 document.getElementById('button-housing-12').addEventListener('mouseup',()=>{
-    showOverlay('options')
+    manageOverlays('show','options')
 })
 //ingame quit
 document.getElementById('button-housing-13').addEventListener('mouseup',()=>{
@@ -416,7 +409,41 @@ document.getElementById('button-housing-13').addEventListener('mouseup',()=>{
     ingameMenuOpen = false;
 })
 
+let overlay_close_array = document.querySelectorAll('.overlay-close');
+for (let i=0; i<overlay_close_array.length; i++) {
+    if (overlay_close_array.length !==0) {
+        overlay_close_array[i].addEventListener('click',()=>{
+            manageOverlays('hide','all')
+        })
+    }
+}
+function manageOverlays(action,overlay) {
+    let overlaysList = ['options','credits','map','journal','loading']
+    if (action === 'show') {
+        overlayOpen = true;
+        document.getElementById('content').classList.add('invisible')
+        for (let i = 0; i<overlaysList.length; i++) {
+            let identifier = `${overlaysList[i]}-overlay`
+            let reference = document.getElementById(identifier);
+            console.log([reference, identifier])
+            if (overlaysList[i] !== overlay) {
+                reference.classList.add('invisible');
+            } else if (overlaysList[i] === overlay) {
+                reference.classList.remove('invisible');
+            }
+        }
+    } else if (action === "hide") {
+        overlayOpen = false;
+        document.getElementById('content').classList.remove('invisible')
+        for (let i = 0; i<overlaysList.length; i++) {
+            let identifier = `${overlaysList[i]}-overlay`
+            let reference = document.getElementById(identifier);
+            reference.classList.add('invisible');
+        }
+    }
+}
 
 function runLoadingSequence() {
-    loading_overlay.classList.remove('invisible');
+    manageOverlays('show','loading');
+    setTimeout(()=>{manageOverlays('hide','all')},4500)
 }
