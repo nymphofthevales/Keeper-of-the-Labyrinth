@@ -20,6 +20,7 @@ let page = 0;
 //options
 let options = {
     enableMusic: true,
+    volume: 25,
     enableContentWarnings: true
 }
 
@@ -500,3 +501,48 @@ function runLoadingSequence() {
 document.getElementById('license-button').addEventListener('click',()=>{
     manageOverlays('show','font-license')
 })
+
+
+//manage options
+function setOptions() {
+    //manage text
+    let textOptions = [
+        document.getElementById('small-text'),
+        document.getElementById('default-text'),
+        document.getElementById('medium-text'),
+        document.getElementById('large-text'),
+    ]
+    let textStylesheets = [
+        document.getElementById('small-style'),
+        document.getElementById('default-style'),
+        document.getElementById('medium-style'),
+        document.getElementById('large-style')
+    ]
+    for (let a=0; a<textStylesheets.length; a++) {
+        textStylesheets[a].disabled = true;
+    }
+    for (let i=0; i<textOptions.length; i++) {
+        if (textOptions[i].checked === true) {
+            textStylesheets[i].disabled = false;
+        }
+    }
+    //manage content warnings
+    if (document.getElementById('content-warnings-off').checked === true) {
+        options.enableContentWarnings = false;
+    } else if (document.getElementById('content-warnings-on').checked === true) {
+        options.enableContentWarnings = true;
+    }
+    //manage music
+    if (document.getElementById('music-off').checked === true) {
+        options.enableMusic = false;
+    } else if (document.getElementById('music-on').checked === true) {
+        options.enableMusic = true;
+    }
+}
+
+let volumeInput = document.getElementById('volume-slider')
+volumeInput.addEventListener('mouseup',()=>{
+    options.volume = volumeInput.value;
+})
+
+document.getElementById('submit-options').addEventListener('click',setOptions)
