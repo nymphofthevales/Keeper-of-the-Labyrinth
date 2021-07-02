@@ -212,15 +212,19 @@ pit.addPage('My next step finds empty space where the floor should be and I fall
 pit.addPage('Stepping gingerly at first, needing to feel for the edge of each step with my toe, then more confidently as I find a safe cadence, I follow the steps in their wide arc around the void. Each row is tighter than the last, and after an unmeasurable time I arrive at the base. The night sky is little more than a shadow far, far, above me.','next');
 pit.setNext(beatRises);
 
+const FallToPit = new Sequence();
+FallToPit.title = "FallToPit"
+FallToPit.addPage('I rise, and stumble forth a few steps.','Look up')
+FallToPit.addPage('To my surprise, there is a chamber before me.','next')
+FallToPit.setNext(beatRises);
+
 const Falling = new Sequence();
 Falling.title="Falling"
 Falling.addPage('I step forward into the void, one foot in front of the other, endlessly, incautious. Where my hand rests upon the wall the skin becomes rough and sore in time, worn from the friction against the stone.','next');
 Falling.addPage('It begins to scare me how far I must have walked. I can\'t keep walking endlessly. What the hell\'s the point? If my job\'s to explore the labyrinth, I\'m not exploring anything, now. Not seeing much of anything at all.','Take another step')
 Falling.addBatchPage(['My foot finds empty space beneath me, the stability of stone I had grown so used to suddenly torn away. I cry out, and it echoes through the hall or chamber or pit or whatever it is I\'ve come to—but it does not save me from falling.','I\'m tired. I just want to fall forever, just plummet with the wind in my face, waiting for the impact to come that will kill me. And if it doesn\'t?','Well, it doesn\'t. After hours, or seconds, or an eternity, the ground meets me, and I feel my legs impact at an odd angle, then tumble over onto my elbows, head concussing against the cobbles. A shooting pain drives through my bones, bruising at every point, and a sharp ringing dominates my senses.','I don\'t want to get up. ','If I just lie here maybe I could get some fucking rest for once. As long as the shadows surround me and nobody can see me, then why should I care what happens to me? The labyrinth has eyes too, I know, and they see me even through the dark, but when worse comes to worse at least I know it cannot harm me. Not truly. It\'s not as static as many would think, but its certainly not malicious either.','All the labyrinth can do is amplify what already exists, twist it into something new. The pain and emptiness inside is what I\'m afraid of—not the labyrinth outside.','I can feel it amplifying me even now, calling to the deep things inside me. As I lie there I suddenly feel those eyes on me, and it feels altogether strange and powerful, like dreaming and seeing myself in third person.','I\'m broken. I can see the scars laid bare, always could see them, really. They\'re easy to ignore though, easy to hide: the flinch when I\'m touched, the shakiness that bites when I hear a shout, the silence I fear to break. What do I fear? What\'s the worst that could happen if it were to break?<br><br>What could possibly hurt me more than I hurt myself?','With the labyrinth\'s power in my hands, I feel like I could do anything and nothing. I could die. It\'s a powerful thing, that sudden awareness that, in this very moment, one could die.','But I find I don\'t want to die. Not anymore. Not here, not now. There\'s nothing worse than emptiness. I find myself wanting something, anything, to reach out to. If I carry on who knows what I\'ll find? Something new, at least.'],'next')
 Falling.addPage('I hold that power, try to house it within me, and as I let that snaking energy of change wash over me and through me I feel my bones crack and mend, let it distort me and twist my flesh until my legs will carry me again. The scars remain, as does the pain, but I am healed for now.','Continue.');
-Falling.addPage('I rise, and stumble forth a few steps.','Look up')
-Falling.addPage('To my surprise, there is a chamber before me.','next')
-Falling.setNext(beatRises);
+Falling.setNext(FallToPit)
 
 const darkContemplation = new Sequence();
 darkContemplation.title="darkContemplation"

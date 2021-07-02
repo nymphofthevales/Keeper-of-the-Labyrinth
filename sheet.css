@@ -72,8 +72,26 @@ ul {
   list-style-position: inside;
   list-style-type: square;
 }
+ol {
+  text-align: left;
+  line-height: 2;
+  margin: 20px 0;
+  padding-left: 10px;
+  list-style-position: inside;
+}
+ol li {
+  margin-top: 20px;
+}
+hr {
+  background-color: white;
+  border: 1px solid white;
+  height: 1px;
+  width: 30vw;
+  margin: 20px 0;
+}
 
 button {
+  font-size: 0.9em;
   border: none;
   color: white;
   background-color: transparent;
@@ -263,7 +281,10 @@ button:visited {
 }
 
 #popup-contents {
-  margin: 10% auto 10% auto;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 #ingame-menu-overlay {
@@ -303,7 +324,7 @@ button:visited {
   max-width: none;
 }
 
-#journal-overlay,#map-overlay,#options-overlay,#credits-overlay {
+#journal-overlay,#map-overlay,#options-overlay,#credits-overlay,#font-license-overlay {
   text-align: center;
   z-index: 15;
   padding: 50px;
@@ -326,6 +347,13 @@ button:visited {
   z-index: 16;
   width: 100vw;
   height: 100vh;
+}
+#font-license {
+  width:80%;
+  height: 90%;
+  text-align: left;
+  margin: 30px auto;
+  overflow-y: scroll;
 }
 #loading-gif {
   width: 50vw;

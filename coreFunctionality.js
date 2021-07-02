@@ -17,6 +17,8 @@ let ingameMenuOpen = false;
 
 let page = 0;
 
+let enableContentWarnings = true;
+
 ipcRenderer.send('requestSaveData')
 console.log('requesting save data...')
 
@@ -76,7 +78,7 @@ function manageImage(action,location,url) {
     if (action === 'print') {
         let img = document.createElement('img');
         frame.appendChild(img).id = 'currentImg';
-        currentImage = document.getElementById('currentImg');
+        let currentImage = document.getElementById('currentImg');
         currentImage.src = url;
     } else if (action === 'remove') {
         frame.innerHTML = '';
@@ -245,25 +247,67 @@ function loadPage(current,page_number) {
     console.log(`${current.title} ${page} was loaded`);
 };
 //popup
-function sendLoadPopup() {
-    let menu = document.getElementById('popup-menu');
-    menu.classList.remove('invisible');
-    let yes = document.getElementById('popup-yes');
-    let no = document.getElementById('popup-no');
-    yes.addEventListener('click',()=>{
-        menu.classList.add('invisible');
-        runLoadingSequence();
-        document.getElementById('main-menu-overlay').classList.add('invisible');
-        mainMenuOpen = false;
-    })
-    no.addEventListener('click',()=>{
-        loadPage(intro,0);
-        visited = ['intro'];
-        menu.classList.add('invisible');
-        runLoadingSequence();
-        document.getElementById('main-menu-overlay').classList.add('invisible');
-        mainMenuOpen = false;
-    })
+function sendPopup(type,content,current,backUpAble) {
+    let popup = document.getElementById('popup-menu');
+    let loadFrame = document.getElementById('load-popup')
+    let warningFrame = document.getElementById('warning-popup')
+    loadFrame.classList.add('invisible');
+    warningFrame.classList.add('invisible')
+    if (type === 'load') {
+        document.getElementById('popup-yes').addEventListener('click',()=>{
+            popup.classList.add('invisible');
+            runLoadingSequence();
+            document.getElementById('main-menu-overlay').classList.add('invisible');
+            mainMenuOpen = false;
+        })
+        document.getElementById('popup-no').addEventListener('click',()=>{
+            loadPage(intro,0);
+            visited = ['intro'];
+            popup.classList.add('invisible');
+            runLoadingSequence();
+            document.getElementById('main-menu-overlay').classList.add('invisible');
+            mainMenuOpen = false;
+        })
+        loadFrame.classList.remove('invisible')
+        popup.classList.remove('invisible');
+    } else if (type === 'warning') {
+        if (enableContentWarnings = true) {
+            let warningsList = document.getElementById('warnings-list');
+            warningsList.innerHTML = '';
+            for (let i=0; i<content.length; i++) {
+                warningsList.innerHTML += `<li>${content[i]}</li>`
+            }
+            let back = document.getElementById('warning-back')
+            if (backUpAble === true) {
+                back.classList.remove('invisible')
+                back.addEventListener('click',()=>{
+                    let PageInstances = StoryNodeInstances;
+                    for (let i = 1; i <=visited.length; i++) {
+                        for (let j=1; j<=StoryNodeInstances.length; j++) {
+                            if (StoryNodeInstances[StoryNodeInstances.length-j].title === visited[visited.length-i]) {
+                                    loadPage(StoryNodeInstances[StoryNodeInstances.length-j],0)
+                                    //needs to modify visited array
+                            }
+                        }
+                    }
+                    popup.classList.add('invisible');
+                })
+            } else if (backUpAble === false) {
+                back.classList.add('invisible');
+            }
+            document.getElementById('warning-skip').addEventListener('click',()=>{
+                loadPage(current.getNext(),0)
+                popup.classList.add('invisible');
+            })
+            document.getElementById('warning-show').addEventListener('click',()=>{
+                popup.classList.add('invisible');
+            })
+            warningFrame.classList.remove('invisible');
+            popup.classList.remove('invisible');
+        } else {
+            console.log('content warning triggered; not sent')
+        }
+    }
 }
 //journal
 function populateJournal() {
@@ -350,7 +394,7 @@ document.getElementById('enter-button').addEventListener('click',()=>{
         document.getElementById('main-menu-overlay').classList.add('invisible');
         mainMenuOpen = false;
     } else if (hasSavedData === true) {
-        sendLoadPopup();
+        sendPopup('load');
     }
     ingame_menu.classList.add('invisible')
     ingameMenuOpen = false;
@@ -418,7 +462,7 @@ for (let i=0; i<overlay_close_array.length; i++) {
     }
 }
 function manageOverlays(action,overlay) {
-    let overlaysList = ['options','credits','map','journal','loading']
+    let overlaysList = ['options','credits','map','journal','loading','font-license']
     if (action === 'show') {
         overlayOpen = true;
         document.getElementById('content').classList.add('invisible')
@@ -447,3 +491,8 @@ function runLoadingSequence() {
     manageOverlays('show','loading');
     setTimeout(()=>{manageOverlays('hide','all')},4500)
 }
+
+document.getElementById('license-button').addEventListener('click',()=>{
+    manageOverlays('show','font-license')
+})
+//document.body.style.fontSize = ''

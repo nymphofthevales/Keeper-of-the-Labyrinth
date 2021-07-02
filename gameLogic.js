@@ -273,6 +273,14 @@ let specialPages = [
 
         }
     },
+    {
+        pageObject: Falling, 
+        action: function(current) {
+            let content = ['Accidental injury','Suicidal ideation']
+            sendPopup('warning',content,current,true);
+        }
+    },
+
 ]
 /* special page general format follows:
 [
