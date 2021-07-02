@@ -57,7 +57,6 @@ html {
 body {
   position: relative;
   text-align: center;
-  font-size: 0.9em;
   height: 100vh;
   max-height: 100vh;
   overflow: hidden;
@@ -91,17 +90,14 @@ hr {
 }
 
 button {
-  font-size: 0.9em;
   border: none;
   color: white;
   background-color: transparent;
-  padding: 25px;
+  padding: 20px;
   margin: 10px;
   text-align: center;
   text-decoration: underline;
   display: inline-block;
-  font-size: inherit;
-  font-family: georgia, serif;
 }
 
 button:hover {
@@ -129,7 +125,6 @@ button:visited {
   grid-template-rows: auto;
   width: fit-content; 
   width: -moz-fit-content;
-  margin: 50px auto;
 }
 .button-housing:focus {
   outline: none !important;
@@ -139,24 +134,31 @@ button:visited {
   display: inline;
   position: relative;
   background-color: transparent;
-  height: 40px;
   margin: 0;
+  padding: 0;
 }
 .left-button-frame,.right-button-frame {
   background-repeat: no-repeat;
-  width: calc(calc(40px/8) * 11) !important;
 }
 .middle-button-frame {
-  padding: 0 10px;
   background-image: url("./assets/ui/button_middle_frame.png");
   width: fit-content, -moz-fit-content;
   border: none;
   text-decoration: none;
   background-repeat: repeat-x;
-  min-width: calc(calc(40px/12) * 19);
   grid-column-start: 2;
   grid-column-end: 3;
   margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.middle-button-frame {
+  min-width: 100px;
+}
+.middle-button-frame p {
+  padding: 0;
+  margin: 0 10px;
 }
 .middle-button-frame:hover,.middle-button-frame:focus {
   outline: none !important;
@@ -263,16 +265,10 @@ button:visited {
 }
 
 #popup-menu {
-  height: calc(45vw*calc(16/38));
-  width: 45vw;
-  min-height: fit-content;
-  min-width: 200px;
-  padding: 2px;
   background-color: transparent;
   background-image: url('./assets/ui/popup-box.png');
   background-repeat: no-repeat;
   background-size: contain;
-  border-radius: 6px;
   z-index: 12;
   position: absolute;
   left: 50vw;
@@ -296,12 +292,13 @@ button:visited {
 }
 
 #ingame-nav {
-  width: fit-content -moz-fit-content;
-  height: fit-content -moz-fit-content;
+  width: 100%;
+  height: 100%;
   position: absolute;
-  left: 50vw;
-  -ms-transform: translate(-50%, 50%);
-  transform: translate(-50%, 50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
 }
 
 #ingame-nav button {
@@ -383,11 +380,10 @@ button:visited {
   overflow-y: scroll;
   overflow-x: hidden;
   height: 85%;
-  width: 80%;
+  width: 90%;
   margin: 0 auto;
 }
 #options-form {
-  width: calc(calc(2/3)*100vw);
   margin: 0 auto;
   padding: 0 40px 40px 40px;
 }
@@ -423,21 +419,21 @@ input[type=button]:active, input[type=submit]:active {
   background-color: white;
   color: black;
 }
+input {
+  filter: hue-rotate(45deg);
+}
 
 #content-warning-preview {
   background-image: url('./assets/ui/popup-box.png');
   background-repeat: no-repeat;
   background-size: contain;
-  height: calc(45vw*calc(16/38));
-  width: 45vw;
   padding: 20px;
   margin: 0 auto;
   margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
-/*#journal-overlay header {
-  margin: 0; 
-  padding: 0;
-}*/
 
 #journal-overlay main {
   display: grid;

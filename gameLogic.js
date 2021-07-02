@@ -278,6 +278,7 @@ let specialPages = [
         action: function(current) {
             let content = ['Accidental injury','Suicidal ideation']
             sendPopup('warning',content,current,true);
+            console.log('tried to send warning from falling')
         }
     },
 

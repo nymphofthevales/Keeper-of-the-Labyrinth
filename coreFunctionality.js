@@ -14,10 +14,15 @@ let hasSavedData = false;
 let overlayOpen = false;
 let mainMenuOpen = true;
 let ingameMenuOpen = false;
-
+let savedPageInstance = intro;
 let page = 0;
 
-let enableContentWarnings = true;
+//options
+let options = {
+    enableMusic: true,
+    enableContentWarnings: true
+}
+
 
 ipcRenderer.send('requestSaveData')
 console.log('requesting save data...')
@@ -33,6 +38,9 @@ ipcRenderer.on('recieveSaveData',(event,data)=>{
     }
 })
 
+function generateButton(number,text) {
+    return `<div class=\"button-housing\" id=\"button-housing-${number}\"><div class=\"left-button-frame\" id=\"button-${number}-left\"></div><button id=\"button-${number}-middle\" class=\"middle-button-frame\"><p id=\"button-text-${number}\">${text}</p></button><div class=\"right-button-frame\" id=\"button-${number}-right\"></div></div>`
+}
 function print(data,current) {
     //data takes form of [page text string, button string or array] as returned by StoryNode or Sequence .getPage()
     //Sequence.getPage() returns a string, StoryNode an array.
@@ -115,9 +123,6 @@ function progression(current,destination_button_number) {
         print(current.getPage(0),current)
         console.log(`progressed to ${current.title} (${current.constructor.name})`)
     }
-}
-function generateButton(number,text) {
-    return `<div class=\"button-housing\" id=\"button-housing-${number}\"><div class=\"left-button-frame\" id=\"button-${number}-left\"></div><button id=\"button-${number}-middle\" class=\"middle-button-frame\"><p id=\"button-text-${number}\">${text}</p></button><div class=\"right-button-frame\" id=\"button-${number}-right\"></div></div>`
 }
 let preloadCurrent = undefined;
 function saveParameters(){
@@ -236,7 +241,7 @@ function loadData(data) {
     let PageInstances = SequenceInstances.concat(StoryNodeInstances);
     for (let i=0; i<PageInstances.length; i++) {
         if (PageInstances[i].title === savedData.title) {
-            loadPage(PageInstances[i],page)
+            savedPageInstance = PageInstances[i];
         }
     }
 };
@@ -255,6 +260,7 @@ function sendPopup(type,content,current,backUpAble) {
     warningFrame.classList.add('invisible')
     if (type === 'load') {
         document.getElementById('popup-yes').addEventListener('click',()=>{
+            loadPage(savedPageInstance,0);
             popup.classList.add('invisible');
             runLoadingSequence();
             document.getElementById('main-menu-overlay').classList.add('invisible');
@@ -271,7 +277,7 @@ function sendPopup(type,content,current,backUpAble) {
         loadFrame.classList.remove('invisible')
         popup.classList.remove('invisible');
     } else if (type === 'warning') {
-        if (enableContentWarnings = true) {
+        if (options.enableContentWarnings = true) {
             let warningsList = document.getElementById('warnings-list');
             warningsList.innerHTML = '';
             for (let i=0; i<content.length; i++) {
@@ -281,12 +287,11 @@ function sendPopup(type,content,current,backUpAble) {
             if (backUpAble === true) {
                 back.classList.remove('invisible')
                 back.addEventListener('click',()=>{
-                    let PageInstances = StoryNodeInstances;
                     for (let i = 1; i <=visited.length; i++) {
                         for (let j=1; j<=StoryNodeInstances.length; j++) {
                             if (StoryNodeInstances[StoryNodeInstances.length-j].title === visited[visited.length-i]) {
                                     loadPage(StoryNodeInstances[StoryNodeInstances.length-j],0)
-                                    //needs to modify visited array
+                                    //needs to modify visited array to disclude avoided sequence
                             }
                         }
                     }
@@ -305,7 +310,7 @@ function sendPopup(type,content,current,backUpAble) {
             warningFrame.classList.remove('invisible');
             popup.classList.remove('invisible');
         } else {
-            console.log('content warning triggered; not sent')
+            console.log('content warnings not enabled; not sent')
         }
     }
 }
@@ -495,4 +500,3 @@ function runLoadingSequence() {
 document.getElementById('license-button').addEventListener('click',()=>{
     manageOverlays('show','font-license')
 })
-//document.body.style.fontSize = ''

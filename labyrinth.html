@@ -6,7 +6,31 @@
     <script src="pageData.js"></script>
     <script src="coreFunctionality.js" defer></script>
     <script src="gameLogic.js" defer></script>
-    <link href="sheet.css" rel="stylesheet">
+
+    <link href="sheet.css" rel="stylesheet" id="main-stylesheet">
+    <link href="small-text-sheet.css" rel="stylesheet" id="small-style" disabled>
+    <link href="default-text-sheet.css" rel="stylesheet" id="default-style" disabled>
+    <link href="medium-text-sheet.css" rel="stylesheet" id="medium-style" disabled>
+    <link href="large-text-sheet.css" rel="stylesheet" id="large-style">
+
+    <link rel="preload" as="image" href="./assets/labyrinth_logo.png">
+    <link rel="preload" as="image" href="./assets/labyrinth_icon.png">
+    <link rel="preload" as="image" href="./assets/labyrinth_gate.png">
+    <link rel="preload" as="image" href="./assets/labyrinth_gate_shadow.png">
+
+    <link rel="preload" as="image" href="./assets/ui/popup-box.png">
+    <link rel="preload" as="image" href="./assets/ui/overlay-frame-cropped.png">
+    <link rel="preload" as="image" href="./assets/ui/cursor_bold.png">
+
+    <!--<link rel="preload" as="image" href="./assets/ui/button_left_small.png">
+    <link rel="preload" as="image" href="./assets/ui/button_left_small_active.png">
+    <link rel="preload" as="image" href="./assets/ui/button_left_small_hover.png">
+    <link rel="preload" as="image" href="./assets/ui/button_right_small.png">
+    <link rel="preload" as="image" href="./assets/ui/button_right_small_active.png">
+    <link rel="preload" as="image" href="./assets/ui/button_right_small_hover.png">
+    <link rel="preload" as="image" href="./assets/ui/button_middle_frame.png">
+    <link rel="preload" as="image" href="./assets/ui/button_middle_active.png">
+    <link rel="preload" as="image" href="./assets/ui/button_middle_hover.png">-->
 </head>
 <body>
     <button id="focus-clear"></button>
@@ -113,12 +137,20 @@
             <form id="options-form" action="javascript:void(0);">
                 <fieldset id="text-size-form-field">
                     <legend>Text size</legend>
-                    <input type="radio" id="normal-text" value="normal-text" name="text" checked>
-                    <label for="normal">Normal</label>
+                    <input type="radio" id="small-text" value="small-text" name="text">
+                    <label for="small-text">Small</label>
+                    <input type="radio" id="default-text" value="default-text" name="text" checked>
+                    <label for="default-text">Default</label>
                     <input type="radio" id="medium-text" value="medium-text" name="text">
                     <label for="medium-text">Medium</label>
                     <input type="radio" id="large-text" value="large-text" name="text">
                     <label for="large-text">Large</label>
+                    <div>
+                        <p style="font-size:1.5vh;">Small: The ice of the bay stretches out endlessly before the jagged black slate beach.</p>
+                        <p style="font-size:1.8vh;">Default: The ice of the bay stretches out endlessly before the jagged black slate beach.</p>
+                        <p style="font-size:2vh;">Medium: The ice of the bay stretches out endlessly before the jagged black slate beach.</p>
+                        <p style="font-size:2.5vh;">Large: The ice of the bay stretches out endlessly before the jagged black slate beach.</p>
+                    </div>
                 </fieldset>
                 <fieldset id="music-form-field">
                     <legend>Music</legend>
@@ -138,15 +170,17 @@
                     <div id="example-content-warning" class="">
                         <p>Content warnings look like this:</p>
                         <div id="content-warning-preview">
-                            <h4>Content Warning</h4>
-                            <p>This scene contains:</p>
-                            <ul>
-                                <li>Descriptions of gore/injury</li>
-                                <li>Self harm/self destructive behaviour</li>
-                            </ul>
-                            <button>Go back</button>
-                            <button>Skip past this scene</button>
-                            <button>Show me anyway</button>
+                            <div>
+                                <h4>Content Warning</h4>
+                                <p>This scene contains:</p>
+                                <ul>
+                                    <li>Descriptions of gore/injury</li>
+                                    <li>Self harm/self destructive behaviour</li>
+                                </ul>
+                                <button>Go back</button>
+                                <button>Skip past this scene</button>
+                                <button>Show me anyway</button>
+                            </div>
                         </div>
                     </div>
                 </fieldset>
@@ -163,7 +197,7 @@
         <main>
             <p><i>Keeper of the Labyrinth</i> was made by Athena Abbott through November 2020 - July 2021. All the writing, programming, artwork, and music is her work.</p>
             <p>Thank you to all my gorgeous friends, family, and friends who feel more like family, who cheered me on and helped me with programming advice, good conversation, love, and patience as I made this project my heart and soul for these past eight months. I'm so grateful for the support. </p>
-            <p>Libre Baskerville is used under the <span><button id="license-button">Open Font License (OFL)</button></span>.</p>
+            <p>Libre Baskerville is used under the <span><button id="license-button" style="margin:0;padding:0;">Open Font License (OFL)</button></span>.</p>
         </main>
     </div>
     <div id="font-license-overlay" class="invisible">

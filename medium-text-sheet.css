@@ -1,0 +1,25 @@
+body, p, button, label, legend, input[type=button], input[type=submit] {
+    font-size: 2vh;
+}
+.middle-button-frame,.left-button-frame,.right-button-frame {
+    height: 50px;
+}
+.left-button-frame,.right-button-frame {
+    width: calc(calc(11/8)*50px) !important;
+}
+.button-housing {
+    margin: 30px auto;
+}
+#ingame-nav .button-housing {
+    margin: 40px auto;
+}
+#popup-menu,#content-warning-preview  {
+    height: calc(50vw*calc(16/38));
+    width: 50vw;
+}
+#load-popup {
+    padding: 0 30px;
+}
+#options-form {
+    width: calc(calc(2/3)*100vw);
+}
