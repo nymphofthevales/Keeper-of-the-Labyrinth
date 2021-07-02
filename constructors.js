@@ -99,24 +99,62 @@ StoryNode.prototype.setText = function(text) {
 }
 
 
-function GalleryItem(title) {
+function GalleryItem(unlocked,title,description,src,hasShadow) {
+    this.unlocked = unlocked;
     this.title = title;
-    this.description = 'Explore the <span class="labyrinth-color">labyrinth</span> to unlock this image.';
-    this.src = 'assets/ui/gallery-hidden-icon.png';
-    this.hasShadow = false;
-    this.shadow = '';
-    this.unlocked = false
+    this.description = description;
+    this.src = src;
+    this.hasShadow = hasShadow;
+    if (this.hasShadow === false) {
+        this.shadow = undefined;
+    } else if (this.hasShadow === true) {
+        let shadowUrl = this.src.slice(0,-4);
+        shadowUrl += '_shadow.png'
+        this.shadow = shadowUrl;
+    }
 }
 
-GalleryItem.prototype.setUrl = function(url) {
-    this.src = url;
-}
-GalleryItem.prototype.unlock = function() {
-
-}
-
-let gallery = {
-    "1": new GalleryItem(),
+function Gallery() {
+    this.elements = [];
+    this.lockedImage = "assets/ui/gallery-hidden-icon.png";
+    this.descriptionPlaceholder = "Explore the <span class=\"labyrinth-color\">labyrinth</span> to unlock this image."
 }
 
-for ()
+Gallery.prototype.addItem = function(number,unlocked,title,description,src,hasShadow) {
+    this.elements[number] = new GalleryItem(unlocked,title,description,src,hasShadow);
+}
+Gallery.prototype.generatePreviewHTML = function(number) {
+    let src = '';
+    if (this.elements[number].unlocked === true) {
+        src = this.elements[number].src;
+    } else if (this.elements[number].unlocked === false) {
+        src = this.lockedImage;
+    }
+    return `<div id="gallery-${number}" class="gallery-image-preview">
+        <button id="gallery-${number}-button">
+            <img id="gallery-${number}-preview-img" class="gallery-preview-img" src="${src}">
+        </button>
+    </div>`
+}
+Gallery.prototype.generateInspectorHTML = function(number) {
+    if (this.elements[number].unlocked === true) {
+        return `<div id="inspector-text-frame">
+            <h2 id="image-title">${this.elements[number].title}</h2>
+            <p id="image-description">${this.elements[number].description}</p> 
+            <button id="gallery-back-button"></button>
+        </div>
+        <div id="inspector-image-frame">
+            <img id="gallery-inspector-image" src="${this.elements[number].src}"/>
+        </div>`
+    } else if (this.elements[number].unlocked === false) {
+        return `<div id="inspector-text-frame">
+            <h2 id="image-title">${this.elements[number].title}</h2>
+            <p id="image-description">${this.descriptionPlaceholder}</p> 
+        <button id="gallery-back-button"></button>
+        </div>
+        <div id="inspector-image-frame">
+            <img id="gallery-inspector-placeholder" src="${this.lockedImage}"/>
+        </div>`
+    }
+}
+//Gallery[1].unlock('lines')//be able to say this, causes data to be updated such that next time gallery is upened, instead of default description and hidden icon, the real image prints and the real description can be read once it's opened in the inspector window.

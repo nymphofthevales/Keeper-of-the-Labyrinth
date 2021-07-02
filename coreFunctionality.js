@@ -413,7 +413,9 @@ document.getElementById('options-button').addEventListener('click',()=>{
     manageOverlays('show','options')
 })
 document.getElementById('gallery-button').addEventListener('click',()=>{
-    manageOverlays('show','gallery')
+    populateGallery(mainGallery);
+    manageOverlays('show','gallery');
+    setGalleryListeners();
 })
 document.getElementById('credits-button').addEventListener('click',()=>{
     manageOverlays('show','credits')
@@ -472,7 +474,7 @@ for (let i=0; i<overlay_close_array.length; i++) {
     }
 }
 function manageOverlays(action,overlay) {
-    let overlaysList = ['options','credits','map','journal','loading','font-license','gallery']
+    let overlaysList = ['options','credits','map','journal','loading','font-license','gallery','gallery-inspector']
     clearFocus();
     if (action === 'show') {
         overlayOpen = true;
@@ -545,22 +547,31 @@ let volumeInput = document.getElementById('volume-slider')
 volumeInput.addEventListener('mouseup',()=>{
     options.volume = volumeInput.value;
 })
-
 document.getElementById('submit-options').addEventListener('click',setOptions)
 
-
-let galleryImages = {
-    1: {
-        title: '',
-        description: '',
-        src: '',
-        unlocked: false;
-    },
-    2: {},
-    3: {},
-    4: {},
+function populateGallery(gallery) {
+    let frame = document.getElementById('gallery-frame');
+    frame.innerHTML = '';
+    for (let i=0; i<gallery.elements.length; i++) {
+        frame.innerHTML += gallery.generatePreviewHTML(i);
+    }
 }
 
-function generateGalleryItem() {
-    this.
+function setGalleryListeners() {
+    let previews = document.querySelectorAll(".gallery-image-preview");
+    for (let i = 0; i< previews.length; i++) {
+        document.getElementById(`gallery-${i}-button`).addEventListener('mouseup',()=>{
+            document.getElementById('gallery-inspector-frame').innerHTML = mainGallery.generateInspectorHTML(i);
+            manageOverlays('show','gallery-inspector');
+            setGalleryBackButton();
+        })
+    }
+}
+
+function setGalleryBackButton() {
+    document.getElementById('gallery-back-button').addEventListener('click',()=>{
+        populateGallery(mainGallery);
+        manageOverlays('show','gallery');
+        setGalleryListeners();
+    })
 }

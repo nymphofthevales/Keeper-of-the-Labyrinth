@@ -7,11 +7,11 @@
     <script src="coreFunctionality.js" defer></script>
     <script src="gameLogic.js" defer></script>
 
-    <link href="sheet.css" rel="stylesheet" id="main-stylesheet">
-    <link href="small-text-sheet.css" rel="stylesheet" id="small-style" disabled>
-    <link href="default-text-sheet.css" rel="stylesheet" id="default-style">
-    <link href="medium-text-sheet.css" rel="stylesheet" id="medium-style" disabled>
-    <link href="large-text-sheet.css" rel="stylesheet" id="large-style" disabled>
+    <link href="./main-sheet.css" rel="stylesheet" id="main-stylesheet">
+    <link href="./small-text-sheet.css" rel="stylesheet" id="small-style" disabled>
+    <link href="./default-text-sheet.css" rel="stylesheet" id="default-style">
+    <link href="./medium-text-sheet.css" rel="stylesheet" id="medium-style" disabled>
+    <link href="./large-text-sheet.css" rel="stylesheet" id="large-style" disabled>
 
     <link rel="preload" as="image" href="./assets/labyrinth_logo.png">
     <link rel="preload" as="image" href="./assets/labyrinth_icon.png">
@@ -308,78 +308,14 @@
         </header>
         <main id="gallery-main">
             <div id="gallery-frame">
-                <div id="gallery-1" class="gallery-image-preview">
-                    <button id="gallery-1-button">
-                        <img id="gallery-1-preview-img" class="gallery-preview-img" src="assets/labyrinth_logo.png">
-                    </button>
-                </div>
-                <div id="gallery-2" class="gallery-image-preview">
-                    <button id="gallery-2-button">
-                        <img id="gallery-2-preview-img" class="gallery-preview-img" src="assets/labyrinth_gate.png">
-                    </button>
-                </div>
-                <div id="gallery-3" class="gallery-image-preview">
-                    <button id="gallery-3-button">
-                        <img id="gallery-3-preview-img" class="gallery-preview-img" src="assets/obelisk.png">
-                    </button>
-                </div>
-                <div id="gallery-4" class="gallery-image-preview">
-                    <button id="gallery-4-button">
-                        <img id="gallery-4-preview-img" class="gallery-preview-img" src="assets/runes_item.png">
-                    </button>
-                </div>
-                <div id="gallery-5" class="gallery-image-preview">
-                    <button id="gallery-5-button">
-                        <img id="gallery-5-preview-img" class="gallery-preview-img" src="assets/candles_item.png">
-                    </button>
-                </div>
-                <div id="gallery-6" class="gallery-image-preview">
-                    <button id="gallery-6-button">
-                        <img id="gallery-7-preview-img" class="gallery-preview-img" src="assets/chalk_item.png">
-                    </button>
-                </div>
-                <div id="gallery-7" class="gallery-image-preview">
-                    <button id="gallery-7-button">
-                        <img id="gallery-7-preview-img" class="gallery-preview-img" src="assets/wand_item.png">
-                    </button>
-                </div>
-                <div id="gallery-8" class="gallery-image-preview">
-                    <button id="gallery-8-button">
-                        <img id="gallery-8-preview-img" class="gallery-preview-img" src="assets/knife_item.png">
-                    </button>
-                </div>
-                <div id="gallery-9" class="gallery-image-preview">
-                    <button id="gallery-9-button">
-                        <img id="gallery-9-preview-img" class="gallery-preview-img" src="assets/ui/gallery-hidden-icon.png">
-                    </button>
-                </div>
-                <div id="gallery-10" class="gallery-image-preview">
-                    <button id="gallery-10-button">
-                        <img id="gallery-10-preview-img" class="gallery-preview-img" src="assets/ui/gallery-hidden-icon.png">
-                    </button>
-                </div>
-                <div id="gallery-11" class="gallery-image-preview">
-                    <button id="gallery-11-button">
-                        <img id="gallery-11-preview-img" class="gallery-preview-img" src="assets/ui/gallery-hidden-icon.png">
-                    </button>
-                </div>
-                <div id="gallery-12" class="gallery-image-preview">
-                    <button id="gallery-12-button">
-                        <img id="gallery-12-preview-img" class="gallery-preview-img" src="assets/ui/gallery-hidden-icon.png">
-                    </button>
-                </div>
             </div>
         </main>
     </div>
-    <div id="gallery-inspection-overlay" class="invisible">
-        <button id="gallery-inspection-close" class="overlay-close"></button>
-        <header>
-            <button id="gallery-back-button"></button>
-            <h1>Credits</h1>
-        </header>
+    <div id="gallery-inspector-overlay" class="invisible">
+        <button id="gallery-inspector-close" class="overlay-close"></button>
         <main>
-            <h2 id="image-title"></h2>
-            <p id="image-descrition"></p> 
+            <div id="gallery-inspector-frame">
+            </div>
         </main>
     </div>
     <div id="loading-overlay" class="invisible">
