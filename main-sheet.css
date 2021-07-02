@@ -321,7 +321,7 @@ button:visited {
   max-width: none;
 }
 
-#journal-overlay,#map-overlay,#options-overlay,#credits-overlay,#font-license-overlay,#gallery-overlay,#gallery-inspector-overlay {
+#journal-overlay,#map-overlay,#options-overlay,#credits-overlay,#font-license-overlay,#font-license-2-overlay,#gallery-overlay,#gallery-inspector-overlay {
   text-align: center;
   z-index: 15;
   padding: 50px;
@@ -345,7 +345,7 @@ button:visited {
   width: 100vw;
   height: 100vh;
 }
-#font-license {
+#font-license,#font-license-2 {
   width:80%;
   height: 90%;
   text-align: left;

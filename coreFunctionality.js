@@ -474,7 +474,7 @@ for (let i=0; i<overlay_close_array.length; i++) {
     }
 }
 function manageOverlays(action,overlay) {
-    let overlaysList = ['options','credits','map','journal','loading','font-license','gallery','gallery-inspector']
+    let overlaysList = ['options','credits','map','journal','loading','font-license','font-license-2','gallery','gallery-inspector']
     clearFocus();
     if (action === 'show') {
         overlayOpen = true;
@@ -507,6 +507,9 @@ function runLoadingSequence() {
 
 document.getElementById('license-button').addEventListener('click',()=>{
     manageOverlays('show','font-license')
+})
+document.getElementById('license-button-2').addEventListener('click',()=>{
+    manageOverlays('show','font-license-2')
 })
 
 
