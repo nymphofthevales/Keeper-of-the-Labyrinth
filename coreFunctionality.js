@@ -19,11 +19,12 @@ let page = 0;
 
 //options
 let options = {
+    textSize: 'default',
     enableMusic: true,
     volume: 25,
-    enableContentWarnings: true
+    enableParallax: true,
+    enableWarnings: false
 }
-
 
 ipcRenderer.send('requestSaveData')
 console.log('requesting save data...')
@@ -373,7 +374,7 @@ let cursor = document.getElementById('custom-cursor');
 document.addEventListener('mousemove', (e)=>{
     cursor.style.top = `${e.pageY}px`;
     cursor.style.left = `${e.pageX}px`;
-    if (mainMenuOpen === true) {
+    if (mainMenuOpen === true && options.enableParallax === true) {
         ww = window.innerWidth;
         wh = window.innerHeight;
         let x = e.pageX - (ww/2)
@@ -410,6 +411,9 @@ document.getElementById('map-button').addEventListener('click',()=>{
 })
 document.getElementById('options-button').addEventListener('click',()=>{
     manageOverlays('show','options')
+})
+document.getElementById('gallery-button').addEventListener('click',()=>{
+    manageOverlays('show','gallery')
 })
 document.getElementById('credits-button').addEventListener('click',()=>{
     manageOverlays('show','credits')
@@ -468,7 +472,8 @@ for (let i=0; i<overlay_close_array.length; i++) {
     }
 }
 function manageOverlays(action,overlay) {
-    let overlaysList = ['options','credits','map','journal','loading','font-license']
+    let overlaysList = ['options','credits','map','journal','loading','font-license','gallery']
+    clearFocus();
     if (action === 'show') {
         overlayOpen = true;
         document.getElementById('content').classList.add('invisible')
@@ -519,24 +524,20 @@ function setOptions() {
         document.getElementById('large-style')
     ]
     for (let a=0; a<textStylesheets.length; a++) {
-        textStylesheets[a].disabled = true;
-    }
-    for (let i=0; i<textOptions.length; i++) {
-        if (textOptions[i].checked === true) {
-            textStylesheets[i].disabled = false;
+        if (textOptions[a].checked !== true) {
+            textStylesheets[a].disabled = true;
+        } else if (textOptions[a].checked === true) {
+            textStylesheets[a].disabled = false;
         }
     }
-    //manage content warnings
-    if (document.getElementById('content-warnings-off').checked === true) {
-        options.enableContentWarnings = false;
-    } else if (document.getElementById('content-warnings-on').checked === true) {
-        options.enableContentWarnings = true;
-    }
-    //manage music
-    if (document.getElementById('music-off').checked === true) {
-        options.enableMusic = false;
-    } else if (document.getElementById('music-on').checked === true) {
-        options.enableMusic = true;
+    let booleanOptions = ['warnings','music','parallax']
+    for (let i=0; i<booleanOptions.length; i++) {
+        let template = 'enable' + capitalize(booleanOptions[i]);
+        if (document.getElementById(`${booleanOptions[i]}-off`).checked === true) {
+            options[template] = false;
+        } else if (document.getElementById(`${booleanOptions[i]}-on`).checked === true) {
+            options[template] = true;
+        }
     }
 }
 
@@ -546,3 +547,20 @@ volumeInput.addEventListener('mouseup',()=>{
 })
 
 document.getElementById('submit-options').addEventListener('click',setOptions)
+
+
+let galleryImages = {
+    1: {
+        title: '',
+        description: '',
+        src: '',
+        unlocked: false;
+    },
+    2: {},
+    3: {},
+    4: {},
+}
+
+function generateGalleryItem() {
+    this.
+}

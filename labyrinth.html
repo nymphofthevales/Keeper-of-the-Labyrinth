@@ -161,12 +161,20 @@
                     <label for="volume-slider">Volume</label>
                     <input type="range" id="volume-slider" min="0" max="50" name="volume">
                 </fieldset>
+                <fieldset id="parallax-form-field">
+                    <legend>Parallax</legend>
+                    <input type="radio" id="parallax-on" value="parallax-on" name="parallax" checked>
+                    <label for="parallax-on">On</label>
+                    <input type="radio" id="parallax-off" value="parallax-off" name="parallax">
+                    <label for="parallax-off">Off</label>
+                    <p>Whether images shift with mouse movement or not. Looks cool, but may be disorienting to some.</p>
+                </fieldset>
                 <fieldset id="content-warnings-form-field">
                     <legend>Content warnings</legend>
-                    <input type="radio" id="content-warnings-on" value="content-warnings-on" name="warnings">
-                    <label for="content-warnings-on">On</label>
-                    <input type="radio" id="content-warnings-off" value="content-warnings-off" name="warnings" checked>
-                    <label for="content-warnings-off">Off</label>
+                    <input type="radio" id="warnings-on" value="warnings-on" name="warnings">
+                    <label for="warnings-on">On</label>
+                    <input type="radio" id="warnings-off" value="warnings-off" name="warnings" checked>
+                    <label for="warnings-off">Off</label>
                     <div id="example-content-warning" class="">
                         <p>Content warnings look like this:</p>
                         <div id="content-warning-preview">
@@ -293,6 +301,87 @@
             </p>
         </main>
     </div>
+    <div id="gallery-overlay" class="invisible">
+        <button id="gallery-close" class="overlay-close"></button>
+        <header>
+            <h1>Gallery</h1>
+        </header>
+        <main id="gallery-main">
+            <div id="gallery-frame">
+                <div id="gallery-1" class="gallery-image-preview">
+                    <button id="gallery-1-button">
+                        <img id="gallery-1-preview-img" class="gallery-preview-img" src="assets/labyrinth_logo.png">
+                    </button>
+                </div>
+                <div id="gallery-2" class="gallery-image-preview">
+                    <button id="gallery-2-button">
+                        <img id="gallery-2-preview-img" class="gallery-preview-img" src="assets/labyrinth_gate.png">
+                    </button>
+                </div>
+                <div id="gallery-3" class="gallery-image-preview">
+                    <button id="gallery-3-button">
+                        <img id="gallery-3-preview-img" class="gallery-preview-img" src="assets/obelisk.png">
+                    </button>
+                </div>
+                <div id="gallery-4" class="gallery-image-preview">
+                    <button id="gallery-4-button">
+                        <img id="gallery-4-preview-img" class="gallery-preview-img" src="assets/runes_item.png">
+                    </button>
+                </div>
+                <div id="gallery-5" class="gallery-image-preview">
+                    <button id="gallery-5-button">
+                        <img id="gallery-5-preview-img" class="gallery-preview-img" src="assets/candles_item.png">
+                    </button>
+                </div>
+                <div id="gallery-6" class="gallery-image-preview">
+                    <button id="gallery-6-button">
+                        <img id="gallery-7-preview-img" class="gallery-preview-img" src="assets/chalk_item.png">
+                    </button>
+                </div>
+                <div id="gallery-7" class="gallery-image-preview">
+                    <button id="gallery-7-button">
+                        <img id="gallery-7-preview-img" class="gallery-preview-img" src="assets/wand_item.png">
+                    </button>
+                </div>
+                <div id="gallery-8" class="gallery-image-preview">
+                    <button id="gallery-8-button">
+                        <img id="gallery-8-preview-img" class="gallery-preview-img" src="assets/knife_item.png">
+                    </button>
+                </div>
+                <div id="gallery-9" class="gallery-image-preview">
+                    <button id="gallery-9-button">
+                        <img id="gallery-9-preview-img" class="gallery-preview-img" src="assets/ui/gallery-hidden-icon.png">
+                    </button>
+                </div>
+                <div id="gallery-10" class="gallery-image-preview">
+                    <button id="gallery-10-button">
+                        <img id="gallery-10-preview-img" class="gallery-preview-img" src="assets/ui/gallery-hidden-icon.png">
+                    </button>
+                </div>
+                <div id="gallery-11" class="gallery-image-preview">
+                    <button id="gallery-11-button">
+                        <img id="gallery-11-preview-img" class="gallery-preview-img" src="assets/ui/gallery-hidden-icon.png">
+                    </button>
+                </div>
+                <div id="gallery-12" class="gallery-image-preview">
+                    <button id="gallery-12-button">
+                        <img id="gallery-12-preview-img" class="gallery-preview-img" src="assets/ui/gallery-hidden-icon.png">
+                    </button>
+                </div>
+            </div>
+        </main>
+    </div>
+    <div id="gallery-inspection-overlay" class="invisible">
+        <button id="gallery-inspection-close" class="overlay-close"></button>
+        <header>
+            <button id="gallery-back-button"></button>
+            <h1>Credits</h1>
+        </header>
+        <main>
+            <h2 id="image-title"></h2>
+            <p id="image-descrition"></p> 
+        </main>
+    </div>
     <div id="loading-overlay" class="invisible">
         <img id="loading-gif" src="./assets/labyrinth_animation_fast.gif"/>
     </div>
@@ -306,8 +395,8 @@
             </header>
             <nav id="main-nav">
                 <button id="enter-button">Enter</button>
-                <button id="load-button" class="invisible">Continue</button>
                 <button id="map-button">Map</button>
+                <button id="gallery-button">Gallery</button>
                 <button id="options-button">Options</button>
                 <button id="credits-button">Credits</button>
                 <button id="main-quit-button">Quit</button>

@@ -99,3 +99,24 @@ StoryNode.prototype.setText = function(text) {
 }
 
 
+function GalleryItem(title) {
+    this.title = title;
+    this.description = 'Explore the <span class="labyrinth-color">labyrinth</span> to unlock this image.';
+    this.src = 'assets/ui/gallery-hidden-icon.png';
+    this.hasShadow = false;
+    this.shadow = '';
+    this.unlocked = false
+}
+
+GalleryItem.prototype.setUrl = function(url) {
+    this.src = url;
+}
+GalleryItem.prototype.unlock = function() {
+
+}
+
+let gallery = {
+    "1": new GalleryItem(),
+}
+
+for ()
