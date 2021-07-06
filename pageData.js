@@ -761,9 +761,8 @@ rightDark2.setNext(darkWindow);
 
 const rightDark1 = new Sequence();
 rightDark1.title="rightDark1"
-rightDark1.addPage('','');
+rightDark1.addPage('I let the wall guide me, running my hand along it as I am carried further into the darkness. I come to expect a particular pattern: smooth stone, undulating along its surface, perhaps a<br>r<br>ough<br>p<br>atch<br>—lichen—<br>following the steady pattern of the surface, then a<br> gap,<br> where stone meets mortar and mortar meets stone.','continue');
 rightDark1.setNext(darkWindow);
-//tbd
 
 const deadEnd = new StoryNode();
 deadEnd.title="deadEnd";
@@ -776,11 +775,21 @@ corpsesContinue.title="corpsesContinue"
 //content tbd
 corpsesContinue.setNext(deadEnd);
 
+const corpseContemplation = new StoryNode();
+corpseContemplation.title="corpseContemplation"
+corpseContemplation.addBatchPage(['','','','','','',''],'');
+corpseContemplation.setNext(deadEnd);
+
+const corpseNode = new StoryNode();
+corpseNode.title="corpseNode";
+corpseNode.setText('The passageway it reaches out of lies shrouded in darkness.');
+corpseNode.addOption('Enter',corpseContemplation);
+corpseNode.addOption('','');
+
 const corpsesLook = new Sequence();
 corpsesLook.title="corpsesLook"
-corpsesLook.addBatchPage(['Pallid and chalky fragments. Bone.<br><br><i>Oh gods.</i>','I recoil, covering my mouth in horror.<br><br>The hand reaches out from an adjacent passageway, draped across the ground like a sprung trap.'],'next');
-//content tbd
-corpsesLook.setNext(deadEnd);
+corpsesLook.addBatchPage(['Pallid and chalky fragments. Bone.<br><br><i>Oh gods.</i>','I recoil, covering my mouth in horror.<br><br>The hand reaches out from an adjacent passageway, draped across the ground like a sprung trap. It\'s skeletal and decayed, the only flesh intact being the ligaments between the bones, hardened and mummified.'],'next');
+corpsesLook.setNext(corpseNode);
 
 const corpses = new StoryNode();
 corpses.title="corpses"
@@ -1094,16 +1103,17 @@ const mainGallery = new Gallery();
 //format: numerical identifier, unlocked, title, description, url, has shadow (functionality tbd for shadow + parallax)
 mainGallery.addItem(0,true,'The Labyrinth','Its twisting passages hearken.','./assets/labyrinth_logo.png',false)
 mainGallery.addItem(1,true,'The Labyrinth Gate','It watches your approach carefully.','./assets/labyrinth_gate.png',true)
-mainGallery.addItem(2,false,'The Obelisk','It serves my same purpose; to watch the changes in the <span class="labyrinth-color">labyrinth</span>, and know the secrets within.','./assets/obelisk.png',true)
-mainGallery.addItem(3,false,'Ritual of Runes','Divination, the method by which we can see an inkling of the future.','./assets/runes.png',true)
-mainGallery.addItem(4,false,'The Runes','An unused inventory sprite created early in development.','./assets/runes_item.png',false)
-mainGallery.addItem(5,false,'The Wand','An unused inventory sprite created early in development.','./assets/wand_item.png',false)
-mainGallery.addItem(6,false,'The Candles','An unused inventory sprite created early in development.','./assets/candles_item.png',false)
-mainGallery.addItem(7,false,'The Chalk','An unused inventory sprite created early in development.','./assets/chalk_item.png',false)
-mainGallery.addItem(8,false,'The Knife','An unused inventory sprite created early in development.','./assets/knife_item.png',false)
-mainGallery.addItem(9,false,'Ritual of Lines','I am a part of the universe but also contained unto myself.','./assets/lines.png',true)
-mainGallery.addItem(10,false,'The Rowan','When the cold winter winds come there\'s nothing wrong with rest; but the time must come when one wakes up.','./assets/rowan.png',true)
+mainGallery.addItem(2,true,'The Obelisk','It serves my same purpose; to watch the changes in the <span class="labyrinth-color">labyrinth</span>, and know the secrets within.','./assets/obelisk.png',true)
+mainGallery.addItem(3,true,'Ritual of Runes','Divination, the method by which we can see an inkling of the future: This journey shall not be the one to kill me, at least.','./assets/runes.png',true)
+mainGallery.addItem(4,true,'The Runes','An unused inventory sprite created early in development.','./assets/runes_item.png',false)
+mainGallery.addItem(5,true,'The Wand','An unused inventory sprite created early in development.','./assets/wand_item.png',false)
+mainGallery.addItem(6,true,'The Candles','An unused inventory sprite created early in development.','./assets/candles_item.png',false)
+mainGallery.addItem(7,true,'The Chalk','An unused inventory sprite created early in development.','./assets/chalk_item.png',false)
+mainGallery.addItem(8,true,'The Knife','An unused inventory sprite created early in development.','./assets/knife_item.png',false)
+mainGallery.addItem(9,true,'Ritual of Lines','I am a part of the universe but also contained unto myself.','./assets/lines.png',true)
+mainGallery.addItem(10,true,'The Rowan','When the cold winter winds come there\'s nothing wrong with rest; but the time must come when one wakes up.','./assets/rowan.png',true)
+mainGallery.addItem(11,true,'Ritual of Wands','I am capable of, and bound to, change, like any other facet of the universe. Who I am is not who I will always be.','./assets/wands.png',true)
 
-mainGallery.addItem(11,false,'The Moth','Perhaps to end in a conflagration of light is better than to end alone in the darkness.','./assets/moth.png',true)
-mainGallery.addItem(12,false,'The Crow','Perhaps it did speak, but only in signs, in gaze and gesture, in feather and beak, in imagination, in silence.','./assets/crow.png',true)
-mainGallery.addItem(13,false,'The Watching Masks','How could we know her until she chooses to know herself?','./assets/watching_mask.png',true)
+mainGallery.addItem(12,true,'The Moth','Perhaps to end in a conflagration of light is better than to end alone in the darkness.','./assets/moth.png',true)
+mainGallery.addItem(13,true,'The Crow','Perhaps it did speak, but only in signs, in gaze and gesture, in feather and beak, in imagination, in silence.','./assets/crow.png',true)
+mainGallery.addItem(14,true,'The Watching Masks','How could we know her until she chooses to know herself?','./assets/watching_mask.png',true)
