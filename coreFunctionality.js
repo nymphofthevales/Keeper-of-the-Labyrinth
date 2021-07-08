@@ -578,3 +578,9 @@ function setGalleryBackButton() {
         setGalleryListeners();
     })
 }
+
+
+//audio system
+const mainMusic = new Music();
+mainMusic.maxVolume = (2*options.volume)/100;
+mainMusic.addSong('exploration',"./assets/music/exploration.m4a")

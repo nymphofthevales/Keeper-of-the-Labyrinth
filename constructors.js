@@ -157,4 +157,75 @@ Gallery.prototype.generateInspectorHTML = function(number) {
         </div>`
     }
 }
-//Gallery[1].unlock('lines')//be able to say this, causes data to be updated such that next time gallery is upened, instead of default description and hidden icon, the real image prints and the real description can be read once it's opened in the inspector window.
+//Gallery[1].unlock('lines')//be able to say this, causes data to be updated such that next time gallery is opened, instead of default description and hidden icon, the real image prints and the real description can be read once it's opened in the inspector window.
+
+function Music() {
+    this.songs = {};
+    this.currentSong = undefined;
+    this.maxVolume = 1;
+}
+let stillFading = false;
+Music.prototype.start = function(title,fadein,seconds) {
+    this.currentSong = this.songs[title];
+    if (fadein === false) {
+        this.songs[title].play();
+    } else if (fadein === true) {
+        this.fadeIn(seconds)
+    }
+}
+Music.prototype.addSong = function(title,url) {
+    this.songs[title] = new Audio(url);
+}
+Music.prototype.fadeOut = function(seconds) {
+    function fadeMusic(seconds,audioObject) {
+        let step = 0.05;
+        let timeout = seconds*1000;
+        function loop() {
+            setTimeout(()=>{
+                audioObject.volume -= step;
+                console.log(audioObject.volume)
+                if (audioObject.volume < 0) {
+                    audioObject.volume = 0;
+                }
+                if (audioObject.volume > 0) {
+                    stillFading = true;
+                    loop();
+                } else {
+                    stillFading = false;
+                    return;
+                }
+            },timeout)
+        }
+        loop();
+    }
+    fadeMusic(seconds,this.currentSong)
+}
+Music.prototype.fadeIn = function(seconds) {
+    function fadeMusic(seconds,audioObject) {
+        audioObject.volume = 0;
+        audioObject.play();
+        let step = 0.05;
+        let timeout = seconds*1000;
+        function loop(i) {
+            setTimeout(()=>{
+                audioObject.volume += step;
+                console.log(audioObject.volume)
+                if (audioObject.volume < 0) {
+                    audioObject.volume = 0;
+                }
+                if (audioObject.volume > this.maxVolume) {
+                    audioObject.volume = this.maxVolume;
+                }
+                if (audioObject.volume < this.maxVolume) {
+                    stillFading = true;
+                    loop(i+step);
+                } else {
+                    stillFading = false;
+                    return;
+                }
+            },timeout)
+        }
+        loop(0);
+    }
+    fadeMusic(seconds,this.currentSong)
+}

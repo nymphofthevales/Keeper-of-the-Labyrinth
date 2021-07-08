@@ -7,15 +7,15 @@
 }
 @font-face {
   font-family: "Libre Baskerville Regular";
-  src: url("./assets/Libre_Baskerville/LibreBaskerville-Regular.ttf");
+  src: url("./assets/fonts/Libre_Baskerville/LibreBaskerville-Regular.ttf");
 }
 @font-face {
   font-family: "Libre Baskerville Bold";
-  src: url("./assets/Libre_Baskerville/LibreBaskerville-Bold.ttf");
+  src: url("./assets/fonts/Libre_Baskerville/LibreBaskerville-Bold.ttf");
 }
 @font-face {
   font-family: "Libre Baskerville Italic";
-  src: url("./assets/Libre_Baskerville/LibreBaskerville-Italic.ttf");
+  src: url("./assets/fonts/Libre_Baskerville/LibreBaskerville-Italic.ttf");
 }
 ::selection {
   color: white !important;
