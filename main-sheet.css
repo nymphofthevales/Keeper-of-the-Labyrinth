@@ -35,6 +35,9 @@ p {
 i, em {
   font-family: "Libre Baskerville Italic", serif;
 }
+i em {
+  font-family: "Libre Baskerville Regular", serif;
+}
 strong {
   font-family: "Libre Baskerville Bold", serif;
 }
@@ -250,6 +253,7 @@ button:visited {
   z-index: 3;
   bottom: 130%;
   left: 10%;
+  pointer-events: none;
 }
 
 .tooltip:hover .tooltiptext {

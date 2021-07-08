@@ -64,14 +64,27 @@ freeCistern.addPage('I did it—I bested them all! I\'m free!<br><br>I feel my c
 freeCistern.addBatchPage(['When I look up at the ceiling of the cistern, there are no stars. No drifting lights to surround me, no warmth to reach out for. I am alone. Yet that aloneness does not feel as strange as it once did—I feel that I am beginning to know myself now; that I can choose who I am, can become what I will, whether other see me or not. Their words may bolster me, may inform me, but not define me.<br><br>I am not cold here—the waters which surround me are oddly warm, and I am buoyant in them. I feel safe.'],'next')
 freeCistern.setNext(tools);
 
+const drownedEndOnward = new StoryNode();
+drownedEndOnward.title="drownedEndOnward"
+drownedEndOnward.setText('Perhaps \'nothing\' is what I want. But I am awake. And I yet remain.<br><br>As much as I will it, it seems the labyrinth will not let me fade away. My task is not done. If anything, this is a part of it. Somehow, I find my resolve. Even if all is lost, the future doesn\'t have to be. This pain can\'t last forever. What else can I do?');
+
 const drownedEnd = new Sequence();
 drownedEnd.title="drownedEnd"
-//content tbd
+drownedEnd.addPage('I lie there on the stone, and wait.<br><br>I wait for the end to take me. I wait for a quiet end, a darkness to encroach once more. I wait for a violent blow, flashing from the shadows to do me in. I wait for some grand finale, some conclusion to it all, anything. I wait...','Wait');
+drownedEnd.addPage('','Wait');
+drownedEnd.addPage('','Wait');
+drownedEnd.addPage('But nothing comes.','next');
+drownedEnd.setNext(drownedEndOnward);
 
 const drownedContinue = new Sequence();
 drownedContinue.title="drownedContinue"
 drownedContinue.addPage('I drag myself out of the water and force myself to my feet. The mouth of the cave lies open before me.','enter');
 drownedContinue.addPage('It feels like it\'s unfinished somehow. Like the <span class="labyrinth-color">labyrinth</span> is still approaching its final form, still carving its walls here and the rough stone is only temporary. Like I\'m seeing something private.','continue');
+drownedContinue.setNext(Cave)
+
+drownedEndOnward.addOption('Go on',drownedContinue);
+drownedEndOnward.addOption('Go on.',drownedContinue);
+drownedEndOnward.addOption('<em>Go on.</em>',drownedContinue);
 
 const drowningNode = new StoryNode();
 drowningNode.title="drowningNode"
@@ -234,8 +247,8 @@ darkContemplation.setNext(pit)
 
 const darkIgnoreBench = new Sequence();
 darkIgnoreBench.title="darkIgnoreBench"
+darkIgnoreBench.addPage('I want to rest. I know I need it; every moment of every day I feel like I need it. But I don\'t want to stop—I find it impossible to stop my feet from carrying me forward.<br><br>I need to keep moving.','Continue');
 darkIgnoreBench.setNext(pit)
-//content tbd
 
 const darkBenchNode = new StoryNode();
 darkBenchNode.title="darkBenchNode"
@@ -652,6 +665,7 @@ darkApproachTree.setNext(darkTreeNode);
 
 const darkNoisesSecondChamberEntry = new Sequence();
 darkNoisesSecondChamberEntry.title = "darkNoisesSecondChamberEntry"
+//content tbd
 
 const darkNoisesGiveUp = new StoryNode();
 darkNoisesGiveUp.title="darkNoisesGiveUp"
@@ -736,28 +750,88 @@ mothNode.addOption('Let it land upon a finger',mothLands);
 mothNode.addOption('Ignore it',mothBurns);
 //--
 
-const leftDark2 = new Sequence();
-leftDark2.title="leftDark2"
-leftDark2.addPage('','');
-//content tbd
-leftDark2.setNext(mothNode);
-
 const leftDark1 = new Sequence();
 leftDark1.title="leftDark1"
-leftDark1.addPage('','');
+leftDark1.addPage('I push off into the void. My aura of light ripples out around me, revealing a void filled with wandering motes of dust. I feel that I too, am like those motes of dust, drifting through the dark and light, aimless.','Next');
+leftDark1.addPage('It calls me ever onward.','Take another step');
+leftDark1.addPage('On and on, spiraling forth in the sea, a whirlpool of shadow surrounding me.','Take another step');
+leftDark1.addPage('And then the strangest thing happens.','next');
 leftDark1.setNext(mothNode);
-//tbd
 
-const darkWindow = new Sequence();
-darkWindow.title="darkWindow"
-darkWindow.addPage('','');
+const windowIntersection = new StoryNode();
+windowIntersection.title="windowIntersection"
+windowIntersection.setText('I wander onward for a time, with the darkness feeling as if it\'s a presence around me. More than once I find myself stumbling, bumping into one of the walls of the labyrinth, as if it just appeared from the void. I\'m starting to get tired.<br><br>Soon, I come to an intersection; it takes the form of a Y, a narrow wedge pushing towards me from the dark, splitting the path in two. To the right, the darkness seems to shimmer. To the left, I see the shadow of some distant silhouette reaching over the labyrinth walls.');
+windowIntersection.addOption('Take the left fork',leftDark1);
+windowIntersection.addOption('Take the right fork',darkApproachTree);
+
+const windowContinue = new Sequence();
+windowContinue.title="windowContinue"
+windowContinue.addPage('I ignore it, and put another foot in front of me. It was probably nothing, after all.','Continue');
+windowContinue.setNext(windowIntersection);
+
+const windowWithdrawl = new Sequence();
+windowWithdrawl.title="windowWithdrawl"
+windowWithdrawl.addPage('I pull free of the wall. Nothing good could come of this. Shaking my hand out, I gather my candle and leave this curiosity behind me.','Continue')
+windowWithdrawl.setNext(windowIntersection)
+
+const windowLeftPush = new Sequence();
+windowLeftPush.title="windowLeftPush"
+windowLeftPush.addPage('I keep pushing, yearning for more, needing to find something profound here. I\'m up past my elbow now, the walls becoming a little tight and abrasive around my forearm.','Push on');
+windowLeftPush.addPage('I stoop to allow my arm to enter straighter, grasping into the dark as my bicep enters and I finally come up to my shoulder.<br><br>Then, in a flash, I feel a sharp and searing pain in my hand, as of fire, or fangs—something bit me!? What the fuck?','leap back')
+windowLeftPush.addBatchPage(['I rapidly disengage, bruising and scratching my arm as I pull it out of the hole roughly, and fall back to a seated position on the labyrinth floor. Looking down at my hand I see a mess of blood and in horror realize the tips of my middle and ring finger are gone.','The shock starting to fade, I cry out in pain, instinctively putting my wounds to my mouth, pressing my lips against the warm stubs of my fingers. My blood tastes salty-metal-sweet and I sit there a moment, holding the pressure, waiting, cursing myself, and clenching my jaw through the pain.','Finally, I tear a piece from my dress and wrap it, pulling the knot tight with my teeth. I pushed too far, and the labyrinth was quick to inform me of that fact.','I gather my candle and carry on, the blood soaking through the cloth.'],'next');
+
+const windowLeftNode = new StoryNode();
+windowLeftNode.title="windowLeftNode"
+windowLeftNode.setText('I adjust my arm in the tunnel. Is this narrow channel one of its original arteries, shrivelled with age? Or perhaps, is it a new one, a prototype that will grow into a new passage in time? If I can find this place again I\'ll be curious to watch it over the coming years of my service as Keeper.');
+windowLeftNode.addOption('Withdraw',windowWithdrawl);
+windowLeftNode.addOption('Keep pushing',windowLeftPush);
+
+const windowHandLeft = new Sequence();
+windowHandLeft.title="windowHandLeft"
+windowHandLeft.addBatchPage(['I place my candle upon the floor and shake out my arm, readying myself. After feeling around the mouth of the opening, I push my hand in slowly, sensing the edges of stone around me as I do. The sides are smooth but granular, probably composed more of mortar than of solid stone. Otherwise it would be quite difficult to construct such a straight and narrow tunnel, though of course, human hands did not build this.','The legends say the labyrinth built itself, block by block rising up from the beach of their own accord, the vision of itself realized with each new wall placed, each new arch drawn… It began as only a single chamber, though what was housed within none now know, or perhaps ever did know. This chamber then elongated and grew, becoming a passage, cleaving in two and winding around itself, one then two then four then eight then more, and more channels between snaking around themselves in the endless complexity only life can create.','Every year it grew, becoming more and more whole until finally it reached a form in which it was stable, a fixed point, a body to lie in. Yet still, it grows; grows within, shifting its passages every year, new connections, new chambers, new walls. Its walls heave and sigh and the labyrinth exhales its change into the winter air. It\'s a powerful thing. I realize I\'m privileged to be here, really, to be let inside.'],'next');
+windowHandLeft.setNext(windowLeftNode);
+
+const windowRightPush = new Sequence();
+windowRightPush.title="windowRightPush"
+windowRightPush.addBatchPage(['I keep pushing, up to shoulder depth, then feel around a bit. I can\'t go any deeper, but I don\'t seem to have reached anything significant either; no other side of the wall belied by empty space, no hidden object to take hold o—','Something grabs me.<br><br>.It grips my hand tight, clutched like a drowning man, and I cry out in pain and shock at the sudden squeeze. Then, it pulls, a gentle tug at first, then another fiercer, and I stumble, falling forward into it until I feel the edge of the alcove meet my armpit.'],'next');
+windowRightPush.addPage('Finally I waken from my horrified stupor and begin to fight back, bracing myself against the wall with my other arm and trying to pull. free. But it holds me fast. It wants me. It wants me to belong here.<br><br>The grip is warm, hot with blood, though whether it\'s mine or not I cannot tell.','<strong>Pull</strong>')
+windowRightPush.addBatchPage(['My knuckles rearrange themselves under the pressure, an osseous mutiny which leaves me reeling in pain. Blessedly, in doing so something slips, and that other hand loses its grip on me. I fly back with the pent up energy, my arm sliding from its place in the wall, and land on my back.','My hand feels strange, aching and damaged. When I try to clench it, it will not gather strength. I look down at it, trying to see what\'s wrong with it, turning it over in the dim light, and see bloody marks like fingernails driven into my skin from the grasp. I shake it off. Nothing I can do for it now; I\'ll treat it when I get back to the village.'],'next');
+windowRightPush.addPage('My candle, long since forgotten, burns dimly on its side at the base of the wall.','Gather it and carry on');
+
+const windowRightNode = new StoryNode();
+windowRightNode.title="windowRightNode"
+windowRightNode.setText('I keep pushing, up past my elbow, until I have to crouch slightly to make the angle work. What the hell is this? It seems from the arched outline that it was purposefully constructed, not just a gap—this shows too in the sensation of it, the interior having a relatively straight passage, and not too rough nor claustrophobic. In fact, it fits my arm almost perfectly. As if it was made for me.');
+windowRightNode.addOption('Withdraw',);
+windowRightNode.addOption('Keep pushing',windowRightPush);
+
+const windowHandRight = new Sequence();
+windowHandRight.title="windowHandRight"
+windowHandRight.addBatchPage(['I set down my candle and steel myself, flexing my fingers involuntarily. Here goes nothing.','My fingers creep through the opening and I feel the stone surprisingly smooth against my skin as I push deeper. It seems to go on forever.'],'next');
+windowHandRight.setNext(windowRightNode);
+
+const windowHandNode = new StoryNode();
+windowHandNode.title="windowHandNode"
+windowHandNode.setText('I bring my face close and peer in. Perhaps there\'s something deep inside where I could reach?<br><br>Which hand?');
+windowHandNode.addOption('Left',windowHandLeft);
+windowHandNode.addOption('Right',windowHandRight);
+
+const windowPlaceCandle = new Sequence();
+windowPlaceCandle.title="windowPlaceCandle"
+windowPlaceCandle.addBatchPage(['','',''],'');
+windowPlaceCandle.setNext(windowIntersection);
 //content tbd
 
-const rightDark2 = new Sequence();
-rightDark2.title="rightDark2"
-rightDark2.addPage('','');
-rightDark2.setNext(darkWindow);
-//tbd
+const windowNode = new StoryNode();
+windowNode.title="windowNode"
+windowNode.setText('I lean forward, casting my candle\'s aura upon the wall. It reveals what looks like a miniature archway set into the stone at about chest-height, no more than a handspan in diameter. This little alcove, or shelf, or window, whatever it may be, pushes deep into the wall, fading into obscurity.');
+windowNode.addOption('Reach in a hand',windowHandNode);
+windowNode.addOption('Place a candle within it',windowPlaceCandle);
+
+const darkWindow = new StoryNode();
+darkWindow.title="darkWindow"
+darkWindow.setText('The pattern breaks: my hand strikes something in the gloom—a hole in the wall, perhaps, a larger gap in the stones.');
+darkWindow.addOption('Shine your light upon it',windowNode);
+darkWindow.addOption('Keep walking',windowContinue);
 
 const rightDark1 = new Sequence();
 rightDark1.title="rightDark1"
@@ -767,24 +841,25 @@ rightDark1.setNext(darkWindow);
 const deadEnd = new StoryNode();
 deadEnd.title="deadEnd";
 deadEnd.setText('A wall emerges out of the darkness, directly in front of me.');
-deadEnd.addOption('Follow it to the left',leftDark2);
-deadEnd.addOption('Follow it to the right',rightDark2);
+deadEnd.addOption('Follow it to the left',leftDark1);
+deadEnd.addOption('Follow it to the right',rightDark1);
 
 const corpsesContinue = new Sequence();
 corpsesContinue.title="corpsesContinue"
-//content tbd
+corpsesContinue.addPage('I keep walking. I\'m likely better off not knowing what lay there.','Step forth')
 corpsesContinue.setNext(deadEnd);
 
-const corpseContemplation = new StoryNode();
+const corpseContemplation = new Sequence();
 corpseContemplation.title="corpseContemplation"
-corpseContemplation.addBatchPage(['','','','','','',''],'');
+corpseContemplation.addBatchPage(['The passage is short, terminating in a bulbous alcove about ten paces in. At the base of the curved wall, there is a pit dug, six feet deep, and it\'s piled with bones. Animal bones, large and small:<br>the pelvis of some huge animal, a bear, a horse;<br>a bird skull, floating to the top of the mound;<br>a handful of knucklebones;<br>a human skull, staring right back at me.','Sometimes I wonder about the end. With these bones before me, I cannot help but conjure the same thoughts.','Before I know it, I am holding the skull in my hands. <i>This was a person, once.</i><br>I know.<br><i>No. You don\'t understand.</i>','<i>This was a person once.<br>This was you.<br><br>This was your father, your mother, your sister, your brother,<br>this was <em>you</em>.</i>','<i>This skull was the selfsame saint that cried for your soul, <br>the one in your hearth that brought you light,<br>the friend who you missed with all your heart<br>when you no longer knew where they were,<br>no longer knew who they were,<br>who missed you, too.</i>','<i>This skull was your lover,<br>waiting on the other shore,<br>your rival who gave you the will to live<br>through their competition,<br>this skull was a stranger.</i>','<i>It was the man across the street who you never knew,<br>but who went for a walk every morning,<br>and sometimes you saw him bathed in the light,<br>and smiling for some secret reason not yours to know.</i>','<i>It was the foreigner in a far-off city<br>where you didn\'t even know <br>what the sunsets looked like.</i>','<i>And it hated you,<br>and loved you,<br>all the same.</i>','<i>This skull was everyone—<br>it was you.</i>','<i>It <em>will</em> be you.<br>What stranger will hold yours in their hands<br>wondering the same,<br>when your time comes?<br><br>How will the emptiness of your skull fill their mind?<br>How will they grieve for you, the skull they never knew?<br>How will they grieve themselves, reflected in your onyx eye sockets?'],'next');
+corpseContemplation.addPage('I hold it for an eternal moment, standing there in the dim glow. The bone is smooth and clean in my hands.<br><br>It does not weep. Will I, in their stead?','Return the skull')
 corpseContemplation.setNext(deadEnd);
 
 const corpseNode = new StoryNode();
 corpseNode.title="corpseNode";
 corpseNode.setText('The passageway it reaches out of lies shrouded in darkness.');
 corpseNode.addOption('Enter',corpseContemplation);
-corpseNode.addOption('','');
+corpseNode.addOption('Leave it.',corpsesContinue);
 
 const corpsesLook = new Sequence();
 corpsesLook.title="corpsesLook"
@@ -962,7 +1037,7 @@ NobodyWall.addOption('Straight',ApproachWall);
 
 const BridgeWall = new Sequence();
 BridgeWall.title="BridgeWall"
-BridgeWall.addBatchPage(['There is one fundamental difference between what we call a maze and what we call a <span class="labyrinth-color">labyrinth</span>:<br><br>A maze is a puzzle, intended to baffle and confuse, with dead ends and falsehoods.<br><br>Whereas a <span class="labyrinth-color">labyrinth</span> is a journey. A meditation. A <span class="labyrinth-color">labyrinth</span> intends to bring us from one place to another; no matter what comes, there is no risk of becoming truly lost here. But what it does, along the way, like any journey, is change us. One cannot emerge from a <span class="labyrinth-color">labyrinth</span> the same person they were when they entered.<br><br>Who will I be, when my work is done?','Who am I now? Do I even <em>know?</em><br><br>Have I ever?','All I <em>do</em> know now, is that I must do my job. I try to lose myself in my task, focus only on the steady soft impact of each footfall on the stone beneath me, feel the way the leather of my boots creases around my ankle with each bend, dedicate my mind to contemplating the form of the halls through which I have passed so far and those to come.<br><br>But it isn\'t enough.','The great veins of this place stretch out around me such that in my mind the only shape they can take is of a body, it\'s limbs curled around itself as of one in the womb, lying cold upon the shore.<br><br>And when I see this body of the <span class="labyrinth-color">labyrinth</span> in my mind, I see too the vastness within, and my position not level upon the hard ground but rather drifting, floating, and there is no ground, nor walls nor sky; I am surrounded only by burning points of light which dance and flicker around me in the dark.','I reach out to one and feel its warmth briefly upon my skin and it is beautiful and I want to stay and revel in its warmth forever for it is so—<br><br>Then I open my eyes, and see once more the clouded sky above me. I am alone here.','But there is something more in that aloneness; it can only be defined in contrast to something else, no shadow without light, no self without others. I am alone, but only because of the love I have had in the past, the warmth of my village and home. If I had never had it I could not miss it, or would not know what to miss.<br><br>Who am I now, alone? How can I know?','In past, I knew myself through the mirror of others; they would say:<br><br>\"Good, you worked hard today.\"<br><br>\"You\'re just a child. What do you know?\"<br><br>\"You\'re very brave. I\'m proud of you.\"<br><br>\"No-one will want you if you act like that.\"<br><br>\"You are the sun, my dear.\"<br><br>\"You\'re useless. Fuck off.\"<br><br>And only through their words, their expectations and assumptions, would I know what I was. I would be <em>shaped</em> to be what I was. It is these words and more which formed me, like a sculptor turning clay; how could it be otherwise? An eye cannot see inside itself.'],'Next');
+BridgeWall.addBatchPage(['There is one fundamental difference between what we call a maze and what we call a <span class="labyrinth-color">labyrinth</span>:<br><br>A maze is a puzzle, intended to baffle and confuse, with dead ends and falsehoods.<br><br>Whereas a <span class="labyrinth-color">labyrinth</span> is a journey. A meditation. A <span class="labyrinth-color">labyrinth</span> intends to bring us from one place to another; no matter what comes, there is no risk of becoming truly lost here. But what it does, along the way, like any journey, is change us. One cannot emerge from a <span class="labyrinth-color">labyrinth</span> the same person they were when they entered.<br><br>Who will I be, when my work is done?','Who am I now? Do I even <em>know?</em><br><br>Have I ever?','All I <em>do</em> know now, is that I must do my job. I try to lose myself in my task, focus only on the steady soft impact of each footfall on the stone beneath me, feel the way the leather of my boots creases around my ankle with each bend, dedicate my mind to contemplating the form of the halls through which I have passed so far and those to come.<br><br>But it isn\'t enough.','The great veins of this place stretch out around me such that in my mind the only shape they can take is of a body, it\'s limbs curled around itself as of one in the womb, lying cold upon the shore.<br><br>And when I see this body of the <span class="labyrinth-color">labyrinth</span> in my mind, I see too the vastness within, and my position not level upon the hard ground but rather drifting, floating, and there is no ground, nor walls nor sky; I am surrounded only by burning points of light which dance and flicker around me in the dark.','I reach out to one and feel its warmth briefly upon my skin and it is beautiful and I want to stay and revel in its warmth forever for it is so—<br><br>Then I open my eyes, and see once more the clouded sky above me. I am alone here.','But there is something more in that aloneness; it can only be defined in contrast to something else, no shadow without light, no self without others. I am alone, but only because of the love I have had in the past, the warmth of my village and home. If I had never had it I could not miss it, or would not know what to miss.<br><br>Who am I now, alone? How can I know?','In past, I knew myself through the mirror of others; they would say:<br><br>\"Good, you worked hard today.\"<br>And I would know I was hard-working, a steady sort.','They would say:<br><br>\"You\'re just a child. What do you know?\"<br>And I would know that I was foolish, and dumb, and small.','They would say:<br><br>\"You\'re very brave. I\'m proud of you.\"<br>And I would be brave. I would be strong.','They would say:<br><br>\"No-one will want you if you act like that.\"<br>And no-one did, or so I convinced myself.','They would say:<br><br>\"You are the sun, my dear.\"<br>And I was light. Oh, gods, I was light.','They would say:<br><br>\"You\'re useless. Fuck off.\"<br>And I knew it. But it hurt.','And only through their words, their expectations and assumptions, would I know what I was. I would be <em>shaped</em> to be what I was. It is these words and more which formed me, like a sculptor turning clay; how could it be otherwise? An eye cannot see inside itself.'],'Next');
 BridgeWall.setNext(NobodyWall);
 
 const LProper = new Sequence();
@@ -1100,7 +1175,7 @@ intro.setNext(enter);
 
 //upload gallery images
 const mainGallery = new Gallery();
-//format: numerical identifier, unlocked, title, description, url, has shadow (functionality tbd for shadow + parallax)
+//format: numerical identifier, unlocked, title, description, url, has shadow (functionality for shadow + parallax not done yet)
 mainGallery.addItem(0,true,'The Labyrinth','Its twisting passages hearken.','./assets/labyrinth_logo.png',false)
 mainGallery.addItem(1,true,'The Labyrinth Gate','It watches your approach carefully.','./assets/labyrinth_gate.png',true)
 mainGallery.addItem(2,true,'The Obelisk','It serves my same purpose; to watch the changes in the <span class="labyrinth-color">labyrinth</span>, and know the secrets within.','./assets/obelisk.png',true)
