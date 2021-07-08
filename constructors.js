@@ -161,21 +161,21 @@ Gallery.prototype.generateInspectorHTML = function(number) {
 
 function Music() {
     this.songs = {};
-    this.currentSong = undefined;
-    this.maxVolume = (2*options.volume)/100;
+    this._currentSong = undefined;
+    this._maxVolume = (2*options.volume)/100;
     this.currentlyPlaying = false;
 }
 let stillFading = false;
 Music.prototype.start = function(title,fadein,seconds) {
     if (options.enableMusic === true) {
         this.currentlyPlaying = true;
-        this.currentSong = this.songs[title];
-        this.currentSong.currentTime = 0;
+        this._currentSong = this.songs[title];
+        this._currentSong.currentTime = 0;
         if (fadein === false) {
-            this.songs[title].volume = this.maxVolume;
+            this.songs[title].volume = this._maxVolume;
             this.songs[title].play();
         } else if (fadein === true) {
-            this.fadeIn(seconds)
+            this._fadeIn(seconds)
         }
     } else if (options.enableMusic === false){
         console.log('music disabled')
@@ -211,11 +211,11 @@ Music.prototype.fadeOut = function(seconds) {
         }
         loop();
     }
-    fadeMusic(seconds,this.currentSong)
+    fadeMusic(seconds,this._currentSong)
     this.currentlyPlaying = false;
 }
-Music.prototype.fadeIn = function(seconds) {
-    let target = this.maxVolume;
+Music.prototype._fadeIn = function(seconds) {
+    let target = this._maxVolume;
     function fadeMusic(seconds,audioObject) {
         audioObject.volume = 0;
         audioObject.play();
@@ -241,5 +241,5 @@ Music.prototype.fadeIn = function(seconds) {
         }
         loop(0);
     }
-    fadeMusic(seconds,this.currentSong)
+    fadeMusic(seconds,this._currentSong)
 }
