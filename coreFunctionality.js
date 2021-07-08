@@ -512,21 +512,27 @@ document.getElementById('license-button-2').addEventListener('click',()=>{
     manageOverlays('show','font-license-2')
 })
 
-
-//manage options
-function setOptions() {
-    //manage text
-    let textOptions = [
+function getTextInputReferences() {
+    return [
         document.getElementById('small-text'),
         document.getElementById('default-text'),
         document.getElementById('medium-text'),
         document.getElementById('large-text'),
     ]
+}
+//manage options
+function manageTextOptions() {
     let textStylesheets = [
         document.getElementById('small-style'),
         document.getElementById('default-style'),
         document.getElementById('medium-style'),
         document.getElementById('large-style')
+    ]
+    let textOptions = [
+        document.getElementById('small-text'),
+        document.getElementById('default-text'),
+        document.getElementById('medium-text'),
+        document.getElementById('large-text'),
     ]
     for (let a=0; a<textStylesheets.length; a++) {
         if (textOptions[a].checked !== true) {
@@ -535,22 +541,51 @@ function setOptions() {
             textStylesheets[a].disabled = false;
         }
     }
-    let booleanOptions = ['warnings','music','parallax']
-    for (let i=0; i<booleanOptions.length; i++) {
-        let template = 'enable' + capitalize(booleanOptions[i]);
-        if (document.getElementById(`${booleanOptions[i]}-off`).checked === true) {
-            options[template] = false;
-        } else if (document.getElementById(`${booleanOptions[i]}-on`).checked === true) {
-            options[template] = true;
-        }
-    }
 }
+document.getElementById(`small-text`).addEventListener('change',()=>{
+    manageTextOptions();
+})
+document.getElementById(`default-text`).addEventListener('change',()=>{
+    manageTextOptions();
+})
+document.getElementById(`medium-text`).addEventListener('change',()=>{
+    manageTextOptions();
+})
+document.getElementById(`large-text`).addEventListener('change',()=>{
+    manageTextOptions();
+})
 
+
+document.getElementById(`music-off`).addEventListener('mouseup',()=>{
+    mainMusic.currentSong.pause();
+    options['enableMusic'] = false;
+})
+document.getElementById(`music-on`).addEventListener('mouseup',()=>{
+    if (mainMusic.currentlyPlaying === true) {
+        mainMusic.currentSong.play();
+    }
+    options['enableMusic'] = true;
+})
 let volumeInput = document.getElementById('volume-slider')
 volumeInput.addEventListener('mouseup',()=>{
     options.volume = volumeInput.value;
+    mainMusic.maxVolume = (2*options.volume)/100;
+    mainMusic.currentSong.volume = (2*options.volume)/100;
 })
-document.getElementById('submit-options').addEventListener('click',setOptions)
+document.getElementById(`warnings-off`).addEventListener('mouseup',()=>{
+    options['enableWarnings'] = false;
+})
+document.getElementById(`warnings-on`).addEventListener('mouseup',()=>{
+    options['enableWarnings'] = true;
+})
+
+document.getElementById(`parallax-off`).addEventListener('mouseup',()=>{
+    options['enableParallax'] = false;
+})
+document.getElementById(`parallax-on`).addEventListener('mouseup',()=>{
+    options['enableParallax'] = true;
+})
+//document.getElementById('submit-options').addEventListener('click',setOptions)
 
 function populateGallery(gallery) {
     let frame = document.getElementById('gallery-frame');
@@ -578,9 +613,3 @@ function setGalleryBackButton() {
         setGalleryListeners();
     })
 }
-
-
-//audio system
-const mainMusic = new Music();
-mainMusic.maxVolume = (2*options.volume)/100;
-mainMusic.addSong('exploration',"./assets/music/exploration.m4a")

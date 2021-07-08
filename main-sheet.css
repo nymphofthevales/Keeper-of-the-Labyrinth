@@ -393,7 +393,7 @@ button:visited {
 }
 fieldset {
   border: 1px solid white;
-  padding: 10px;
+  padding: 10px 10px 20px 10px;
   margin: 20px auto;
 }
 legend {
@@ -425,6 +425,9 @@ input[type=button]:active, input[type=submit]:active {
 }
 input {
   filter: hue-rotate(60deg);
+}
+#volume-slider {
+  width: 40%;
 }
 
 #content-warning-preview {

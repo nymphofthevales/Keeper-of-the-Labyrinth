@@ -147,19 +147,19 @@
             <form id="options-form" action="javascript:void(0);">
                 <fieldset id="text-size-form-field">
                     <legend>Text size</legend>
-                    <input type="radio" id="small-text" value="small-text" name="text">
-                    <label for="small-text">Small</label>
-                    <input type="radio" id="default-text" value="default-text" name="text" checked>
-                    <label for="default-text">Default</label>
-                    <input type="radio" id="medium-text" value="medium-text" name="text">
-                    <label for="medium-text">Medium</label>
-                    <input type="radio" id="large-text" value="large-text" name="text">
-                    <label for="large-text">Large</label>
+                    <div id="text-size-selectors">
+                        <input type="radio" id="small-text" value="small-text" name="text">
+                        <label for="small-text">Small</label>
+                        <input type="radio" id="default-text" value="default-text" name="text" checked>
+                        <label for="default-text">Default</label>
+                        <input type="radio" id="medium-text" value="medium-text" name="text">
+                        <label for="medium-text">Medium</label>
+                        <input type="radio" id="large-text" value="large-text" name="text">
+                        <label for="large-text">Large</label>
+                    </div>
                     <div>
-                        <p style="font-size:1.5vh;">Small: The ice of the bay stretches out endlessly before the jagged black slate beach.</p>
-                        <p style="font-size:1.8vh;">Default: The ice of the bay stretches out endlessly before the jagged black slate beach.</p>
-                        <p style="font-size:2vh;">Medium: The ice of the bay stretches out endlessly before the jagged black slate beach.</p>
-                        <p style="font-size:2.5vh;">Large: The ice of the bay stretches out endlessly before the jagged black slate beach.</p>
+                        <p>Sample text:</p>
+                        <p>No such thing as light nor shadow, just shades of grey blending together until suddenly what you thought <em>was</em> is something else. Blurred shapes darting through your periphery. Despite this, we have to delineate these boundaries. Obelisk in the woods, talisman on the door, walls drawing the line around our little village. It keeps us safe. Keeps what's out there, there, and what's here, here. Even if it is abstract.</p>
                     </div>
                 </fieldset>
                 <fieldset id="music-form-field">
@@ -202,8 +202,8 @@
                         </div>
                     </div>
                 </fieldset>
-                <input type="submit" id="submit-options" value="Save options">
-                <p id="save-notice">Your progress ingame will always be saved automatically unless the application is force quit or crashed. If you have a save, you will be asked upon entering if you want to load it or start from the beginning.</p>
+                <input type="submit" id="submit-options" value="Save options" class="invisible">
+                <p id="save-notice">Note: Your progress ingame will always be saved automatically unless the application is force quit or crashed. If you have a save, you will be asked upon entering if you want to load it or start from the beginning.</p>
             </form>
         </main>
     </div>

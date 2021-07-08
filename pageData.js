@@ -1192,3 +1192,11 @@ mainGallery.addItem(11,true,'Ritual of Wands','I am capable of, and bound to, ch
 mainGallery.addItem(12,true,'The Moth','Perhaps to end in a conflagration of light is better than to end alone in the darkness.','./assets/moth.png',true)
 mainGallery.addItem(13,true,'The Crow','Perhaps it did speak, but only in signs, in gaze and gesture, in feather and beak, in imagination, in silence.','./assets/crow.png',true)
 mainGallery.addItem(14,true,'The Watching Masks','How could we know her until she chooses to know herself?','./assets/watching_mask.png',true)
+
+//upload music files
+const mainMusic = new Music();
+mainMusic.addSong('exploration',"./assets/music/exploration.m4a")
+mainMusic.addSong('egress',"./assets/music/bright_thing.m4a")
+mainMusic.addSong('horror',"./assets/music/horror_scene.m4a")
+mainMusic.addSong('mysterious',"./assets/music/mysterious.m4a")
+mainMusic.addSong('rippling',"./assets/music/rippling.m4a")
