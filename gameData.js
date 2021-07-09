@@ -793,7 +793,7 @@ windowHandLeft.setNext(windowLeftNode);
 
 const windowRightPush = new Sequence();
 windowRightPush.title="windowRightPush"
-windowRightPush.addBatchPage(['I keep pushing, up to shoulder depth, then feel around a bit. I can\'t go any deeper, but I don\'t seem to have reached anything significant either; no other side of the wall belied by empty space, no hidden object to take hold o—','Something grabs me.<br><br>.It grips my hand tight, clutched like a drowning man, and I cry out in pain and shock at the sudden squeeze. Then, it pulls, a gentle tug at first, then another fiercer, and I stumble, falling forward into it until I feel the edge of the alcove meet my armpit.'],'next');
+windowRightPush.addBatchPage(['I keep pushing, up to shoulder depth, then feel around a bit. I can\'t go any deeper, but I don\'t seem to have reached anything significant either; no other side of the wall belied by empty space, no hidden object to take hold o—','Something grabs me.<br><br>It grips my hand tight, clutched like a drowning man, and I cry out in pain and shock at the sudden squeeze. Then, it pulls, a gentle tug at first, then another fiercer, and I stumble, falling forward into it until I feel the edge of the alcove meet my armpit.'],'next');
 windowRightPush.addPage('Finally I waken from my horrified stupor and begin to fight back, bracing myself against the wall with my other arm and trying to pull. free. But it holds me fast. It wants me. It wants me to belong here.<br><br>The grip is warm, hot with blood, though whether it\'s mine or not I cannot tell.','<strong>Pull</strong>')
 windowRightPush.addBatchPage(['My knuckles rearrange themselves under the pressure, an osseous mutiny which leaves me reeling in pain. Blessedly, in doing so something slips, and that other hand loses its grip on me. I fly back with the pent up energy, my arm sliding from its place in the wall, and land on my back.','My hand feels strange, aching and damaged. When I try to clench it, it will not gather strength. I look down at it, trying to see what\'s wrong with it, turning it over in the dim light, and see bloody marks like fingernails driven into my skin from the grasp. I shake it off. Nothing I can do for it now; I\'ll treat it when I get back to the village.'],'next');
 windowRightPush.addPage('My candle, long since forgotten, burns dimly on its side at the base of the wall.','Gather it and carry on');
@@ -1200,3 +1200,4 @@ mainMusic.addSong('egress',"./assets/music/bright_thing.m4a")
 mainMusic.addSong('horror',"./assets/music/horror_scene.m4a")
 mainMusic.addSong('mysterious',"./assets/music/mysterious.m4a")
 mainMusic.addSong('rippling',"./assets/music/rippling.m4a")
+mainMusic.addSong('falling',"./assets/music/falling.m4a")

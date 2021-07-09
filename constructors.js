@@ -8,6 +8,14 @@
 let SequenceInstances = [];
 let StoryNodeInstances = [];
 
+let options = {
+    textSize: 'default',
+    enableMusic: true,
+    volume: 25,
+    enableParallax: true,
+    enableWarnings: false
+}
+
 function capitalize(s) {
     return s.charAt(0).toUpperCase() + s.slice(1);
 }
@@ -166,20 +174,26 @@ function Music() {
     this.currentlyPlaying = false;
 }
 let stillFading = false;
+let stopFadeOut = false;
+let stopFadeIn = false;
 Music.prototype.start = function(title,fadein,seconds) {
-    if (options.enableMusic === true) {
-        this.currentlyPlaying = true;
-        this._currentSong = this.songs[title];
-        this._currentSong.currentTime = 0;
-        if (fadein === false) {
-            this.songs[title].volume = this._maxVolume;
-            this.songs[title].play();
-        } else if (fadein === true) {
-            this._fadeIn(seconds)
+    if (stillFading === true) {
+        setTimeout(()=>{this.start(title,fadein,seconds)},50)
+    } else {
+        if (options.enableMusic === true) {
+            this.currentlyPlaying = true;
+            this._currentSong = this.songs[title];
+            this._currentSong.currentTime = 0;
+            if (fadein === false) {
+                this.songs[title].volume = this._maxVolume;
+                this.songs[title].play();
+            } else if (fadein === true) {
+                this._fadeIn(seconds)
+            }
+        } else if (options.enableMusic === false){
+            console.log('music disabled')
+            return false;
         }
-    } else if (options.enableMusic === false){
-        console.log('music disabled')
-        return false;
     }
 }
 Music.prototype.addSong = function(title,url) {
@@ -187,23 +201,24 @@ Music.prototype.addSong = function(title,url) {
 }
 Music.prototype.fadeOut = function(seconds) {
     function fadeMusic(seconds,audioObject) {
-        let timeout = 500;
+        let timeout = 50;
         let step = (audioObject.volume/seconds)*(timeout/1000);
         console.log(step)
         function loop() {
             setTimeout(()=>{
+                stopFadeIn = true;
                 if (audioObject.volume - step < 0) {
                     audioObject.volume = 0;
                 } else {
                     audioObject.volume -= step;
                 }
                 console.log(audioObject.volume)
-                if (audioObject.volume > 0) {
+                if (audioObject.volume > 0 && stopFadeOut === false) {
                     stillFading = true;
                     loop();
                 } else {
                     stillFading = false;
-                    audioObject.muted = true;
+                    stopFadeIn = false;
                     audioObject.pause();
                     return;
                 }
@@ -219,22 +234,24 @@ Music.prototype._fadeIn = function(seconds) {
     function fadeMusic(seconds,audioObject) {
         audioObject.volume = 0;
         audioObject.play();
-        let timeout = 500;
+        let timeout = 50;
         let step = (target/seconds)*(timeout/1000);
         console.log(step)
         function loop(i) {
             setTimeout(()=>{
+                stopFadeOut = true;
                 console.log(audioObject.volume)
                 if (audioObject.volume + step > 1 || audioObject.volume + step > target) {
                     audioObject.volume = target;
                 } else {
                     audioObject.volume += step;
                 }
-                if (audioObject.volume < target) {
+                if (audioObject.volume < target && stopFadeIn === false) {
                     stillFading = true;
                     loop(i+step);
                 } else {
                     stillFading = false;
+                    stopFadeOut = false;
                     return;
                 }
             },timeout)

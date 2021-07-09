@@ -31,7 +31,7 @@ let specialPages = [
     {
         pageObject: obelisk, 
         action: function() {
-            manageImage('print','top','./assets/obelisk.png');
+            manageImage('print','./assets/obelisk.png');
             inventory.removeOption('Examine the obelisk',obelisk);
             if (visited.includes('inventory') === true) {
                 obelisk.addOption('Light a candle',CandleAnte);
@@ -45,13 +45,13 @@ let specialPages = [
     {
         pageObject: castRunes, 
         action: function() {
-            manageImage('print','top','./assets/runes.png')
+            manageImage('print','./assets/runes.png')
         }
     },
     {
         pageObject: readRunes, 
         action: function() {
-            manageImage('print','top','./assets/runes.png');
+            manageImage('print','./assets/runes.png');
             if (visited.includes('obelisk') === true && visited.includes('inventory') === true && visited.includes('finishCandleAnte') === true && visited.includes('readRunes') === true) {
                 actionFinishedAnte();
             }
@@ -60,7 +60,7 @@ let specialPages = [
     {
         pageObject: CandleAnte, 
         action: function() {
-            manageImage('print','top','./assets/candles.png')
+            manageImage('print','./assets/candles.png')
             if (visited.includes('obelisk') === true && visited.includes('inventory') === true && visited.includes('finishCandleAnte') === true && visited.includes('readRunes') === true) {
                 actionFinishedAnte();
             }
@@ -69,19 +69,19 @@ let specialPages = [
     {
         pageObject: finishCandleAnte, 
         action: function() {
-            manageImage('print','top','./assets/candles.png')
+            manageImage('print','./assets/candles.png')
         }
     },
     {
         pageObject: Lines, 
         action: function() {
-            manageImage('print','top','./assets/chalk.png');
+            manageImage('print','./assets/chalk.png');
         }
     },
     {
         pageObject: Wands, 
         action: function() {
-            manageImage('print','top','./assets/wand.png');
+            manageImage('print','./assets/wand.png');
         }
     },
     {
@@ -268,9 +268,9 @@ let specialPages = [
         }
     },
     {
-        pageObject: 'object', 
+        pageObject: straightDark1, 
         action: function() {
-
+            mainMusic.start('horror',true,5);
         }
     },
     {
@@ -278,7 +278,7 @@ let specialPages = [
         action: function(current) {
             let content = ['Accidental injury','Suicidal ideation']
             sendPopup('warning',content,current,true);
-            console.log('tried to send warning from falling')
+            mainMusic.start('falling',true,5);
         }
     },
 

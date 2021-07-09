@@ -17,15 +17,6 @@ let ingameMenuOpen = false;
 let savedPageInstance = intro;
 let page = 0;
 
-//options
-let options = {
-    textSize: 'default',
-    enableMusic: true,
-    volume: 25,
-    enableParallax: true,
-    enableWarnings: false
-}
-
 ipcRenderer.send('requestSaveData')
 console.log('requesting save data...')
 
@@ -83,7 +74,7 @@ function print(data,current) {
         listen(btnRefs,current);
     }
 };
-function manageImage(action,location,url) {
+function manageImage(action,url,location) {
     let frame = document.getElementById('image-frame');
     if (action === 'print') {
         let img = document.createElement('img');
@@ -297,6 +288,7 @@ function sendPopup(type,content,current,backUpAble) {
                             }
                         }
                     }
+                    mainMusic.fadeOut(3);
                     popup.classList.add('invisible');
                 })
             } else if (backUpAble === false) {
@@ -557,20 +549,20 @@ document.getElementById(`large-text`).addEventListener('change',()=>{
 
 
 document.getElementById(`music-off`).addEventListener('mouseup',()=>{
-    mainMusic.currentSong.pause();
+    mainMusic._currentSong.pause();
     options['enableMusic'] = false;
 })
 document.getElementById(`music-on`).addEventListener('mouseup',()=>{
     if (mainMusic.currentlyPlaying === true) {
-        mainMusic.currentSong.play();
+        mainMusic._currentSong.play();
     }
     options['enableMusic'] = true;
 })
 let volumeInput = document.getElementById('volume-slider')
 volumeInput.addEventListener('mouseup',()=>{
     options.volume = volumeInput.value;
-    mainMusic.maxVolume = (2*options.volume)/100;
-    mainMusic.currentSong.volume = (2*options.volume)/100;
+    mainMusic._maxVolume = (2*options.volume)/100;
+    mainMusic._currentSong.volume = (2*options.volume)/100;
 })
 document.getElementById(`warnings-off`).addEventListener('mouseup',()=>{
     options['enableWarnings'] = false;
