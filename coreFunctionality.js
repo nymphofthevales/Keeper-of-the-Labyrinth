@@ -75,14 +75,29 @@ function print(data,current) {
     }
 };
 function manageImage(action,url,location) {
-    let frame = document.getElementById('image-frame');
+    let frame;
     if (action === 'print') {
         let img = document.createElement('img');
-        frame.appendChild(img).id = 'currentImg';
-        let currentImage = document.getElementById('currentImg');
-        currentImage.src = url;
+        if (location === undefined || location === 'positive') {
+            frame = document.getElementById('image-positive');
+            frame.appendChild(img).id = 'currentPosImg';
+            let currentImage = document.getElementById('currentPosImg');
+            currentImage.src = url;
+            //currentImage.style.top = `${-(currentImage.offsetHeight/2)}px`
+            console.log(`${-(currentImage.offsetHeight/2)}px`)
+            setTimeout(()=>{currentImage.style.top = `${-(document.getElementById('currentPosImg').offsetHeight/2)}px`},10000)
+        } else if (location === 'negative') {
+            frame = document.getElementById('image-negative')
+            frame.appendChild(img).id = 'currentNegImg';
+            let currentImage = document.getElementById('currentNegImg');
+            currentImage.src = url;
+            //currentImage.style.top = `${+(currentImage.offsetHeight/2)}px`
+            setTimeout(()=>{console.log(`${+(currentImage.offsetHeight/2)}px`)},10000);
+            setTimeout(()=>{currentImage.style.top = `${+(document.getElementById('currentNegImg').offsetHeight/2)}px`},10000)
+        }
     } else if (action === 'remove') {
-        frame.innerHTML = '';
+        document.getElementById('image-negative').innerHTML = '';
+        document.getElementById('image-positive').innerHTML = '';
     }
 };
 function clearFocus() {
@@ -253,7 +268,7 @@ function sendPopup(type,content,current,backUpAble) {
     warningFrame.classList.add('invisible')
     if (type === 'load') {
         document.getElementById('popup-yes').addEventListener('click',()=>{
-            loadPage(savedPageInstance,0);
+            loadPage(savedPageInstance,page);
             popup.classList.add('invisible');
             runLoadingSequence();
             document.getElementById('main-menu-overlay').classList.add('invisible');
@@ -283,8 +298,12 @@ function sendPopup(type,content,current,backUpAble) {
                     for (let i = 1; i <=visited.length; i++) {
                         for (let j=1; j<=StoryNodeInstances.length; j++) {
                             if (StoryNodeInstances[StoryNodeInstances.length-j].title === visited[visited.length-i]) {
+                                    for (let i=0; i<visited.length ; i++) {
+                                        if (visited[i] === current.title) {
+                                            visited.splice(i,1);
+                                        }
+                                    }
                                     loadPage(StoryNodeInstances[StoryNodeInstances.length-j],0)
-                                    //needs to modify visited array to disclude avoided sequence
                             }
                         }
                     }
@@ -378,6 +397,30 @@ document.addEventListener('mousemove', (e)=>{
         backgroundBack.style.left = `${(ww * 0.30) - x}px`
         backgroundBack.style.top = `${-y}px`
         main_nav.style.left = `${(ww * 0.30) + x + (wh*0.60) - 310}px`
+    }
+    if (mainMenuOpen === false && options.enableParallax === true) {
+        ww = window.innerWidth;
+        wh = window.innerHeight;
+        let x = e.pageX - (ww/2)
+        let y = e.pageY - (wh/2)
+        x = x/(ww/15)
+        y = y/(wh/15)
+        let pos = document.getElementById('image-positive');
+        let neg = document.getElementById('image-negative');
+        pos.style.left = `${x}px`
+        neg.style.left = `${-x}px`
+        if ((y-(pos.offsetHeight/2)) > 0.5) {
+            pos.style.top = `${y-(pos.offsetHeight/2)}px`
+            neg.style.top = `${-y+(neg.offsetHeight/2)}px`
+        } else {
+            pos.style.top = `${-(pos.offsetHeight/2)}px`
+            neg.style.top = `${+(neg.offsetHeight/2)}px`
+        }
+    } else if (options.enableParallax === false) {
+        let pos = document.getElementById('image-positive');
+        let neg = document.getElementById('image-negative');
+        pos.style.top = `${-(pos.offsetHeight/2)}px`
+        neg.style.top = `${+(neg.offsetHeight/2)}px`
     }
   });
 //
@@ -474,7 +517,6 @@ function manageOverlays(action,overlay) {
         for (let i = 0; i<overlaysList.length; i++) {
             let identifier = `${overlaysList[i]}-overlay`
             let reference = document.getElementById(identifier);
-            console.log([reference, identifier])
             if (overlaysList[i] !== overlay) {
                 reference.classList.add('invisible');
             } else if (overlaysList[i] === overlay) {

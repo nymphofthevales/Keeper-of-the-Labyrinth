@@ -176,7 +176,7 @@ function Music() {
 let stillFading = false;
 let stopFadeOut = false;
 let stopFadeIn = false;
-Music.prototype.start = function(title,fadein,seconds) {
+Music.prototype.start = function(/*string*/title,/*boolean*/fadein,/*number*/seconds) {
     if (stillFading === true) {
         setTimeout(()=>{this.start(title,fadein,seconds)},50)
     } else {
@@ -259,4 +259,16 @@ Music.prototype._fadeIn = function(seconds) {
         loop(0);
     }
     fadeMusic(seconds,this._currentSong)
+}
+
+function specialPage(object) {
+    this.pageObject = object;
+    this.action = function() {};
+}
+let totalSpecialPages = [];
+function generateSpecialPages() {
+    let PageInstances = SequenceInstances.concat(StoryNodeInstances);
+    for (let i=0; i<PageInstances.length; i++) {
+        totalSpecialPages[i] = new specialPage(PageInstances[i])
+    }
 }
