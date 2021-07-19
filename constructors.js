@@ -8,6 +8,14 @@
 let SequenceInstances = [];
 let StoryNodeInstances = [];
 
+let options = {
+    "textSize":"default",
+    "enableMusic":true,
+    "volume":25,
+    "enableParallax":true,
+    "enableWarnings":false
+}
+
 function capitalize(s) {
     return s.charAt(0).toUpperCase() + s.slice(1);
 }

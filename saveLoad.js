@@ -1,15 +1,17 @@
+'use strict'
 const electron = require('electron');
 const path = require('path')
 const fs = require('fs')
 const {ipcRenderer} = require('electron');
-let options = {
-    "textSize":"default",
-    "enableMusic":true,
-    "volume":25,
-    "enableParallax":true,
-    "enableWarnings":false
-}
+let hasSavedData = false;
+let preloadCurrent = undefined;
+let savedPageInstance = intro;
+let overlayOpen = false;
+let mainMenuOpen = true;
+let ingameMenuOpen = false;
+let page = 0;
 let masterSave = {};
+
 
 ipcRenderer.send('requestSaveData')
 console.log('requesting save data...')
@@ -47,7 +49,6 @@ ipcRenderer.on('recieveMasterSave',(event,data)=>{
         console.log(`input of data at recieveMasterSave: ${data}, as ${typeof data}`)
     }
 })
-let preloadCurrent = undefined;
 function saveParameters(){
     save(preloadCurrent,page)
 }
@@ -198,4 +199,19 @@ function sortSaveObject(saveObject) {
     }
     console.log([`Produced:`,resultObject])
     return resultObject;
+}
+
+
+function sumOfActions(sortedSaveObject) {
+    let iterable = Object.keys(sortedSaveObject);
+    let summedActions = [];
+    for (let i = 0; i < iterable.length; i++) {
+        for (let j = 0; j < sortedSaveObject[iterable[i]].visited.length; j++) {
+            console.log(sortedSaveObject[iterable[i]].visited[j])
+            if (summedActions.includes(sortedSaveObject[iterable[i]].visited[j]) === false) {
+                summedActions.push(sortedSaveObject[iterable[i]].visited[j])
+            }
+        }
+    }
+    return summedActions;
 }

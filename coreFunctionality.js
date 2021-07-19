@@ -5,13 +5,6 @@
 //
 'use strict'
 
-let hasSavedData = false;
-let overlayOpen = false;
-let mainMenuOpen = true;
-let ingameMenuOpen = false;
-let savedPageInstance = intro;
-let page = 0;
-
 function generateButton(number,text) {
     return `<div class=\"button-housing\" id=\"button-housing-${number}\"><div class=\"left-button-frame\" id=\"button-${number}-left\"></div><button id=\"button-${number}-middle\" class=\"middle-button-frame\"><p id=\"button-text-${number}\">${text}</p></button><div class=\"right-button-frame\" id=\"button-${number}-right\"></div></div>`
 }
