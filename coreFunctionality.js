@@ -5,31 +5,12 @@
 //
 'use strict'
 
-const electron = require('electron');
-const path = require('path')
-const fs = require('fs')
-const {ipcRenderer} = require('electron');
-
 let hasSavedData = false;
 let overlayOpen = false;
 let mainMenuOpen = true;
 let ingameMenuOpen = false;
 let savedPageInstance = intro;
 let page = 0;
-
-ipcRenderer.send('requestSaveData')
-console.log('requesting save data...')
-
-ipcRenderer.on('recieveSaveData',(event,data)=>{
-    if (data !== false) {
-        console.log(`save found, recieved ${data}`)
-        hasSavedData = true;
-        loadData(data)
-    } else if (data === false) {
-        console.log(`no save available, got ${data}`)
-        hasSavedData = false;
-    }
-})
 
 function generateButton(number,text) {
     return `<div class=\"button-housing\" id=\"button-housing-${number}\"><div class=\"left-button-frame\" id=\"button-${number}-left\"></div><button id=\"button-${number}-middle\" class=\"middle-button-frame\"><p id=\"button-text-${number}\">${text}</p></button><div class=\"right-button-frame\" id=\"button-${number}-right\"></div></div>`
@@ -130,10 +111,6 @@ function progression(current,destination_button_number) {
         console.log(`progressed to ${current.title} (${current.constructor.name})`)
     }
 }
-let preloadCurrent = undefined;
-function saveParameters(){
-    save(preloadCurrent,page)
-}
 function listen(buttonArray,current) {
     preloadCurrent = current;
      window.onbeforeunload = () => {
@@ -227,30 +204,6 @@ function redirect(time,current) {
     console.log(`redirecting to next page in ${time/1000} seconds`)
     setTimeout(()=>{progression(current)},time)
 }
-
-function save(current,savedPage) {
-    if (savedPage === undefined) {
-        savedPage = 0;
-    }
-    let savedVisitedArray = [];
-    if (visited.length > 0) {
-        for (let i=0; i<visited.length; i++) {
-            savedVisitedArray.push(visited[i]);
-        }
-    }
-    ipcRenderer.send('saveData',{"title":`${current.title}`,"page":savedPage,"visited":savedVisitedArray});
-}
-function loadData(data) {
-    let savedData = JSON.parse(data);
-    page = savedData.page;
-    visited = savedData.visited;
-    let PageInstances = SequenceInstances.concat(StoryNodeInstances);
-    for (let i=0; i<PageInstances.length; i++) {
-        if (PageInstances[i].title === savedData.title) {
-            savedPageInstance = PageInstances[i];
-        }
-    }
-};
 function loadPage(current,page_number) {
     genActions(current);
     page = page_number
@@ -426,7 +379,6 @@ let loading_overlay = document.getElementById('loading-overlay')
 document.getElementById('enter-button').addEventListener('click',()=>{
     if (hasSavedData === false) {
         loadPage(intro,0);
-        showOverlay('loading')
         visited = ['intro'];
         document.getElementById('main-menu-overlay').classList.add('invisible');
         mainMenuOpen = false;

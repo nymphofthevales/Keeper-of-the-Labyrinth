@@ -8,14 +8,6 @@
 let SequenceInstances = [];
 let StoryNodeInstances = [];
 
-let options = {
-    textSize: 'default',
-    enableMusic: true,
-    volume: 25,
-    enableParallax: true,
-    enableWarnings: false
-}
-
 function capitalize(s) {
     return s.charAt(0).toUpperCase() + s.slice(1);
 }
@@ -170,7 +162,7 @@ Gallery.prototype.generateInspectorHTML = function(number) {
 function Music() {
     this.songs = {};
     this._currentSong = undefined;
-    this._maxVolume = (2*options.volume)/100;
+    this._maxVolume = options.volume;
     this.currentlyPlaying = false;
 }
 let stillFading = false;
@@ -185,7 +177,7 @@ Music.prototype.start = function(/*string*/title,/*boolean*/fadein,/*number*/sec
             this._currentSong = this.songs[title];
             this._currentSong.currentTime = 0;
             if (fadein === false) {
-                this.songs[title].volume = this._maxVolume;
+                this.songs[title].volume = (2*this._maxVolume)/100;
                 this.songs[title].play();
             } else if (fadein === true) {
                 this._fadeIn(seconds)
@@ -230,7 +222,7 @@ Music.prototype.fadeOut = function(seconds) {
     this.currentlyPlaying = false;
 }
 Music.prototype._fadeIn = function(seconds) {
-    let target = this._maxVolume;
+    let target = (2*this._maxVolume)/100;
     function fadeMusic(seconds,audioObject) {
         audioObject.volume = 0;
         audioObject.play();

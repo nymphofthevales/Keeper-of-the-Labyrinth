@@ -13,6 +13,7 @@ function Save(opts) {
         //creates property 'path' at writeSave.constructor.path with a value equal to the user's app directory plus a file name fed to the class instance through 'opts.configName' and an ending of '.json'
         //might look like user/library/appdata/whatever/configName.json
         this.data = parseDataFile(this.path, opts.defaults);
+        this.defaults = opts.defaults;
     
     this.set = function(saveJSON) {
         this.data = `${saveJSON}`
