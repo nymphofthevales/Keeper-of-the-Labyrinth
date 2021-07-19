@@ -83,17 +83,15 @@ function manageImage(action,url,location) {
             frame.appendChild(img).id = 'currentPosImg';
             let currentImage = document.getElementById('currentPosImg');
             currentImage.src = url;
-            //currentImage.style.top = `${-(currentImage.offsetHeight/2)}px`
-            console.log(`${-(currentImage.offsetHeight/2)}px`)
-            setTimeout(()=>{currentImage.style.top = `${-(document.getElementById('currentPosImg').offsetHeight/2)}px`},10000)
+            frame.style.top = `-35vh`;
+            console.log(`${frame.offsetHeight/2}px`)
+            //in future, perhaps use `${frame.offsetHeight/2}px` but for now, seems to run before the image has rendered, so offsetHeight returns 0 and the process fails. 30vh is a fine approximation for most images. if images were preloaded then might be able to return to using this.
         } else if (location === 'negative') {
             frame = document.getElementById('image-negative')
             frame.appendChild(img).id = 'currentNegImg';
             let currentImage = document.getElementById('currentNegImg');
             currentImage.src = url;
-            //currentImage.style.top = `${+(currentImage.offsetHeight/2)}px`
-            setTimeout(()=>{console.log(`${+(currentImage.offsetHeight/2)}px`)},10000);
-            setTimeout(()=>{currentImage.style.top = `${+(document.getElementById('currentNegImg').offsetHeight/2)}px`},10000)
+            frame.style.top = `35vh`
         }
     } else if (action === 'remove') {
         document.getElementById('image-negative').innerHTML = '';
@@ -270,17 +268,19 @@ function sendPopup(type,content,current,backUpAble) {
         document.getElementById('popup-yes').addEventListener('click',()=>{
             loadPage(savedPageInstance,page);
             popup.classList.add('invisible');
-            runLoadingSequence();
+            //runLoadingSequence();
             document.getElementById('main-menu-overlay').classList.add('invisible');
             mainMenuOpen = false;
+            manageOverlays('hide','all')
         })
         document.getElementById('popup-no').addEventListener('click',()=>{
             loadPage(intro,0);
             visited = ['intro'];
             popup.classList.add('invisible');
-            runLoadingSequence();
+            //runLoadingSequence();
             document.getElementById('main-menu-overlay').classList.add('invisible');
             mainMenuOpen = false;
+            manageOverlays('hide','all')
         })
         loadFrame.classList.remove('invisible')
         popup.classList.remove('invisible');
@@ -409,13 +409,8 @@ document.addEventListener('mousemove', (e)=>{
         let neg = document.getElementById('image-negative');
         pos.style.left = `${x}px`
         neg.style.left = `${-x}px`
-        if ((y-(pos.offsetHeight/2)) > 0.5) {
-            pos.style.top = `${y-(pos.offsetHeight/2)}px`
-            neg.style.top = `${-y+(neg.offsetHeight/2)}px`
-        } else {
-            pos.style.top = `${-(pos.offsetHeight/2)}px`
-            neg.style.top = `${+(neg.offsetHeight/2)}px`
-        }
+        pos.style.top = `${y-(pos.offsetHeight/2)}px`
+        neg.style.top = `${-y+(neg.offsetHeight/2)}px`
     } else if (options.enableParallax === false) {
         let pos = document.getElementById('image-positive');
         let neg = document.getElementById('image-negative');
@@ -546,14 +541,6 @@ document.getElementById('license-button-2').addEventListener('click',()=>{
     manageOverlays('show','font-license-2')
 })
 
-function getTextInputReferences() {
-    return [
-        document.getElementById('small-text'),
-        document.getElementById('default-text'),
-        document.getElementById('medium-text'),
-        document.getElementById('large-text'),
-    ]
-}
 //manage options
 function manageTextOptions() {
     let textStylesheets = [
