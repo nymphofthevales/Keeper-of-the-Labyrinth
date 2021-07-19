@@ -80,17 +80,29 @@ function loadData(data) {
 
 
 let example = {
-    "2021/6/19/1626726292838": {
+    "2021/6/19/1626726391965": {
         "title": "MoveOnAnte",
         "page": 0,
         "visited": [
             "intro",
             "enter",
             "REntry",
-            "ante"
+            "ante",
+            "MoveOnAnte"
         ]
     },
     "2021/6/19/1626726391165": {
+        "title": "MoveOnAnte",
+        "page": 0,
+        "visited": [
+            "intro",
+            "enter",
+            "REntry",
+            "ante",
+            "MoveOnAnte"
+        ]
+    },
+    "2021/6/19/1626726391465": {
         "title": "MoveOnAnte",
         "page": 0,
         "visited": [
@@ -130,7 +142,7 @@ function sortSaveObject(saveObject) {
 
     for (let i = 0; i < iterable.length; i++) {
         for (let l = (i + 1); l < iterable.length; l++) {
-            console.log([`comparing`,saveObject[iterable[i]],`to`,saveObject[iterable[l]]])
+            console.log([`comparing`,iterable[i],`to`,iterable[l]])
             let result = pruneSaves(saveObject[iterable[i]],saveObject[iterable[l]],iterable[i],iterable[l])
             for (let j=0; j < result.length; j++) {
                 console.log([`pushing to failures object:`,result[j]])
@@ -170,7 +182,16 @@ function sortSaveObject(saveObject) {
             } else if (a[i] === b[i] && i === (shortest.length-1)){
                 switch (a === shortest) {
                     case true: return [identA];
-                    case false: return [identB];
+                    case false: if (a.length === b.length) {
+                        let timeA = parseInt(identA.split('/')[3]);
+                        let timeB = parseInt(identB.split('/')[3]);
+                        switch ((timeA - timeB) > 0) {
+                            case true: return [identB]
+                            case false: return [identA]
+                        }
+                    } else {
+                        return [identB];
+                    }
                 }
             }
         }
