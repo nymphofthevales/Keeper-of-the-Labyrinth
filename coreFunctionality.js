@@ -388,6 +388,7 @@ document.getElementById('options-button').addEventListener('click',()=>{
     manageOverlays('show','options')
 })
 document.getElementById('gallery-button').addEventListener('click',()=>{
+    manageGalleryUnlocks();
     populateGallery(mainGallery);
     manageOverlays('show','gallery');
     setGalleryListeners();
@@ -578,4 +579,62 @@ function setGalleryBackButton() {
         manageOverlays('show','gallery');
         setGalleryListeners();
     })
+}
+
+function manageGalleryUnlocks() {
+    getMasterSave();
+    let actions = sumOfActions(masterSave);
+    console.log(actions);
+    for (let i = 0; i < actions.length; i++) {
+        switch (actions[i]) {
+            case 'intro': 
+                mainGallery.unlock('The Labyrinth Gate')
+                console.log('unlocking gate')
+                break;
+            case 'finishCandleAnte': 
+                mainGallery.unlock('An Anchor')
+                break;
+            case 'obelisk': 
+                mainGallery.unlock('The Obelisk')
+                break;
+            case 'readRunes': 
+                mainGallery.unlock('Ritual of Runes');
+                mainGallery.unlock('The Runes')
+                break;
+            case 'Lines': 
+                mainGallery.unlock('Ritual of Lines')
+                mainGallery.unlock('The Chalk')
+                break;
+            case 'Rowan': 
+                mainGallery.unlock('The Rowan')
+                break;
+            case 'Wands': 
+                mainGallery.unlock('Ritual of Wands')
+                mainGallery.unlock('The Wand')
+                break;
+            case 'windowPlaceCandle': 
+                mainGallery.unlock('An Anchor')
+                break;
+            case 'mothLands': 
+                mainGallery.unlock('The Moth')
+                break;
+            case 'crow': 
+                mainGallery.unlock('The Crow')
+                break;
+            case 'Lights': 
+                mainGallery.unlock('Ritual of Lights')
+                mainGallery.unlock('The Candles')
+                break;
+            case 'Blades': 
+                mainGallery.unlock('Ritual of Blades')
+                mainGallery.unlock('The Knife')
+                break;
+            case 'drowningCistern': 
+                mainGallery.unlock('Drowning')
+                break;
+            case 'Waiting': 
+                mainGallery.unlock('The Watching Masks')
+                break;
+        }
+    }
 }

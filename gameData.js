@@ -1176,22 +1176,32 @@ intro.setNext(enter);
 //upload gallery images
 const mainGallery = new Gallery();
 //format: numerical identifier, unlocked, title, description, url, has shadow (functionality for shadow + parallax not done yet)
-mainGallery.addItem(0,true,'The Labyrinth','Its twisting passages hearken.','./assets/labyrinth_logo.png',false)
-mainGallery.addItem(1,true,'The Labyrinth Gate','It watches your approach carefully.','./assets/labyrinth_gate.png',true)
-mainGallery.addItem(2,true,'The Obelisk','It serves my same purpose; to watch the changes in the <span class="labyrinth-color">labyrinth</span>, and know the secrets within.','./assets/obelisk.png',true)
-mainGallery.addItem(3,true,'Ritual of Runes','Divination, the method by which we can see an inkling of the future: This journey shall not be the one to kill me, at least.','./assets/runes.png',true)
-mainGallery.addItem(4,true,'The Runes','An unused inventory sprite created early in development.','./assets/runes_item.png',false)
-mainGallery.addItem(5,true,'The Wand','An unused inventory sprite created early in development.','./assets/wand_item.png',false)
-mainGallery.addItem(6,true,'The Candles','An unused inventory sprite created early in development.','./assets/candles_item.png',false)
-mainGallery.addItem(7,true,'The Chalk','An unused inventory sprite created early in development.','./assets/chalk_item.png',false)
-mainGallery.addItem(8,true,'The Knife','An unused inventory sprite created early in development.','./assets/knife_item.png',false)
-mainGallery.addItem(9,true,'Ritual of Lines','I am a part of the universe but also contained unto myself.','./assets/lines.png',true)
-mainGallery.addItem(10,true,'The Rowan','When the cold winter winds come there\'s nothing wrong with rest; but the time must come when one wakes up.','./assets/rowan.png',true)
-mainGallery.addItem(11,true,'Ritual of Wands','I am capable of, and bound to, change, like any other facet of the universe. Who I am is not who I will always be.','./assets/wands.png',true)
+mainGallery.addItem(0,true,'The Labyrinth','Its twisting passages hearken.','./assets/ui/labyrinth_logo.png',false)
+mainGallery.addItem(1,false,'The Labyrinth Gate','It watches your approach carefully.','./assets/artwork/labyrinth_gate.png',true)
 
-mainGallery.addItem(12,true,'The Moth','Perhaps to end in a conflagration of light is better than to end alone in the darkness.','./assets/moth.png',true)
-mainGallery.addItem(13,true,'The Crow','Perhaps it did speak, but only in signs, in gaze and gesture, in feather and beak, in imagination, in silence.','./assets/crow.png',true)
-mainGallery.addItem(14,true,'The Watching Masks','How could we know her until she chooses to know herself?','./assets/watching_mask.png',true)
+mainGallery.addItem(2,false,'The Obelisk','It serves my same purpose; to watch the changes in the <span class="labyrinth-color">labyrinth</span>, and know the secrets within.','./assets/artwork/obelisk.png',true)
+mainGallery.addItem(3,false,'Ritual of Runes','Divination, the method by which we can see an inkling of the future: This journey shall not be the one to kill me, at least.','./assets/artwork/runes.png',true)
+mainGallery.addItem(4,false,'The Runes','An unused inventory sprite created early in development.','./assets/artwork/runes_item.png',false)
+
+mainGallery.addItem(5,false,'Ritual of Lines','I am a part of the universe but also contained unto myself.','./assets/artwork/lines.png',true)
+mainGallery.addItem(6,false,'The Chalk','An unused inventory sprite created early in development.','./assets/artwork/chalk_item.png',false)
+
+mainGallery.addItem(7,false,'The Rowan','When the cold winter winds come there\'s nothing wrong with rest; but the time must come when one wakes up.','./assets/artwork/rowan.png',true)
+mainGallery.addItem(8,false,'Ritual of Wands','I am capable of, and bound to, change, like any other facet of the universe. Who I am is not who I will always be.','./assets/artwork/wands.png',true)
+mainGallery.addItem(9,false,'The Wand','An unused inventory sprite created early in development.','./assets/artwork/wand_item.png',false)
+
+mainGallery.addItem(10,false,'An Anchor','The candle stand upright; its light anchors my power to this place.','./assets/artwork/anchor.png',true)
+mainGallery.addItem(11,false,'The Moth','Perhaps to end in a conflagration of light is better than to end alone in the darkness.','./assets/artwork/moth.png',true)
+mainGallery.addItem(12,false,'The Crow','Perhaps it did speak, but only in signs, in gaze and gesture, in feather and beak, in imagination, in silence.','./assets/artwork/crow.png',true)
+
+mainGallery.addItem(13,false,'Ritual of Lights','I can burn brighter than the sun, if I let myself dance without fear.','./assets/artwork/lights.png',true)
+mainGallery.addItem(14,false,'The Candles','An unused inventory sprite created early in development.','./assets/artwork/candles_item.png',false)
+
+mainGallery.addItem(15,false,'Ritual of Blades','My apathy. My cowardice. My doubt.<br>I wrench myself free of their grip; they will not best me this time.','./assets/artwork/blades.png',true)
+mainGallery.addItem(16,false,'The Knife','An unused inventory sprite created early in development.','./assets/artwork/knife_item.png',false)
+mainGallery.addItem(17,false,'Drowning','Darkness encroaches on the edges of my vision, and I choke as I feel the water take me.','./assets/artwork/drowning.png',true)
+
+mainGallery.addItem(18,false,'The Watching Masks','How could we know her until she chooses to know herself?','./assets/artwork/watching_mask.png',true)
 
 //upload music files
 const mainMusic = new Music();

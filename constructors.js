@@ -165,6 +165,13 @@ Gallery.prototype.generateInspectorHTML = function(number) {
         </div>`
     }
 }
+Gallery.prototype.unlock = function(title) {
+    for (let i=0; i<this.elements.length; i++) {
+        if (this.elements[i].title === title) {
+            this.elements[i].unlocked = true;
+        }
+    }
+}
 //Gallery[1].unlock('lines')//be able to say this, causes data to be updated such that next time gallery is opened, instead of default description and hidden icon, the real image prints and the real description can be read once it's opened in the inspector window.
 
 function Music() {
@@ -261,14 +268,12 @@ Music.prototype._fadeIn = function(seconds) {
     fadeMusic(seconds,this._currentSong)
 }
 
-function specialPage(object) {
-    this.pageObject = object;
-    this.action = function() {};
+function MapNode(title) {
+    this.title = title;
+    this.pageObjects = [];
+    this.pageNum = 0;
+    this.post = [];
+    this.pre = {};
+    this.highlighted = false;
 }
-let totalSpecialPages = [];
-function generateSpecialPages() {
-    let PageInstances = SequenceInstances.concat(StoryNodeInstances);
-    for (let i=0; i<PageInstances.length; i++) {
-        totalSpecialPages[i] = new specialPage(PageInstances[i])
-    }
-}
+MapNode.prototype

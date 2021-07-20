@@ -12,43 +12,53 @@ let ingameMenuOpen = false;
 let page = 0;
 let masterSave = {};
 
+getSaveData();
+getSavedOptions();
+getMasterSave();
 
-ipcRenderer.send('requestSaveData')
-console.log('requesting save data...')
-ipcRenderer.on('recieveSaveData',(event,data)=>{
-    if (data !== false) {
-        console.log(`save found, recieved ${data}`)
-        hasSavedData = true;
-        loadData(data)
-    } else if (data === false) {
-        console.log(`no save available, got ${data}`)
-        hasSavedData = false;
-    }
-})
+function getSaveData() {
+    ipcRenderer.send('requestSaveData')
+    console.log('requesting save data...')
+    ipcRenderer.on('recieveSaveData',(event,data)=>{
+        if (data !== false) {
+            console.log(`save found, recieved ${data}`)
+            hasSavedData = true;
+            loadData(data)
+        } else if (data === false) {
+            console.log(`no save available, got ${data}`)
+            hasSavedData = false;
+        }
+    })
+}
 
-ipcRenderer.send('requestOptions')
-console.log('requesting saved options...')
-ipcRenderer.on('recieveOptions',(event,data)=>{
-    if (data[0] === true) {
-        options = data[1];
-        console.log(`got options, recieved: ${JSON.stringify(data[1])}`)
-    } else if (data[0] === false) {
-        options = data[1];
-        console.log(`no saved options, loaded defaults: ${JSON.stringify(data[1])}`)
-    }
-})
+function getSavedOptions() {
+    ipcRenderer.send('requestOptions')
+    console.log('requesting saved options...')
+    ipcRenderer.on('recieveOptions',(event,data)=>{
+        if (data[0] === true) {
+            options = data[1];
+            console.log(`got options, recieved: ${JSON.stringify(data[1])}`)
+        } else if (data[0] === false) {
+            options = data[1];
+            console.log(`no saved options, loaded defaults: ${JSON.stringify(data[1])}`)
+        }
+    })
+}
 
-ipcRenderer.send('requestMasterSave')
-console.log('requesting master save...')
-ipcRenderer.on('recieveMasterSave',(event,data)=>{
-    if (data !== false) {
-        masterSave = Object.assign({},data);
-        console.log(`input of data at recieveMasterSave: ${data}, as ${typeof data}`)
-    } else if (data === false) {
-        masterSave = Object.assign({},data);
-        console.log(`input of data at recieveMasterSave: ${data}, as ${typeof data}`)
-    }
-})
+function getMasterSave() {
+    ipcRenderer.send('requestMasterSave')
+    console.log('requesting master save...')
+    ipcRenderer.on('recieveMasterSave',(event,data)=>{
+        if (data !== false) {
+            masterSave = Object.assign({},data);
+            console.log(`input of data at recieveMasterSave: ${data}, as ${typeof data}`)
+        } else if (data === false) {
+            masterSave = Object.assign({},data);
+            console.log(`input of data at recieveMasterSave: ${data}, as ${typeof data}`)
+        }
+    })
+}
+
 function saveParameters(){
     save(preloadCurrent,page)
 }
