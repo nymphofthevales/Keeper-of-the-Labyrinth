@@ -335,7 +335,7 @@ button:visited {
   max-width: none;
 }
 
-#journal-overlay,#map-overlay,#options-overlay,#credits-overlay,#font-license-overlay,#font-license-2-overlay,#gallery-overlay,#gallery-inspector-overlay {
+#journal-overlay,#options-overlay,#credits-overlay,#font-license-overlay,#font-license-2-overlay,#gallery-overlay,#gallery-inspector-overlay {
   text-align: center;
   z-index: 15;
   padding: 50px;
@@ -347,6 +347,51 @@ button:visited {
   background-image: url('./assets/ui/overlay-frame-cropped.png');
   background-size: cover;
   background-repeat: no-repeat;
+}
+#map-overlay {
+  text-align: center;
+  z-index: 15;
+  padding: 0px;
+  width: 90vw;
+  height: calc(90vw*calc(265/420));
+  position: absolute;
+  left: 5vw;
+  top: 5vh;
+  background-image: url('./assets/ui/overlay-frame-cropped.png');
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+.overlay-frame-top {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  left:0;
+  top:0;
+  pointer-events: none;
+}
+#map-overlay main {
+  width: 100%;
+  height: 100%;
+  margin: 0 auto 0 auto;
+  overflow: scroll;
+  position: absolute;
+  top:0;
+  left:0;
+}
+#map-overlay header {
+  background-color: black;
+  height: 20vh;
+  position: absolute;
+  margin: 0 auto 0 auto;
+  top:0;
+  left:0;
+}
+#map-housing {
+  width: 200vw;
+  height: 200vh;
+  background-image: url(./assets/ui/button_right_small.png);
+  background-repeat: repeat;
+  background-size: 50px;
 }
 #loading-overlay {
   position: absolute;
@@ -645,7 +690,7 @@ input {
 
 *::-webkit-scrollbar-track {
   border-radius: 0px;
-  background-color: black;
+  background-color: transparent;
 }
 
 *::-webkit-scrollbar {
