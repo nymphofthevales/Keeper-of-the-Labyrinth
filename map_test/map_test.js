@@ -17,7 +17,7 @@ Grid.prototype.getColumn = function(num) {
     }
     return column;
 }
-Grid.prototype.insertElement = function(element,type,x,y) {
+Grid.prototype.insertElement = function(x,y,element,type) {
     let row = (y-1) * this.columns;
     posXY = row + (x-1);
     if (element === 'node') {
@@ -67,13 +67,14 @@ function MapTile(number,GridObject,type) {
     this.type = type;
     this.position = [];
     this.parentGrid = GridObject;
-    let y = Math.floor(number/GridObject.columns);
+    let y = number % GridObject.columns;
     if (typeof number === 'number') {
-        this.position[1] = y + 1;
         if (y > 0) {
-            this.position[0] = number - (GridObject.columns * y)
+            this.position[0] = y;
+            this.position[1] = Math.floor(number/GridObject.columns) + 1;
         } else if (y === 0) {
-            this.position[0] = number;
+            this.position[0] = GridObject.columns;
+            this.position[1] = Math.floor(number/GridObject.columns);
         }
     } else if (typeof number === 'object') {
         this.position = [number[0],number[1]];
@@ -88,11 +89,12 @@ MapTile.prototype.getAdjacent = function(direction) {
         case 'above':
             return this.parentGrid.getElement(this.position[0],this.position[1]-1);
         case 'below':
-            return this.parentGrid.getElement(this.position[0],this.position[1]-1);
+            return this.parentGrid.getElement(this.position[0],this.position[1]+1);
     }
 }
 MapTile.prototype.setType = function(string) {
     this.type = string;
+    console.log(this.position);
     document.getElementById(`cell-${this.position[0]}-${this.position[1]}-content`).textContent = string;
 }
 
@@ -217,25 +219,28 @@ function comparePosition(A,direction,B) {
 function checkGlobalConnection(x1,y1,x2,y2,GridObject) {
     let currentX = x1;
     let currentY = y1;
-    const diffX = x2 - x1;
-    const diffY = y2 - y1;
+    const diffX = Math.abs(x2 - x1);
+    const diffY = Math.abs(y2 - y1);
     let linkTracing = [];
     let connectionAvailable = true;
+    let iteration = 0;
     let searching = true;
     let success = false;
     //let currentDiffX = x2 - currentX;
     //let currentDiffY = y2 - currentY;
     do {
+        linkTracing.push(GridObject.getElement(currentX,currentY));
         if (currentX === x2 && currentY === y2) {
             console.log([`Path found through`,linkTracing])
             success = true;
             searching = false;
         } else {
-            if (connectionAvailable === false) {
+            if (connectionAvailable === false || iteration > 20) {
                 console.log(['No connection found.',])
                 success = false;
                 searching = false;
             } else {
+                console.log(['Searching from:',currentX,currentY])
                 iterateOverConnections()
             }
         }
@@ -247,6 +252,7 @@ function checkGlobalConnection(x1,y1,x2,y2,GridObject) {
         return false;
     }
     function iterateOverConnections() {
+        iteration += 1;
         let adjLinks = [];
         for (let i=1; i<=4; i++) {
             if (checkAdjacentConnection(currentX,currentY,GridObject,i) === true) {
@@ -256,26 +262,48 @@ function checkGlobalConnection(x1,y1,x2,y2,GridObject) {
             }
             console.log(adjLinks)
         }
-        linkTracing.push(GridObject.getElement(currentX,currentY));
         if (adjLinks.includes(true) === false) {
             console.log(adjLinks)
             connectionAvailable = false;
         } else if (adjLinks.includes(true) === true) {
-            for (let i=0; i<adjLinks.length; i++) {
-                if (adjLinks[i] === true) {
-                    switch (i+1) {
-                    case 1: if (checkDiff((currentY - 1),'vert') === true) {
-                        currentY -= 1;
-                    }
-                        break;
-                    case 2: if (checkDiff((currentX + 1),'lat') === true) {
-                        currentX += 1;
-                    }
-                        break;
-                    case 3: if (checkDiff((currentY + 1),'vert') === true) {
-                        currentY +=1;
-                    }
-                        break;
+            for (let check = 0; check < 2; check++) {
+                for (let i=0; i<adjLinks.length; i++) {
+                    if (adjLinks[i] === true) {
+                        switch (i+1) {
+                            //this heuristic for any continuing if a path brings it closer to the endpoint causes some problems if the path isn't straight, or in general if it gets in a dead end. How to change this? likely not necessary to change for the purposes of this program, but in future an interesting thing to test.
+                        case 1: if (checkDiff((currentY - 1),'vert') === true) {
+                            currentY -= 1;
+                        } else {
+                            if (check === 1) {
+                                currentY -= 1;
+                            }
+                        }
+                            break;
+                        case 2: if (checkDiff((currentX + 1),'lat') === true) {
+                            currentX += 1;
+                        } else {
+                            if (check === 1) {
+                                currentX += 1;
+                            }
+                        }
+                            break;
+                        case 3: if (checkDiff((currentY + 1),'vert') === true) {
+                            currentY += 1;
+                        } else {
+                            if (check === 1) {
+                                currentY += 1;
+                            }
+                        }
+                            break;
+                        case 4: if (checkDiff((currentX - 1),'lat') === true) {
+                            currentX -= 1;
+                        } else {
+                            if (check === 1) {
+                                currentX -= 1;
+                            }
+                        }
+                            break;
+                        }
                     }
                 }
             }
@@ -285,14 +313,18 @@ function checkGlobalConnection(x1,y1,x2,y2,GridObject) {
     function checkDiff(num,direction) {
         //returns true if path brings diff closer to endpoint
         switch (direction) {
-            case 'vert': if ((y2 - num) > diffY) {
+            case 'vert': if (Math.abs(y2 - num) > diffY) {
+                console.log(`vert diff btwn ${y2} and ${num} > ${diffY}`)
                 return false;
-            } else if ((y2 - num) < diffY) {
+            } else if (Math.abs(y2 - num) < diffY) {
+                console.log(`vert diff btwn ${y2} and ${num} < ${diffY}`)
                 return true;
             }
-            case 'lat': if ((x2 - num) > diffX) {
+            case 'lat': if (Math.abs(x2 - num) > diffX) {
+                console.log(`lat diff btwn ${x2} and ${num} > ${diffX}`)
                 return false;
-            } else if ((x2 - num) < diffX) {
+            } else if (Math.abs(x2 - num) < diffX) {
+                console.log(`lat diff btwn ${x2} and ${num} > ${diffX}`)
                 return true;
             }
         }
@@ -327,5 +359,16 @@ function checkAdjacentConnection(x,y,GridObject,direction) {
         } else {
             return false;
         }
+    }
+}
+
+function generateRandomTestGrid(GridObject) {
+    let types = ['o','<>','^v','<^>','^v>','<v>','<^v','<^v>','<^','^>','v>','<v']
+    for (let i=0; i< GridObject.array.length; i++) {
+        console.log(i)
+        let rand = getRandomInt(types.length);
+        console.log(rand)
+        console.log(types[rand])
+        GridObject.array[i].setType(types[rand - 1]);
     }
 }
