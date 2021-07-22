@@ -51,10 +51,12 @@ function getMasterSave() {
     ipcRenderer.on('recieveMasterSave',(event,data)=>{
         if (data !== false) {
             masterSave = Object.assign({},data);
-            console.log(`input of data at recieveMasterSave: ${data}, as ${typeof data}`)
+            return masterSave;
+            //console.log(`input of data at recieveMasterSave: ${data}, as ${typeof data}`)
         } else if (data === false) {
             masterSave = Object.assign({},data);
-            console.log(`input of data at recieveMasterSave: ${data}, as ${typeof data}`)
+            return false;
+            //console.log(`input of data at recieveMasterSave: ${data}, as ${typeof data}`)
         }
     })
 }
@@ -87,61 +89,6 @@ function loadData(data) {
         }
     }
 };
-
-
-
-let example = {
-    "2021/6/19/1626726391965": {
-        "title": "MoveOnAnte",
-        "page": 0,
-        "visited": [
-            "intro",
-            "enter",
-            "REntry",
-            "ante",
-            "MoveOnAnte"
-        ]
-    },
-    "2021/6/19/1626726391165": {
-        "title": "MoveOnAnte",
-        "page": 0,
-        "visited": [
-            "intro",
-            "enter",
-            "REntry",
-            "ante",
-            "MoveOnAnte"
-        ]
-    },
-    "2021/6/19/1626726391465": {
-        "title": "MoveOnAnte",
-        "page": 0,
-        "visited": [
-            "intro",
-            "enter",
-            "REntry",
-            "ante",
-            "MoveOnAnte"
-        ]
-    },
-    "2021/6/19/1626726411783": {
-        "title": "chamberFleeing",
-        "page": 0,
-        "visited": [
-            "intro",
-            "enter", 
-            "REntry",
-            "ante",
-            "MoveOnAnte",
-            "enterProper",
-            "LabyrinthProper",
-            "Fleeing",
-            "runFleeing",
-            "turnFleeing",
-            "chamberFleeing"
-        ]
-    }
-}
 
 function sortSaveObject(saveObject) {
     console.log([`Recieved:`, saveObject])

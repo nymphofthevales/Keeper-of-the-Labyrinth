@@ -6,7 +6,7 @@ function Grid(w,h,s) {
     this.cellSize = s;
     this.array = [];
     for (let i=1; i <= (w * h); i++) {
-        this.array.push(new MapTile(i,this,'<^v>'))
+        this.array.push(new MapTile(i,this,'o'))
     }
     this.print();
 }
@@ -127,10 +127,17 @@ MapTile.prototype.getAdjacent = function(direction) {
 }
 MapTile.prototype.setType = function(string) {
     this.type = string;
-    console.log(this.position);
+    //console.log(this.position);
     document.getElementById(`cell-${this.position[0]}-${this.position[1]}-content`).textContent = string;
 }
-
+function getRandomInt(max) {
+    return Math.ceil(Math.random() * max);
+}
+function isEven(number) {
+    let check = number/2;
+    const regex = new RegExp('\\.');
+    return !regex.test(''+check);
+};
 function generateGridTemplate(GridObject,type) {
     let s = '';
     switch (type) {
@@ -173,7 +180,6 @@ function drawGrid(GridObject) {
         }
     }
 }
-
 function populateGrid(GridObject) {
     for (let y = 1; y <= GridObject.rows; y++) {
         for (let x = 1; x <= GridObject.columns; x++) {
@@ -184,41 +190,12 @@ function populateGrid(GridObject) {
             p.style.margin = 0;
             p.style.padding = 0;
             p.style.color = `rgb(255,255,255)`
-            p.innerText = GridObject.getColumn(x-1)[y-1].distance; //SHOULD SET TYPE HERE
+            p.innerText = GridObject.getColumn(x-1)[y-1].type; //SHOULD SET TYPE HERE
             p.style.display = 'absolute'
             p.style.left = `${(1/2)*GridObject.cellSize}px`;
             p.style.top = `${(1/2)*GridObject.cellSize}px`;
         }
     }
-}
-
-
-
-function generateConnections(MapNodeObject,totalNodes) {
-    let w = (2 * totalNodes) + 2;
-    let h = Math.floor((3/4) * w);
-    if (isEven(h) === true) {
-        h += 1;
-    };
-    let mapGrid = new Grid(w,h,'100px');
-    //generate a new grid with an odd height and large enough to contain all given nodes
-    mapGrid.insertElement([2,Math.floor(h/2)],MapNodeObject,'node')
-    //place the first node in the middle at the left edge
-    placeNewNode(mapGrid,MapNodeObject);
-}
-function getRandomInt(max) {
-    return Math.ceil(Math.random() * max);
-}
-function isEven(number) {
-    let check = number/2;
-    const regex = new RegExp('\\.');
-    return !regex.test(''+check);
-};
-
-//test nodes
-
-function placeNewNode(GridObject,MapNodeObject) {
-
 }
 
 function comparePosition(A,B) {
@@ -241,26 +218,26 @@ function checkGlobalConnection(startXY,targetXY,GridObject) {
     let currentElement = GridObject.getElement(startXY);
     let path = [];
     let toSearch = [];
-    let searched = [];
     let searching = true;
+    let success = true;
     let iterations = 0;
     function addToSearch(tileElement) {
-        if (toSearch.includes(tileElement) === false && searched.includes(tileElement) === false) {
+        if (toSearch.includes(tileElement) === false && path.includes(tileElement) === false) {
             toSearch.push(tileElement)
         }
     }
 
     generateWeightings(targetXY,GridObject)
     let finish = GridObject.getElement(targetXY);
-    path.push(currentElement);
     do {
         iterations +=1;
         if (currentElement === finish || iterations > 500) {
             searching = false;
         }
         let adjLinks = checkAdjacentConnections(currentElement.position,GridObject)
-        console.log(adjLinks)
+        //console.log(adjLinks)
         if (adjLinks.includes(true) === false) {
+            success = false;
             searching = false;
         } else if (adjLinks.includes(true) === true) {
             for (let i = 0; i < 4; i++) {
@@ -312,14 +289,26 @@ function checkGlobalConnection(startXY,targetXY,GridObject) {
                 }
             }
         }
-        if (currentElement === currentPreference/* || currentPreference === undefined*/) {
+        if (currentElement === currentPreference) {
             currentPreference = toSearch[0];
         }
         document.getElementById(`cell-${currentElement.position[0]}-${currentElement.position[1]}`).style.border = `3px dashed red`;
-        searched.push(currentElement);
+        path.push(currentElement);
         currentElement = currentPreference;
     }
     while (searching === true)
+    if (success === true) {
+        return [true,path]
+    } else if (success === false) {
+        return [false]
+    }
+}
+function generateRandomTestGrid(GridObject) {
+    let types = ['o','<>','^v','<^>','^v>','<v>','<^v','<^v>','<^','^>','v>','<v']
+    for (let i=0; i< GridObject.array.length; i++) {
+        let rand = getRandomInt(types.length);
+        GridObject.array[i].setType(types[rand - 1]);
+    }
 }
 function generateWeightings(targetXY,GridObject) {
     let finish = GridObject.getElement(targetXY)
@@ -352,6 +341,8 @@ function checkAdjacentConnections(coordinateArray,GridObject) {
     if (element.getAdjacent('above') !== undefined) {
         if (type.includes('^') === true && element.getAdjacent('above').type.includes('v') === true) {
             u = true;
+        } else {
+            u = false;
         }
     } else {
         u = false;
@@ -359,6 +350,8 @@ function checkAdjacentConnections(coordinateArray,GridObject) {
     if (element.getAdjacent('right') !== undefined) {
         if (type.includes('>') === true && element.getAdjacent('right').type.includes('<') === true) {
             r= true;
+        } else {
+            r = false;
         }
     } else {
         r= false;
@@ -366,6 +359,8 @@ function checkAdjacentConnections(coordinateArray,GridObject) {
     if (element.getAdjacent('below') !== undefined) {
         if (type.includes('v') === true && element.getAdjacent('below').type.includes('^') === true) {
             d= true;
+        } else {
+            d = false;
         }
     } else {
         d= false;
@@ -373,6 +368,8 @@ function checkAdjacentConnections(coordinateArray,GridObject) {
     if (element.getAdjacent('left') !== undefined) {
         if (type.includes('<') === true && element.getAdjacent('left').type.includes('>') === true) {
             l= true;
+        } else {
+            l = false;
         }
     } else {
         l= false;
@@ -380,10 +377,15 @@ function checkAdjacentConnections(coordinateArray,GridObject) {
     return [u,r,d,l]
 }
 
-function generateRandomTestGrid(GridObject) {
-    let types = ['o','<>','^v','<^>','^v>','<v>','<^v','<^v>','<^','^>','v>','<v']
-    for (let i=0; i< GridObject.array.length; i++) {
-        let rand = getRandomInt(types.length);
-        GridObject.array[i].setType(types[rand - 1]);
-    }
+function generateConnections(MapNodeObject,totalNodes) {
+    let w = (2 * totalNodes) + 2;
+    let h = Math.floor((3/4) * w);
+    if (isEven(h) === true) {
+        h += 1;
+    };
+    let mapGrid = new Grid(w,h,'100px');
+    //generate a new grid with an odd height and large enough to contain all given nodes
+    mapGrid.insertElement([2,Math.floor(h/2)],MapNodeObject,'node')
+    //place the first node in the middle at the left edge
+    placeNewNode(mapGrid,MapNodeObject);
 }
