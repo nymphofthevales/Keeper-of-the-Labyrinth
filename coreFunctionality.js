@@ -1,8 +1,3 @@
-//
-//For anything that prints to the document, 
-//and their pre-requisite functions for preparing 
-//data to be printed.
-//
 'use strict'
 
 function generateButton(number,text) {
@@ -72,11 +67,6 @@ function manageImage(action,url,location) {
         document.getElementById('image-positive').innerHTML = '';
     }
 };
-function clearFocus() {
-    let clr = document.getElementById('focus-clear');
-    clr.focus();
-    clr.blur();
-}
 function genActions(current) {
     manageImage('remove','all','');
     clearFocus();
@@ -104,6 +94,20 @@ function progression(current,destination_button_number) {
         console.log(`progressed to ${current.title} (${current.constructor.name})`)
     }
 }
+function redirect(time,current) {
+    console.log(`redirecting to next page in ${time/1000} seconds`)
+    setTimeout(()=>{progression(current)},time)
+}
+function loadPage(current,page_number) {
+    genActions(current);
+    page = page_number
+    print(current.getPage(page_number),current);
+    console.log(`${current.title} ${page} was loaded`);
+};
+//^ page printing and progression
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v story and ingame menu buttons
 function listen(buttonArray,current) {
     preloadCurrent = current;
      window.onbeforeunload = () => {
@@ -192,18 +196,10 @@ function initializeButtons() {
         })
     }
 }
-
-function redirect(time,current) {
-    console.log(`redirecting to next page in ${time/1000} seconds`)
-    setTimeout(()=>{progression(current)},time)
-}
-function loadPage(current,page_number) {
-    genActions(current);
-    page = page_number
-    print(current.getPage(page_number),current);
-    console.log(`${current.title} ${page} was loaded`);
-};
-//popup
+//^ story and ingame menu buttons
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v popup menus
 function sendPopup(type,content,current,backUpAble) {
     let popup = document.getElementById('popup-menu');
     let loadFrame = document.getElementById('load-popup')
@@ -273,48 +269,10 @@ function sendPopup(type,content,current,backUpAble) {
         }
     }
 }
-//journal
-function populateJournal() {
-    let journal = document.getElementById("journal-contents");
-    journal.innerHTML = '';
-    let PageInstances = SequenceInstances.concat(StoryNodeInstances);
-    for (let i = 0; i < visited.length; i++) {
-        for (let j=0; j<PageInstances.length; j++) {
-            if (PageInstances[j].title === visited[i]) {
-                if (PageInstances[j].constructor === Sequence) {
-                    for (let k = 0; k < PageInstances[j]._pages.length; k++) {
-                        journal.appendChild(document.createElement('p')).id = PageInstances[j].title + [k];
-                        let a = document.getElementById(PageInstances[j].title + [k]);
-                        a.innerHTML = PageInstances[j].getPage(k)[0];
-                    }
-                } else if (PageInstances[j].constructor === StoryNode) {
-                    journal.appendChild(document.createElement('p')).id = PageInstances[j].title + '0';
-                        let a = document.getElementById(PageInstances[j].title + '0');
-                        a.innerHTML = PageInstances[j]._text;
-                }
-            }
-        }
-    }
-}
-function setupJournalButtons() {
-    let tableOfContents = ['intro','ante','castRunes','enterProper','Fleeing','BridgeWall','Watching','ApproachWall','Lines','Pressing','BridgeGarden','Garden','Approach','Wands','Ignoring','dyingLight','corpses','darkWindow','mothNode','darkApproachTree','Falling','darkNoises','darkContemplation','crow','pit','Lights','scorn','alone','fungus','fungusCistern','enterCistern','echoesCistern','Blades','Apathy','Cowardice','Doubt','failApathy','failCowardice','failDoubt','drowningCistern','freeCistern','tools','swimCaveCistern','enterCave','Waiting','Altar','egress']
-    for (let i = 0; i < tableOfContents.length; i++) {
-        let b = document.getElementById('contents-button-' + tableOfContents[i]);
-        let journal_entry = document.getElementById(tableOfContents[i] + '0');
-        if (journal_entry === null) {
-            b.classList.add('invisible');
-        } else {
-            b.classList.remove('invisible');
-            b.addEventListener('click',()=>{
-                document.getElementById(tableOfContents[i] + '0').scrollIntoView();
-                clearFocus();
-            })
-        }
-    }
-}
-//
-//cursor and parallax
-//
+//^ popup menus
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v cursor and parallax
 let backgroundFront = document.getElementById('background-parallax-front')
 let backgroundBack = document.getElementById('background-parallax-back')
 let main_nav = document.getElementById('main-nav')
@@ -364,9 +322,10 @@ document.addEventListener('mousemove', (e)=>{
         neg.style.top = `${+(neg.offsetHeight/2)}px`
     }
   });
-//
-//main menu
-//
+//^ cursor and parallax
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v main menu
 let main_menu = document.getElementById('main-menu-overlay');
 let loading_overlay = document.getElementById('loading-overlay')
 document.getElementById('enter-button').addEventListener('click',()=>{
@@ -382,6 +341,7 @@ document.getElementById('enter-button').addEventListener('click',()=>{
     ingameMenuOpen = false;
 })
 document.getElementById('map-button').addEventListener('click',()=>{
+    placeMapSaveButtons();
     manageOverlays('show','map')
 })
 document.getElementById('options-button').addEventListener('click',()=>{
@@ -399,9 +359,10 @@ document.getElementById('credits-button').addEventListener('click',()=>{
 document.getElementById('main-quit-button').addEventListener('click',()=>{
     ipcRenderer.send('quitGame');
 })
-//
-//in game menu
-//
+//^ main menu
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v ingame menu
 let ingame_menu = document.getElementById('ingame-menu-overlay');
 document.addEventListener('keydown',(k)=>{
     if (k.code === 'Escape') {
@@ -423,13 +384,13 @@ document.getElementById('button-housing-10').addEventListener('mouseup',()=>{
     ingame_menu.classList.add('invisible')
     ingameMenuOpen = false;
 })
-//journal
+//ingame journal
 document.getElementById('button-housing-11').addEventListener('mouseup',()=>{
     populateJournal();
     setupJournalButtons();
     manageOverlays('show','journal')
 });
-//options
+//ingame options
 document.getElementById('button-housing-12').addEventListener('mouseup',()=>{
     manageOverlays('show','options')
 })
@@ -440,7 +401,10 @@ document.getElementById('button-housing-13').addEventListener('mouseup',()=>{
     mainMenuOpen = true;
     ingameMenuOpen = false;
 })
-
+//^ ingame menu
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v overlay management
 let overlay_close_array = document.querySelectorAll('.overlay-close');
 for (let i=0; i<overlay_close_array.length; i++) {
     if (overlay_close_array.length !==0) {
@@ -474,20 +438,27 @@ function manageOverlays(action,overlay) {
         }
     }
 }
-
+//^ overlay management
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v specific overlay functionality
+//v loading
 function runLoadingSequence() {
     manageOverlays('show','loading');
     setTimeout(()=>{manageOverlays('hide','all')},4500)
 }
-
+//^ loading
+//v credits
 document.getElementById('license-button').addEventListener('click',()=>{
     manageOverlays('show','font-license')
 })
 document.getElementById('license-button-2').addEventListener('click',()=>{
     manageOverlays('show','font-license-2')
 })
-
-//manage options
+//^ credits
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v options
 function manageTextOptions() {
     let textStylesheets = [
         document.getElementById('small-style'),
@@ -522,7 +493,6 @@ document.getElementById(`large-text`).addEventListener('change',()=>{
     manageTextOptions();
 })
 
-
 document.getElementById(`music-off`).addEventListener('mouseup',()=>{
     mainMusic._currentSong.pause();
     options['enableMusic'] = false;
@@ -552,8 +522,52 @@ document.getElementById(`parallax-off`).addEventListener('mouseup',()=>{
 document.getElementById(`parallax-on`).addEventListener('mouseup',()=>{
     options['enableParallax'] = true;
 })
-//document.getElementById('submit-options').addEventListener('click',setOptions)
-
+//^ options
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v journal
+function populateJournal() {
+    let journal = document.getElementById("journal-contents");
+    journal.innerHTML = '';
+    let PageInstances = SequenceInstances.concat(StoryNodeInstances);
+    for (let i = 0; i < visited.length; i++) {
+        for (let j=0; j<PageInstances.length; j++) {
+            if (PageInstances[j].title === visited[i]) {
+                if (PageInstances[j].constructor === Sequence) {
+                    for (let k = 0; k < PageInstances[j]._pages.length; k++) {
+                        journal.appendChild(document.createElement('p')).id = PageInstances[j].title + [k];
+                        let a = document.getElementById(PageInstances[j].title + [k]);
+                        a.innerHTML = PageInstances[j].getPage(k)[0];
+                    }
+                } else if (PageInstances[j].constructor === StoryNode) {
+                    journal.appendChild(document.createElement('p')).id = PageInstances[j].title + '0';
+                        let a = document.getElementById(PageInstances[j].title + '0');
+                        a.innerHTML = PageInstances[j]._text;
+                }
+            }
+        }
+    }
+}
+function setupJournalButtons() {
+    let tableOfContents = ['intro','ante','castRunes','enterProper','Fleeing','BridgeWall','Watching','ApproachWall','Lines','Pressing','BridgeGarden','Garden','Approach','Wands','Ignoring','dyingLight','corpses','darkWindow','mothNode','darkApproachTree','Falling','darkNoises','darkContemplation','crow','pit','Lights','scorn','alone','fungus','fungusCistern','enterCistern','echoesCistern','Blades','Apathy','Cowardice','Doubt','failApathy','failCowardice','failDoubt','drowningCistern','freeCistern','tools','swimCaveCistern','enterCave','Waiting','Altar','egress']
+    for (let i = 0; i < tableOfContents.length; i++) {
+        let b = document.getElementById('contents-button-' + tableOfContents[i]);
+        let journal_entry = document.getElementById(tableOfContents[i] + '0');
+        if (journal_entry === null) {
+            b.classList.add('invisible');
+        } else {
+            b.classList.remove('invisible');
+            b.addEventListener('click',()=>{
+                document.getElementById(tableOfContents[i] + '0').scrollIntoView();
+                clearFocus();
+            })
+        }
+    }
+}
+//^ journal
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v gallery
 function populateGallery(gallery) {
     let frame = document.getElementById('gallery-frame');
     frame.innerHTML = '';
@@ -561,7 +575,6 @@ function populateGallery(gallery) {
         frame.innerHTML += gallery.generatePreviewHTML(i);
     }
 }
-
 function setGalleryListeners() {
     let previews = document.querySelectorAll(".gallery-image-preview");
     for (let i = 0; i< previews.length; i++) {
@@ -572,7 +585,6 @@ function setGalleryListeners() {
         })
     }
 }
-
 function setGalleryBackButton() {
     document.getElementById('gallery-back-button').addEventListener('click',()=>{
         populateGallery(mainGallery);
@@ -580,7 +592,6 @@ function setGalleryBackButton() {
         setGalleryListeners();
     })
 }
-
 function manageGalleryUnlocks() {
     getMasterSave();
     let actions = sumOfActions(masterSave);
@@ -638,3 +649,60 @@ function manageGalleryUnlocks() {
         }
     }
 }
+//^ gallery
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v map
+function mapSaveButton(date,timestamp) {
+    return `<button class=\"map-save-button\" id=\"map-save-${timestamp}\"><div id=\"map-save-${timestamp}-grid\"><h3>${date}</h3></div></button>`
+}
+function placeMapSaveButtons() {
+    getMasterSave();
+    let saves = sortSaveObject(masterSave);
+    let d = Object.keys(saves);
+    console.log(d)
+    let dates = [];
+    let buttons = [];
+    let nav = document.getElementById('map-saves-list');
+    for (let i=0; i < d.length; i++) {
+        let s = d[i].split('/');
+        let date = `${s[0]}/${s[1]}/${s[2]}`;
+        date = dateStampToWords(date);
+        let timestamp = parseInt(s[3]);
+        dates.push([d[i],date,timestamp])
+    }
+    dates = dates.sort(function(a, b){return b[2]-a[2]});
+    nav.innerHTML = '';
+    for (let i=0; i < dates.length; i++) {
+        nav.innerHTML += mapSaveButton(dates[i][1],dates[i][2])
+        buttons.push([`map-save-${dates[i][2]}`,dates[i][0]]);
+    }
+    console.log(buttons);
+    for (let i=0; i<buttons.length; i++) {
+        buttons[i][0] = document.getElementById(`${buttons[i][0]}`)
+        buttons[i][0].addEventListener('click',()=>{
+            printMap(saves[`${buttons[i][1]}`]);
+            selectMapButton(buttons,i);
+        })
+    }
+    return buttons;
+}
+
+function printMap(saveObject) {
+    console.log(['printing',saveObject])
+}
+function selectMapButton(buttonArray,refNumber) {
+    for (let i=0; i<buttonArray.length; i++) {
+        let node = buttonArray[i][0]
+        if (i === refNumber) {
+            //node.style.backgroundImage = "./assets/ui/map-button-selected.png";
+            node.style.backgroundColor = "red";
+        } else {
+            //node.style.backgroundImage = "./assets/ui/map-button-unselected.png"
+            node.style.backgroundColor = "transparent"
+        }
+    }
+}
+//^ map
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////

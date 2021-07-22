@@ -1,8 +1,3 @@
-//
-//For inserting all page data by using the Sequence 
-//and StoryNode constructors and their methods.
-//
-
 'use strict'
 
 const credits = new StoryNode();
@@ -35,7 +30,11 @@ enterCave.title="enterCave"
 enterCave.addPage('As the ground slopes upward enough to stand, I step carefully forward until I emerge in front of the cave. The ceiling is comfortable enough to stand under, at least for now, and the depth of the cave awaits me.','enter');
 enterCave.addBatchPage(['It feels like it\'s unfinished somehow. Like the <span class="labyrinth-color">labyrinth</span> is still approaching its final form, still carving its walls here and the rough stone is only temporary. Like I\'m seeing something private.','And somehow, despite being soaked to the bone, I am warm here. In defiance of the winter beyond the walls of the <span class="labyrinth-color">labyrinth</span> this vast artery is full of warmth. The walls hum with it; pulsating the deepest energies of the <span class="labyrinth-color">labyrinth</span> toward its heart. It seems to me now that the end of my journey is in sight.'],'next');
 enterCave.setNext(Cave);
-
+//^ cave
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v free
 const swimCaveCistern = new Sequence();
 swimCaveCistern.title="swimCaveCistern"
 swimCaveCistern.addBatchPage(['I turn in the water and begin the rhythmic motions of my arms to pull myself forward, kicking my legs in a frog like manner so as not to disturb the surface of the water with violent splashing. It would feel wrong to make so much noise in this place. After my struggle I want to savour the quiet somewhat.','I learned to swim when I was a child, in a little lake in the hills above the village. My father would take us on warm summer days, and my cousins and I would all play in the water, so joyful and carefree, then dry off in the sun and share a picnic lunch—fresh bread and fruit, not jam but the real thing, ripe and sweet and juicy.<br><br>It\'s been a long time since I\'ve swum. But it feels good to have the water against my skin.'],'next')
@@ -63,7 +62,11 @@ freeCistern.title="freeCistern"
 freeCistern.addPage('I did it—I bested them all! I\'m free!<br><br>I feel my chest heave, and race toward the surface. My heartbeat pounds in my waterlogged ears as I break the surface and gulp in the open air. I relax, and breathe deep and slow, then allow myself to drift onto my back and float freely for a moment.','rest')
 freeCistern.addBatchPage(['When I look up at the ceiling of the cistern, there are no stars. No drifting lights to surround me, no warmth to reach out for. I am alone. Yet that aloneness does not feel as strange as it once did—I feel that I am beginning to know myself now; that I can choose who I am, can become what I will, whether other see me or not. Their words may bolster me, may inform me, but not define me.<br><br>I am not cold here—the waters which surround me are oddly warm, and I am buoyant in them. I feel safe.'],'next')
 freeCistern.setNext(tools);
-
+//^ free
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v drowning
 const drownedEndOnward = new StoryNode();
 drownedEndOnward.title="drownedEndOnward"
 drownedEndOnward.setText('Perhaps \'nothing\' is what I want. But I am awake. And I yet remain.<br><br>As much as I will it, it seems the labyrinth will not let me fade away. My task is not done. If anything, this is a part of it. Somehow, I find my resolve. Even if all is lost, the future doesn\'t have to be. This pain can\'t last forever. What else can I do?');
@@ -99,7 +102,11 @@ drowningCistern.addPage('','');
 //redirect functionality tbd
 drowningCistern.addBatchPage(['When I awaken I am not sure if I\'m only dreaming. I am…here, wherever \'here\' is, but my body feels wrong around me. Like I\'m sitting in someone else\'s corpse. I know this must be my body but it still feels wrong, my fingers just a millimetre too long or too short, my boots not fitting quite right, my chest too flat, or my eyes too wide apart. Little gaps in my form, alterations where should be none. I try to banish the feeling but it persists. It is in my bones.','I take stock of my surroundings.<br><br>I am lying on my back on cold hard stone and I am soaking wet. The ground here slopes gently downward to my left, and still water rises to meet it. My left arm and leg are draped into the water, like it just spat me out here, still slick with saliva. I can see far off in the water the columns of the cistern—it seems that I am now in the mouth of a cave, burrowing into the cistern wall.','My bag and all my tools are gone. My cloak, a witch\'s first shield, woven by my own hand, lost to the waters. And my knife, my last tooth, gone too.<br><br>I begin to wonder if I\'ll even last to the end of my journey. Surely this is the end. Surely I can go on no more. Without my cloak I don\'t even carry the mark of Keeper, without my tools how can I call myself a witch? If I am neither then why go on?','<i>That\'s not the point and you know it. This is not a journey for either of those selves. This is a journey for you. It\'s not about sacred duty, or following the steps of your teacher, or the responsibility placed on you by the village, not in the end. It\'s about You. You are the only thing that makes this journey real.</i><br><br>Fuck.'],'next')
 drowningCistern.setNext(drowningNode)
-
+//^ drowning
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v blades
 const Apathy = new StoryNode();
 Apathy.title="Apathy"
 Apathy.setText('I twist around in the water and let myself face downward to reach the figure who adhered herself to my legs, then bring my knife down viciously with both hands to meet her heart. When I do, she latches onto my arm in a futile attempt to sink me with her. I let my willpower channel through the cold steel:<br><br>I will not let apathy drown me again. I will fight for the things I care about, and take responsibility for my actions.<br><br>And her power fades—where that lurid blue glow had been, only the black water remains.');
@@ -150,7 +157,11 @@ const Blades = new Sequence();
 Blades.title="Blades"
 Blades.addBatchPage(['I lean forward with a both hands on the rim of the basin and try to catch my reflection in the surface. The moment I do, the gleaming liquid rises rapidly until it overflows, spilling into the inky black waters of the cistern around me. I leap back in fear.','The glow then rises in a narrow column before me and swirls into a bodily form echoing my own. She sags forward from atop the basin to match my height, her torso convulsing unnaturally in the process. Her featureless face gazes into mine with what seems almost like curiosity—or mockery—as her sisters rise in similar fashion. I turn, and see three glowing, rippling figures now surround me.<br><br>Before I have a chance to react, they reach out in unison, seize me by the neck, and hurl me into the deep. My screams of shock are muffled by the water already forcing its way down my throat. My cloak slips from my shoulders and I lose track of my bag in the tumult.','I struggle for a moment to orient myself, then claw my way forth, breaching the surface as a spluttering, coughing, mess. I clear my drenched hair from my face just enough to see that the glowing figures are now gone, then manage to gulp down a breath of air before my torso and legs are seized and I am dragged below the depths once more.','This time I\'m ready for it, and I do my best to stay calm and hold my breath. My eyes sting like hell when I open them, but I need to know my enemy. One holds my legs, pulling me down with her dead weight. Another hugs me from behind, trying to crush the breath out of my lungs. The last grips her hands tightly around my skull and cranes her neck to whisper softly, sickeningly sweet, in my ear.<br><br>Her drowned voice utters words I know I have heard before:<br><i>\"You don\'t know what you\'re doing. Just give up...Wouldn\'t it be so nice to rest? What reason have you to go on? Sleep here with us, little sister.\"</i>','And in a moment of epiphany, I recognize these three sisters.<br><br>My apathy. My cowardice. My doubt.<br><br>Each a mirror, a facet of me, and each determined to destroy me. They have dogged my steps every moment in this <span class="labyrinth-color">labyrinth</span>, and every moment of my life before I entered. Every choice I\'ve made, they\'ve been there. Whatever formed them—forces from within me or outside me—they have done nothing but dull my tooth, slow my step, drag me down.'],'next');
 Blades.setNext(Cut);
-
+//^ blades
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v cistern
 const echoesCistern = new Sequence();
 echoesCistern.title="echoesCistern"
 echoesCistern.addBatchPage(['A vast cistern. It is like nothing I have ever seen. I have heard word of such constructions in far-off cities but never imagined to see such a thing in my life, let alone here.','The walkway itself is submerged just below the surface of the water, such that my every step echoes with a quiet <i>splash</i> and sends a ripple out across the surface of the expanse.','The crests and troughs of each new step overlap with the last to create unendingly unique patterns, mirages, twisted reflections which show not myself but an infinite array of <em>possible</em> selves, each a reply to that before her, iterating toward some final shape which remains unknown but which I know must appear if I take just another step.<br><br>And so I do.<br><br>Onward and onward, I let myself echo out into that inky water, and the question which echoes back is not <i>"Who am I,"</i> nor <i>"Who will I be,"</i> but <i>"Who</i> could <i>I be?"</i> What possibilities lie ahead of me, previously unseen?'],'next');
@@ -167,7 +178,11 @@ fungusCistern.title="fungusCistern"
 fungusCistern.addPage('No longer wanting to touch the walls, I merely feel out each step gingerly before setting my foot down. This method rewards me when I feel an empty space where the floor should be—a step down—and do <em>not</em> fall like I did at the entrance to the pit. A short flight of stairs leads me down to another archway like the one through which I entered.','gaze beyond');
 fungusCistern.addPage('The chamber beyond glistens like moonlight upon the ocean, though the source of the light is unclear. There lies a narrow walkway here which recedes into obscurity, with an endless depth of water below it on all sides, and great stone columns support the ceiling at regular intervals, which continue endlessly into every distance.','enter');
 fungusCistern.setNext(echoesCistern);
-
+//^ cistern, act 3
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v pit, act 2
 const fungusHand = new Sequence();
 fungusHand.title="fungusHand"
 fungusHand.addPage('I shake my hand slightly to dislodge as much of its mass as I can, but don\'t want to stain my cloak with it. Feeling filthy, I carry on.','continue');
@@ -230,7 +245,11 @@ FallToPit.title = "FallToPit"
 FallToPit.addPage('I rise, and stumble forth a few steps.','Look up')
 FallToPit.addPage('To my surprise, there is a chamber before me.','next')
 FallToPit.setNext(beatRises);
-
+//^ pit
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v dark
 const Falling = new Sequence();
 Falling.title="Falling"
 Falling.addPage('I step forward into the void, one foot in front of the other, endlessly, incautious. Where my hand rests upon the wall the skin becomes rough and sore in time, worn from the friction against the stone.','next');
@@ -266,7 +285,11 @@ const darkAnotherCandle = new Sequence();
 darkAnotherCandle.title="darkAnotherCandle"
 darkAnotherCandle.addPage('Pocketing the burnt-out stub, I bring out a fresh candle, and light my way once more.','Continue')
 darkAnotherCandle.setNext(darkApproachBench)
-
+//^ dark
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v crow, tree
 const darkDescendTree = new StoryNode();
 darkDescendTree.title="darkDescendTree"
 darkDescendTree.setText('I leave, not sure what to think. I descend the wall in much the same manner as before and reach the bottom safely. When I do, I see that my candle has burned out. Thankfully, I have another few in my bag.');
@@ -629,7 +652,11 @@ crow.addOption('<i>I...I\'m not sure.</i>',crow_1)
 crow.addOption('<i>To pass through these halls and passages.</i>',crow_2)
 crow.addOption('<i>To see it, like I said. To find what I can within.</i>',crow_3)
 crow.addOption('<i>I was told of some quarry residing at the centre...</i>',crow_4)
-
+//^ crow
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v tree
 const darkTreeAscent = new Sequence();
 darkTreeAscent.title="darkTreeAscent"
 darkTreeAscent.addBatchPage(['I place my candle down carefully against the base of the wall.<br><br>Gripping the branch near its base, I carefully search for a foothold. With my toe between a gap in the stones, I raise myself up into the arms of the oak, and climb.','There are cliffs on the north side of the village that I used to climb as a youth—my strength\'s not where it used to be, but despite my struggle the roots of the tree seem eager to have me, and strong. I enjoy the act of it. There\'s something healing about pulling oneself toward the sky, reaching to find someplace higher.','At last I stand atop the wall, one hand still on the trunk of the tree for support. The weak flame of my candle, far below, still illuminates the passage from which I came. As I look out and away towards the rest of the labyrinth, there is little light.However, from this vantage, a faint, ever-present glow seems to rise from the very stones, creating a horizon around me, allowing view of rings of passages spiralling out, curving away into the dark. So many paths. Which ones have I taken? Which ones are the right ones to take, on my journey to the centre?','Try as I might, I cannot fathom the structure of the whole thing.','I stand there in the night, supported by the tree, pondering for a moment.','Then, a form ripples through the night: a crow, dressed in ink. It lights upon a branch near me with silent grace, and looks at me, curious.'],'next')
@@ -662,7 +689,11 @@ darkApproachTree.title="darkApproachTree"
 darkApproachTree.addPage('This passage winds like a river, undulating left and right, the walls flowing around me as I step forth.<br><br>I realize past a certain point that I\'ve lost track of the silhouette I saw before—the walls are too high around me to discern anything above.','continue')
 darkApproachTree.addBatchPage(['Something lashes out from the darkness, scratching my face and tangling in my hair. I feel a sharp and painful tug at my scalp, and a searing pain across my cheek, the skin sensitive in the cool air. I jump, turning rapidly to face whatever it is.','Where the light of my candle catches on it, a pattern spirals outward, like cracks upon a stone crumbling into the sea, lightning paused in mid-air, hovering just at eye level, dizzying in perspective, reaching toward and away from me, twisting and branching at regular intervals which must be geometrically perfect if only viewed from the right angle—but what vantage point could that be, how could the complexity of such a thing be seen all at once, be truly understood?','It\'s a tree, growing over and through the wall of the labyrinth. Its roots curl and grasp around the huge stones, sending it sprawling at odd angles, its branches filling the sky over the passageway.<br><br>I cannot quite tell what type of tree it is in the gloom—oak, perhaps? This must be the towering silhouette I noted before.'],'next')
 darkApproachTree.setNext(darkTreeNode);
-
+//^ tree
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v noises
 const darkNoisesSecondChamberEntry = new Sequence();
 darkNoisesSecondChamberEntry.title = "darkNoisesSecondChamberEntry"
 //content tbd
@@ -728,8 +759,11 @@ darkIntersectionLeft.title = "darkIntersectionLeft"
 darkIntersectionLeft.setText('Again I reach an intersection. One path winds away, curving out of sight. Looking off into the distance I see a silhouette against the sky towering over it. The other seems empty at first, but as I stare into it, I see…ripples, waves pulsating out of the darkness, in some yet-unseen pattern.');
 darkIntersectionLeft.addOption('Enter the rippling dark',darkNoises);
 darkIntersectionLeft.addOption('Follow the curving path',darkApproachTree);
-
-// moth encounter
+//^ noises
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v moth
 const mothBurns = new Sequence();
 mothBurns.title="mothBurns"
 mothBurns.addPage('The moth darts toward my candle, and before I can stop it, buries itself in the flame. Its tiny body shrivels, and in seconds it is naught more than ash, and falls to the ground. The idiom—like a moth to flame—is true then, I suppose.','next');
@@ -757,7 +791,11 @@ leftDark1.addPage('It calls me ever onward.','Take another step');
 leftDark1.addPage('On and on, spiraling forth in the sea, a whirlpool of shadow surrounding me.','Take another step');
 leftDark1.addPage('And then the strangest thing happens.','next');
 leftDark1.setNext(mothNode);
-
+//^ moth
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v window
 const windowIntersection = new StoryNode();
 windowIntersection.title="windowIntersection"
 windowIntersection.setText('I wander onward for a time, with the darkness feeling as if it\'s a presence around me. More than once I find myself stumbling, bumping into one of the walls of the labyrinth, as if it just appeared from the void. I\'m starting to get tired.<br><br>Soon, I come to an intersection; it takes the form of a Y, a narrow wedge pushing towards me from the dark, splitting the path in two. To the right, the darkness seems to shimmer. To the left, I see the shadow of some distant silhouette reaching over the labyrinth walls.');
@@ -837,7 +875,11 @@ const rightDark1 = new Sequence();
 rightDark1.title="rightDark1"
 rightDark1.addPage('I let the wall guide me, running my hand along it as I am carried further into the darkness. I come to expect a particular pattern: smooth stone, undulating along its surface, perhaps a<br>r<br>ough<br>p<br>atch<br>—lichen—<br>following the steady pattern of the surface, then a<br> gap,<br> where stone meets mortar and mortar meets stone.','continue');
 rightDark1.setNext(darkWindow);
-
+//^ window
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v corpses
 const deadEnd = new StoryNode();
 deadEnd.title="deadEnd";
 deadEnd.setText('A wall emerges out of the darkness, directly in front of me.');
@@ -871,7 +913,11 @@ corpses.title="corpses"
 corpses.setText('I stumble over something small and round like pebbles. My light isn\'t enough to see quite what it is.');
 corpses.addOption('Crouch down for a closer look',corpsesLook);
 corpses.addOption('Keep moving',corpsesContinue)
-
+//^ corpses
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v dark entry
 const straightDark1 = new Sequence();
 straightDark1.title="straightDark1"
 straightDark1.addPage('I relinquish my hold on the wall, and press forward. When I do, I don\'t meet another wall, just empty darkness surrounds me.','push onward')
@@ -900,7 +946,11 @@ dyingLight.title="dyingLight"
 dyingLight.addPage('One footstep runs into another, and soon I find that the light has died around me. Despite having entered at noon the sun must now have set.<br><br>I stand in the pitch dark, suddenly disoriented.','Reach out for a guide');
 dyingLight.addPage('With my hands out in front of me I search blindly for a wall, but find nothing. Only empty blackness before me.<br><br>I take another step, and begin to panic. This passageway was no more than a pace across, it must be just beyond reach, I\'m sure—','Stumble further');
 dyingLight.setNext(dark);
-
+//^ dark
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v garden
 const approachQuietly = new Sequence();
 approachQuietly.title="approachQuietly"
 approachQuietly.addPage('I approach, trying not to disturb them.','next')
@@ -963,7 +1013,11 @@ const BridgeGarden = new Sequence();
 BridgeGarden.title="BridgeGarden"
 BridgeGarden.addBatchPage(['My footsteps carry me deeper into the <span class="labyrinth-color">labyrinth</span>\'s halls, and with every step I feel a sense of growing unease. Despite being composed of naught but stone, this place does not feel still. Whether reality or hallucination, at times the walls seem to shift and move, to press in on me or bulge out like alveoli taking in breath. It seems to live. Is it growing, too? Forming new paths somewhere deep within? Or perhaps, right in front of me, as I traverse them? In some way every turn creates a new path, every stone only existing as it comes into my view.','As I navigate a nauseating series of passageways—left, right, right, left, straight, left—I wonder about what it is to be alive.<br><br>The very definition of life is antithetical to stagnation. Life is motion—blood pumping, waves crashing, lungs compressing, wind whistling, muscles contracting, predator pouncing, all a part of the great dance of the universe. Decay, too, is life. As one life ends and moves into another form it is part of the life of the world as a whole. If this change from one state to the next is life, then death and birth are the same on different scales. And as long as one part moves, the whole lives.','To live is to change.<br><br>To want to stay the same is, then, not only self-destructive but disruptive to the greater order of the universe. Then why do we crave so dearly that which is comfortable and safe? It is such a careful dance, to balance the desire for comfort and the need for growth.'],'Next');
 BridgeGarden.setNext(Garden);
-
+//^ garden
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v wall
 const Pressing = new Sequence();
 Pressing.title="Pressing"
 Pressing.addBatchPage(['The gap is very narrow, but, determined, I turn to my side and squeeze through.','The stones of the wall lie heavy around me. My breaths are shallow and forced.','It\'s a funny thing to take space for granted.','In all the universe there is so much of it, but here, <em>here</em>, there is so very little.'],'next');
@@ -1092,7 +1146,11 @@ const enterProper = new Sequence();
 enterProper.title="enterProper"
 enterProper.addBatchPage(['My teacher never spoke much of my future role as Keeper of the Labyrinth—she treated it as something that I would need to experience for myself when the time came, that no guidance could truly prepare me for what I\'m confronting here:<br><br>\"It\'s something you\'ll have to figure out on your own, dear. The <span class="labyrinth-color">labyrinth</span> is something different to me than it was to my teacher, and when you enter, you will have to decide what it is to you. It won\'t be an easy task. That is the only thing I can assure you of. But promise me you will not falter in traversing it; you must be brave, or as brave as you can be.\"'],'Next');
 enterProper.setNext(LabyrinthProper);
-
+//^ act 2
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v act 1
 const MoveOnAnte = new Sequence();
 MoveOnAnte.title='MoveOnAnte'
 MoveOnAnte.addPage('I can\'t dawdle here; I need to get moving before I lose my light.<br><br>With no time to waste, I advance into the <span class="labyrinth-color">labyrinth</span> proper.','Continue')
@@ -1172,8 +1230,11 @@ intro.title='intro'
 intro.addBatchPage(['The ice of the bay stretches out endlessly before the jagged black slate beach. Its shimmer is dead under the sunless sky.','Today is the day of solstice. The time for the sacred rite for which I have been preparing all year has finally come.','The gate of the <span class="labyrinth-color">labyrinth</span> watches us as we approach. I can feel its gaze beating down and I turn up the hood of my cloak against it. My cloak is wool; heavy against the bitter wind and rough against my skin. But it is warm, thankfully, and its weight is a comfort to me despite the mark of my station upon the collar.','The <span class="labyrinth-color">labyrinth</span> has been here longer than anyone can remember. Some say it was never built, but born. Either way, at this point it\'s more a part of the land than it is a structure upon it; its granite stones rise far above the crashing waves, solid in their roots. Whatever tectonic god placed them here intended them to stay a long time. But even stone crumbles eventually.','The most important thing is the boundaries: between dead and living, self and other, light and darkness, seen and unseen.<br><br>But there are no boundaries, really, are there?<br><br>No such thing as light nor shadow, just shades of grey blending together until suddenly what you thought <em>was</em> is something else. Blurred shapes darting through your periphery. Despite this, we have to delineate these boundaries. Obelisk in the woods, talisman on the door, walls drawing the line around our little village. It keeps us safe. Keeps what\'s out there, there, and what\'s here, here. Even if it is abstract.<br><br>It\'s all we can do.','Since no boundary is absolute, the walls of the <span class="labyrinth-color">labyrinth</span> cannot be thought of as containing anything. They hold no space between them, only distort it, twist what would be a straight path into a curved one, wend it back on itself into a horseshoe, a spiral. What the <span class="labyrinth-color">labyrinth</span> contains is unstoppable. The only thing that can be done is to put time and space between it and us.<br><br>That\'s my job, as Keeper of the Labyrinth.'],'next')
 intro.addPage('The men, here to see me off, wait at the gate. They do not feel its gaze, though they can see the vast eye carved on its keystone just the same. It is my sacred duty alone to enter the <span class="labyrinth-color">labyrinth</span>, and navigate its winding passageways to the centre where my quarry rests. On the shortest day of each year, the village witch, taking the title of Keeper, is sent away into those frozen halls to meet with it, eschewing the warm fires and feasting of the village\'s Midwinter festival for a greater task. Since the passing of my teacher last spring, this year it is my turn.<br><br>My boots scuff softly as I stop in the entrance.', 'enter')
 intro.setNext(enter);
-
-//upload gallery images
+//^ story content
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v gallery content
 const mainGallery = new Gallery();
 //format: numerical identifier, unlocked, title, description, url, has shadow (functionality for shadow + parallax not done yet)
 mainGallery.addItem(0,true,'The Labyrinth','Its twisting passages hearken.','./assets/ui/labyrinth_logo.png',false)
@@ -1202,8 +1263,11 @@ mainGallery.addItem(16,false,'The Knife','An unused inventory sprite created ear
 mainGallery.addItem(17,false,'Drowning','Darkness encroaches on the edges of my vision, and I choke as I feel the water take me.','./assets/artwork/drowning.png',true)
 
 mainGallery.addItem(18,false,'The Watching Masks','How could we know her until she chooses to know herself?','./assets/artwork/watching_mask.png',true)
-
-//upload music files
+//^ gallery content
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v music content
 const mainMusic = new Music();
 mainMusic.addSong('ingress',"./assets/music/ingress.m4a")
 mainMusic.addSong('exploration',"./assets/music/exploration.m4a")

@@ -1,24 +1,10 @@
-//
-//For all constructor functions and the global 
-//variables to store their results.
-//
-
 'use strict'
 
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v story content
 let SequenceInstances = [];
 let StoryNodeInstances = [];
-
-let options = {
-    "textSize":"default",
-    "enableMusic":true,
-    "volume":25,
-    "enableParallax":true,
-    "enableWarnings":false
-}
-
-function capitalize(s) {
-    return s.charAt(0).toUpperCase() + s.slice(1);
-}
 function Sequence() {
     this.title = String();
     this._pages = new Array(0),
@@ -105,8 +91,10 @@ StoryNode.prototype.getDestinations = function() {
 StoryNode.prototype.setText = function(text) {
     this._text = String(text);
 }
-
-
+//^ story content
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v gallery
 function GalleryItem(unlocked,title,description,src,hasShadow) {
     this.unlocked = unlocked;
     this.title = title;
@@ -172,8 +160,17 @@ Gallery.prototype.unlock = function(title) {
         }
     }
 }
-//Gallery[1].unlock('lines')//be able to say this, causes data to be updated such that next time gallery is opened, instead of default description and hidden icon, the real image prints and the real description can be read once it's opened in the inspector window.
-
+//^ gallery
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v music
+let options = {
+    "textSize":"default",
+    "enableMusic":true,
+    "volume":25,
+    "enableParallax":true,
+    "enableWarnings":false
+}
 function Music() {
     this.songs = {};
     this._currentSong = undefined;
@@ -267,13 +264,258 @@ Music.prototype._fadeIn = function(seconds) {
     }
     fadeMusic(seconds,this._currentSong)
 }
-
-function MapNode(title) {
+//^ music
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v grid 
+function Grid(w,h,s) {
+    this.columns = w;
+    this.rows = h;
+    this.cellSize = s;
+    this.array = [];
+    for (let i=1; i <= (w * h); i++) {
+        this.array.push(new MapTile(i,this,'o'))
+    }
+    this.print();
+}
+Grid.prototype.getRow = function(num) {
+    return this.array.slice(num*this.columns,(num*this.columns) + this.columns);
+}
+Grid.prototype.getColumn = function(num) {
+    let column = [];
+    for (let i=0; i<this.rows; i++) {
+        column.push(this.array[num + (i * this.columns)])
+    }
+    return column;
+}
+Grid.prototype.insertElement = function(coordinateArray,element,type) {
+    let y = coordinateArray[1];
+    let x = coordinateArray[0];
+    let row = (y-1) * this.columns;
+    let posXY = row + (x-1);
+    if (element === 'node') {
+        //this.array[posXY] = new MapNode([x,y],this,type)
+        this.array[posXY] = element;
+    } else if (element === 'tile') {
+        this.array[posXY] = new MapTile([x,y],this,type)
+    }
+    document.getElementById(`cell-${x}-${y}-content`).textContent = type;
+}
+Grid.prototype.getElement = function(coordinateArray) {
+    let y = coordinateArray[1];
+    let x = coordinateArray[0];
+    let row = (y-1) * this.columns;
+    let posXY = row + (x-1);
+    return this.array[posXY];
+}
+Grid.prototype.print = function() {
+    createDOMGrid(this);
+    drawGrid(this);
+    populateGrid(this);
+}
+Grid.prototype.getNodeList = function() {
+    let MapNodeList = [];
+    for (let i=0; i<this.array.length; i++) {
+        if (this.array[i].constructor === MapNode) {
+            MapNodeList.push(this.array[i]);
+        }
+    }
+    return MapNodeList;
+}
+//^ grid object constructor
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v map node and tile constructors
+function MapNode(coordinate,GridObject,title) {
     this.title = title;
+    this.parentGrid = GridObject;
     this.pageObjects = [];
     this.pageNum = 0;
-    this.post = [];
-    this.pre = {};
     this.highlighted = false;
+    this.linkages = [];
+    this.position = [];
+    this.distance = 0;
+    if (typeof coordinate === 'object') {
+        this.position = coordinate;
+    }
 }
-MapNode.prototype
+MapNode.prototype.addLinkage = function(MapNodeObject) {
+    this.linkages.push(MapNodeObject);
+}
+function MapTile(number,GridObject,type) {
+    this.type = type;
+    this.position = [];
+    this.parentGrid = GridObject;
+    this.distance = 0;
+    let y = number % GridObject.columns;
+    if (typeof number === 'number') {
+        if (y > 0) {
+            this.position[0] = y;
+            this.position[1] = Math.floor(number/GridObject.columns) + 1;
+        } else if (y === 0) {
+            this.position[0] = GridObject.columns;
+            this.position[1] = Math.floor(number/GridObject.columns);
+        }
+    } else if (typeof number === 'object') {
+        this.position = [number[0],number[1]];
+    }
+}
+MapTile.prototype.getAdjacent = function(direction) {
+    switch (direction) {
+        case 'left':
+            if (this.position[0]-1 !== 0) {
+                return this.parentGrid.getElement(
+                    [this.position[0]-1,this.position[1]]
+                    );
+            } else {
+                return undefined;
+            }
+        case 'right':
+            if (this.position[0]+1 <= this.parentGrid.columns) {
+                return this.parentGrid.getElement(
+                    [this.position[0]+1,this.position[1]]
+                    );
+            } else {
+                return undefined;
+            }
+        case 'above':
+            if (this.position[1]-1 !== 0) {
+                return this.parentGrid.getElement(
+                    [this.position[0],this.position[1]-1]
+                    );
+            } else {
+                return undefined;
+            }
+        case 'below':
+            if (this.position[1]+1 <= this.parentGrid.rows) {
+                return this.parentGrid.getElement(
+                    [this.position[0],this.position[1]+1]
+                    );
+            } else {
+                return undefined;
+            }
+    }
+}
+MapTile.prototype.setType = function(string) {
+    this.type = string;
+    //console.log(this.position);
+    document.getElementById(`cell-${this.position[0]}-${this.position[1]}-content`).textContent = string;
+}
+function generateGridTemplate(GridObject,type) {
+    let s = '';
+    switch (type) {
+        case 'columns':
+            for (let i=0;i<GridObject.columns; i++) {
+                s += `${GridObject.cellSize} `
+            }
+            return s;
+        case 'rows':
+            for (let i=0;i<GridObject.rows; i++) {
+                s += `${GridObject.cellSize} `
+            }
+            return s;
+    }
+}
+//^ map node and tile constructors
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v grid print functions
+function createDOMGrid(GridObject) {
+    document.getElementById('map-housing').appendChild(document.createElement('div')).id=`GeneratedGrid`;
+    const a = document.getElementById('GeneratedGrid')
+    a.style.display = 'grid';
+    a.style.margin = '0';
+    a.style.gridTemplateColumns = generateGridTemplate(GridObject,'columns');
+    a.style.gridTemplateRows = generateGridTemplate(GridObject,'rows');
+
+}
+function drawGrid(GridObject) {
+    let g = document.getElementById('GeneratedGrid')
+    g.innerHTML = '';
+    for (let i=1; i<=GridObject.rows; i++) {
+        for (let j=1; j<=GridObject.columns; j++) {
+            g.appendChild(document.createElement('div')).id= `cell-${j}-${i}`
+            let cell = document.getElementById(`cell-${j}-${i}`);
+            cell.style.gridColumn = `${j}/${j+1}`;
+            cell.style.gridRow = `${i}/${i+1}`;
+            cell.style.backgroundColor = `rgb(0,0,0)`
+            cell.style.height = `${GridObject.cellSize}`;
+            cell.style.width = `${GridObject.cellSize}`;
+            //cell.style.border = '1px solid white'
+            //cell.style.textAlign = 'center'
+            cell.style.display = 'relative'
+        }
+    }
+}
+function populateGrid(GridObject) {
+    for (let y = 1; y <= GridObject.rows; y++) {
+        for (let x = 1; x <= GridObject.columns; x++) {
+            let cell = document.getElementById(`cell-${x}-${y}`);
+            cell.innerHTML = '';
+            cell.appendChild(document.createElement('p')).id= `cell-${x}-${y}-content`
+            let p = document.getElementById(`cell-${x}-${y}-content`)
+            p.style.margin = 0;
+            p.style.padding = 0;
+            //p.style.color = `rgb(255,255,255)`
+            p.innerText = GridObject.getColumn(x-1)[y-1].type; //SHOULD SET TYPE HERE
+            p.style.display = 'absolute'
+            //p.style.left = `${(1/2)*GridObject.cellSize}px`;
+            //p.style.top = `${(1/2)*GridObject.cellSize}px`;
+        }
+    }
+}
+//^ grid print functions
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v misc utility functions
+function capitalize(s) {
+    return s.charAt(0).toUpperCase() + s.slice(1);
+}
+function getRandomInt(max) {
+    return Math.ceil(Math.random() * max);
+    //returns non-zero integer
+}
+function isEven(number) {
+    let check = number/2;
+    const regex = new RegExp('\\.');
+    return !regex.test(''+check);
+};
+function dateStampToWords(date/* date as string in format "year/month/day" */) {
+    let a = date.split('/');
+    let year = a[0];
+    let month = a[1];
+    let day = a[2];
+    let months = ['January','February','March','April','May','June','July','August','September','October','November','December']
+    month = months[month];
+    let s = day.charAt(day.length-1)
+    switch (s) {
+        case 0: day += 'th'
+        break;
+        case 1: day += 'st'
+        break;
+        case 2: day += 'nd'
+        break;
+        case 3: day += 'rd'
+        break;
+        case 4: day += 'th'
+        break;
+        case 5: day += 'th'
+        break;
+        case 6: day += 'th'
+        break;
+        case 7: day += 'th'
+        break;
+        case 8: day += 'th'
+        break;
+        case 9: day += 'th'
+        break;
+    }
+    return `${month} ${day}, ${year}`
+}
+function clearFocus() {
+    let clr = document.getElementById('focus-clear');
+    clr.focus();
+    clr.blur();
+}
+//^ misc utility functions
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
