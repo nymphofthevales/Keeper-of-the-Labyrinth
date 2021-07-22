@@ -1,10 +1,12 @@
+'use strict'
+
 function Grid(w,h,s) {
     this.columns = w;
     this.rows = h;
     this.cellSize = s;
     this.array = [];
     for (let i=1; i <= (w * h); i++) {
-        this.array.push(new MapTile(i,this,'o'))
+        this.array.push(new MapTile(i,this,'<^v>'))
     }
 }
 Grid.prototype.getRow = function(num) {
@@ -17,9 +19,11 @@ Grid.prototype.getColumn = function(num) {
     }
     return column;
 }
-Grid.prototype.insertElement = function(x,y,element,type) {
+Grid.prototype.insertElement = function(coordinateArray,element,type) {
+    let y = coordinateArray[1];
+    let x = coordinateArray[0];
     let row = (y-1) * this.columns;
-    posXY = row + (x-1);
+    let posXY = row + (x-1);
     if (element === 'node') {
         //this.array[posXY] = new MapNode([x,y],this,type)
         this.array[posXY] = element;
@@ -28,9 +32,11 @@ Grid.prototype.insertElement = function(x,y,element,type) {
     }
     document.getElementById(`cell-${x}-${y}-content`).textContent = type;
 }
-Grid.prototype.getElement = function(x,y) {
+Grid.prototype.getElement = function(coordinateArray) {
+    let y = coordinateArray[1];
+    let x = coordinateArray[0];
     let row = (y-1) * this.columns;
-    posXY = row + (x-1);
+    let posXY = row + (x-1);
     return this.array[posXY];
 }
 Grid.prototype.print = function() {
@@ -55,6 +61,7 @@ function MapNode(coordinate,GridObject,title) {
     this.highlighted = false;*/
     this.linkages = [];
     this.position = [];
+    this.distance = 0;
     if (typeof coordinate === 'object') {
         this.position = coordinate;
     }
@@ -67,6 +74,7 @@ function MapTile(number,GridObject,type) {
     this.type = type;
     this.position = [];
     this.parentGrid = GridObject;
+    this.distance = 0;
     let y = number % GridObject.columns;
     if (typeof number === 'number') {
         if (y > 0) {
@@ -83,13 +91,37 @@ function MapTile(number,GridObject,type) {
 MapTile.prototype.getAdjacent = function(direction) {
     switch (direction) {
         case 'left':
-            return this.parentGrid.getElement((this.position[0]-1),this.position[1]);
+            if (this.position[0]-1 !== 0) {
+                return this.parentGrid.getElement(
+                    [this.position[0]-1,this.position[1]]
+                    );
+            } else {
+                return undefined;
+            }
         case 'right':
-            return this.parentGrid.getElement((this.position[0]+1),this.position[1]);
+            if (this.position[0]+1 <= this.parentGrid.columns) {
+                return this.parentGrid.getElement(
+                    [this.position[0]+1,this.position[1]]
+                    );
+            } else {
+                return undefined;
+            }
         case 'above':
-            return this.parentGrid.getElement(this.position[0],this.position[1]-1);
+            if (this.position[1]-1 !== 0) {
+                return this.parentGrid.getElement(
+                    [this.position[0],this.position[1]-1]
+                    );
+            } else {
+                return undefined;
+            }
         case 'below':
-            return this.parentGrid.getElement(this.position[0],this.position[1]+1);
+            if (this.position[1]+1 <= this.parentGrid.rows) {
+                return this.parentGrid.getElement(
+                    [this.position[0],this.position[1]+1]
+                    );
+            } else {
+                return undefined;
+            }
     }
 }
 MapTile.prototype.setType = function(string) {
@@ -151,7 +183,7 @@ function populateGrid(GridObject) {
             p.style.margin = 0;
             p.style.padding = 0;
             p.style.color = `rgb(255,255,255)`
-            p.innerText = GridObject.getColumn(x-1)[y-1].type;
+            p.innerText = GridObject.getColumn(x-1)[y-1].distance; //SHOULD SET TYPE HERE
             p.style.display = 'absolute'
             p.style.left = `${(1/2)*GridObject.cellSize}px`;
             p.style.top = `${(1/2)*GridObject.cellSize}px`;
@@ -169,7 +201,7 @@ function generateConnections(MapNodeObject,totalNodes) {
     };
     let mapGrid = new Grid(w,h,'100px');
     //generate a new grid with an odd height and large enough to contain all given nodes
-    mapGrid.insertElement(MapNodeObject,'node',2,Math.floor(h/2))
+    mapGrid.insertElement([2,Math.floor(h/2)],MapNodeObject,'node')
     //place the first node in the middle at the left edge
     placeNewNode(mapGrid,MapNodeObject);
 }
@@ -188,178 +220,168 @@ function placeNewNode(GridObject,MapNodeObject) {
 
 }
 
-function comparePosition(A,direction,B) {
-    switch (direction) {
-        case 'left':
-            if (A.position[0] < B.position[0]) {
-                return true;
-            } else {
-                return false;
-            }
-        case 'right':
-            if (A.position[0] > B.position[0]) {
-                return true;
-            } else {
-                return false;
-            }
-        case 'above':
-            if (A.position[1] < B.position[1]) {
-                return true;
-            } else {
-                return false;
-            }
-        case 'below':
-            if (A.position[1] > B.position[1]) {
-                return true;
-            } else {
-                return false;
-            }
+function comparePosition(A,B) {
+    let x;
+    let y;
+    if (A.position[0] > B.position[0]) {
+        x=true
+    } else {
+        x=false
     }
+    if (A.position[1] > B.position[1]) {
+        y=true
+    } else {
+        y=false
+    }
+    return [x,y];
 }
-function checkGlobalConnection(x1,y1,x2,y2,GridObject) {
-    let currentX = x1;
-    let currentY = y1;
-    const diffX = Math.abs(x2 - x1);
-    const diffY = Math.abs(y2 - y1);
-    let linkTracing = [];
-    let connectionAvailable = true;
-    let iteration = 0;
+function checkGlobalConnection(startXY,targetXY,GridObject) {
+    let currentElement = GridObject.getElement(startXY);
+    let path = [];
+    let toSearch = [];
+    let searched = [];
     let searching = true;
-    let success = false;
-    //let currentDiffX = x2 - currentX;
-    //let currentDiffY = y2 - currentY;
+    let iterations = 0;
+    function addToSearch(tileElement) {
+        if (toSearch.includes(tileElement) === false && searched.includes(tileElement) === false) {
+            toSearch.push(tileElement)
+        }
+    }
+
+    generateWeightings(targetXY,GridObject)
+    let finish = GridObject.getElement(targetXY);
+    path.push(currentElement);
     do {
-        linkTracing.push(GridObject.getElement(currentX,currentY));
-        if (currentX === x2 && currentY === y2) {
-            console.log([`Path found through`,linkTracing])
-            success = true;
+        iterations +=1;
+        if (currentElement === finish || iterations > 50) {
             searching = false;
-        } else {
-            if (connectionAvailable === false || iteration > 20) {
-                console.log(['No connection found.',])
-                success = false;
-                searching = false;
-            } else {
-                console.log(['Searching from:',currentX,currentY])
-                iterateOverConnections()
-            }
         }
-    }
-    while (searching === true)
-    if (success === true) {
-        return true;
-    } else if (success === false) {
-        return false;
-    }
-    function iterateOverConnections() {
-        iteration += 1;
-        let adjLinks = [];
-        for (let i=1; i<=4; i++) {
-            if (checkAdjacentConnection(currentX,currentY,GridObject,i) === true) {
-                adjLinks.push(true);
-            } else {
-                adjLinks.push(false);
-            }
-            console.log(adjLinks)
-        }
+        let adjLinks = checkAdjacentConnections(currentElement.position,GridObject)
+        console.log(adjLinks)
         if (adjLinks.includes(true) === false) {
-            console.log(adjLinks)
-            connectionAvailable = false;
+            searching = false;
         } else if (adjLinks.includes(true) === true) {
-            for (let check = 0; check < 2; check++) {
-                for (let i=0; i<adjLinks.length; i++) {
-                    if (adjLinks[i] === true) {
-                        switch (i+1) {
-                            //this heuristic for any continuing if a path brings it closer to the endpoint causes some problems if the path isn't straight, or in general if it gets in a dead end. How to change this? likely not necessary to change for the purposes of this program, but in future an interesting thing to test.
-                        case 1: if (checkDiff((currentY - 1),'vert') === true) {
-                            currentY -= 1;
-                        } else {
-                            if (check === 1) {
-                                currentY -= 1;
-                            }
-                        }
+            for (let i = 0; i < 4; i++) {
+                if (adjLinks[i] === true) {
+                    switch (i) {
+                        case 0: //up 
+                            addToSearch(GridObject.getElement(
+                                [currentElement.position[0],currentElement.position[1]-1]
+                                ))
                             break;
-                        case 2: if (checkDiff((currentX + 1),'lat') === true) {
-                            currentX += 1;
-                        } else {
-                            if (check === 1) {
-                                currentX += 1;
-                            }
-                        }
+                        case 1: //right
+                            addToSearch(GridObject.getElement(
+                                [currentElement.position[0]+1,currentElement.position[1]]
+                                ))
                             break;
-                        case 3: if (checkDiff((currentY + 1),'vert') === true) {
-                            currentY += 1;
-                        } else {
-                            if (check === 1) {
-                                currentY += 1;
-                            }
-                        }
+                        case 2: //down
+                            addToSearch(GridObject.getElement(
+                                [currentElement.position[0],currentElement.position[1]+1]
+                                ))
                             break;
-                        case 4: if (checkDiff((currentX - 1),'lat') === true) {
-                            currentX -= 1;
-                        } else {
-                            if (check === 1) {
-                                currentX -= 1;
-                            }
-                        }
+                        case 3: //left
+                            addToSearch(GridObject.getElement(
+                                [currentElement.position[0]-1,currentElement.position[1]]
+                                ))
                             break;
-                        }
                     }
                 }
             }
         }
-    }
-    
-    function checkDiff(num,direction) {
-        //returns true if path brings diff closer to endpoint
-        switch (direction) {
-            case 'vert': if (Math.abs(y2 - num) > diffY) {
-                console.log(`vert diff btwn ${y2} and ${num} > ${diffY}`)
-                return false;
-            } else if (Math.abs(y2 - num) < diffY) {
-                console.log(`vert diff btwn ${y2} and ${num} < ${diffY}`)
-                return true;
-            }
-            case 'lat': if (Math.abs(x2 - num) > diffX) {
-                console.log(`lat diff btwn ${x2} and ${num} > ${diffX}`)
-                return false;
-            } else if (Math.abs(x2 - num) < diffX) {
-                console.log(`lat diff btwn ${x2} and ${num} > ${diffX}`)
-                return true;
+        let currentPreference;
+        for (let i = 0; i < toSearch.length; i++) {
+            for (let l = (i + 1); l < toSearch.length; l++) {
+                //console.log([`comparing`,toSearch[i],`to`,toSearch[l]])
+                if (toSearch[i].distance === toSearch[l].distance) {
+                    if (Math.floor(Math.random()*2) === 1) {
+                        currentPreference = toSearch[i];
+                    } else {
+                        currentPreference = toSearch[l];
+                    }
+                } else if (toSearch[i].distance > toSearch[l].distance) {
+                    currentPreference = toSearch[l]
+                } else if (toSearch[i].distance < toSearch[l].distance) {
+                    currentPreference = toSearch[i]
+                }
             }
         }
+        if (currentElement === currentPreference) {
+            currentPreference = toSearch[0];
+        }
+        console.log([`current element at iteration ${iterations}:`,currentElement])
+        console.log([`to search at iteration ${iterations}:`,toSearch])
+        console.log([`searched at iteration ${iterations}`,searched])
+        console.log([`current preference at iteration ${iterations}`,currentPreference])
+        if (toSearch.includes(currentPreference) === true) {
+            for (let i=0; i<toSearch.length; i++) {
+                if (toSearch[i] === currentPreference) {
+                    toSearch.splice(i,1);
+                }
+            }
+        }
+        document.getElementById(`cell-${currentElement.position[0]}-${currentElement.position[1]}`).style.border = `3px dashed red`;
+        searched.push(currentElement);
+        currentElement = currentPreference;
+    }
+    while (searching === true)
+}
+function generateWeightings(targetXY,GridObject) {
+    let finish = GridObject.getElement(targetXY)
+    let weightedArray = GridObject.array;
+    for (let i = 0; i < weightedArray.length; i++) {
+        let a = weightedArray[i];
+        let distance = Math.abs(a.position[0] - finish.position[0]);
+        distance += Math.abs(a.position[1] - finish.position[1]);
+        a.distance = distance;
+        document.getElementById(`cell-${a.position[0]}-${a.position[1]}-content`).innerText = `${distance}`
+        let x;
+        switch(GridObject.height > GridObject.width) {
+            case true: x = GridObject.rows;
+                break;
+            case false: x = GridObject.columns;
+                break;
+        }
+        let c = Math.floor(240-((240/x)*(a.distance)));
+        let color = `rgb(${c},${c},108)`;
+        document.getElementById(`cell-${a.position[0]}-${a.position[1]}`).style.backgroundColor = color;
     }
 }
-function checkAdjacentConnection(x,y,GridObject,direction) {
-    let element = GridObject.getElement(x,y);
+function checkAdjacentConnections(coordinateArray,GridObject) {
+    let element = GridObject.getElement(coordinateArray);
+    let u;
+    let r;
+    let d;
+    let l;
     let type = element.type;
-    switch(direction) {
-        //direction is numbered clockwise
-        case 1: //up
+    if (element.getAdjacent('above') !== undefined) {
         if (type.includes('^') === true && element.getAdjacent('above').type.includes('v') === true) {
-            return true;
-        } else {
-            return false;
+            u = true;
         }
-        case 2: //right
-        if (type.includes('>') === true && element.getAdjacent('right').type.includes('<') === true) {
-            return true;
-        } else {
-            return false;
-        }
-        case 3: //down
-        if (type.includes('v') === true && element.getAdjacent('below').type.includes('^') === true) {
-            return true;
-        } else {
-            return false;
-        }
-        case 4: //left
-        if (type.includes('<') === true && element.getAdjacent('left').type.includes('>') === true) {
-            return true;
-        } else {
-            return false;
-        }
+    } else {
+        u = false;
     }
+    if (element.getAdjacent('right') !== undefined) {
+        if (type.includes('>') === true && element.getAdjacent('right').type.includes('<') === true) {
+            r= true;
+        }
+    } else {
+        r= false;
+    }
+    if (element.getAdjacent('below') !== undefined) {
+        if (type.includes('v') === true && element.getAdjacent('below').type.includes('^') === true) {
+            d= true;
+        }
+    } else {
+        d= false;
+    }
+    if (element.getAdjacent('left') !== undefined) {
+        if (type.includes('<') === true && element.getAdjacent('left').type.includes('>') === true) {
+            l= true;
+        }
+    } else {
+        l= false;
+    }
+    return [u,r,d,l]
 }
 
 function generateRandomTestGrid(GridObject) {
