@@ -8,6 +8,7 @@ function Grid(w,h,s) {
     for (let i=1; i <= (w * h); i++) {
         this.array.push(new MapTile(i,this,'<^v>'))
     }
+    this.print();
 }
 Grid.prototype.getRow = function(num) {
     return this.array.slice(num*this.columns,(num*this.columns) + this.columns);
@@ -236,6 +237,7 @@ function comparePosition(A,B) {
     return [x,y];
 }
 function checkGlobalConnection(startXY,targetXY,GridObject) {
+    GridObject.print();
     let currentElement = GridObject.getElement(startXY);
     let path = [];
     let toSearch = [];
@@ -253,7 +255,7 @@ function checkGlobalConnection(startXY,targetXY,GridObject) {
     path.push(currentElement);
     do {
         iterations +=1;
-        if (currentElement === finish || iterations > 50) {
+        if (currentElement === finish || iterations > 500) {
             searching = false;
         }
         let adjLinks = checkAdjacentConnections(currentElement.position,GridObject)
@@ -288,36 +290,30 @@ function checkGlobalConnection(startXY,targetXY,GridObject) {
                 }
             }
         }
-        let currentPreference;
-        for (let i = 0; i < toSearch.length; i++) {
-            for (let l = (i + 1); l < toSearch.length; l++) {
-                //console.log([`comparing`,toSearch[i],`to`,toSearch[l]])
-                if (toSearch[i].distance === toSearch[l].distance) {
-                    if (Math.floor(Math.random()*2) === 1) {
-                        currentPreference = toSearch[i];
-                    } else {
-                        currentPreference = toSearch[l];
-                    }
-                } else if (toSearch[i].distance > toSearch[l].distance) {
-                    currentPreference = toSearch[l]
-                } else if (toSearch[i].distance < toSearch[l].distance) {
-                    currentPreference = toSearch[i]
+        let currentPreference = {};
+        currentPreference['distance'] = Infinity;
+        for (let i=0; i < toSearch.length; i++) {
+            if (toSearch[i].distance < currentPreference.distance) {
+                currentPreference = toSearch[i];
+            } else if (toSearch[i].distance === currentPreference.distance) {
+                if (isEven(iterations) === true) {
+                    currentPreference = toSearch[i];
                 }
             }
         }
-        if (currentElement === currentPreference) {
-            currentPreference = toSearch[0];
-        }
-        console.log([`current element at iteration ${iterations}:`,currentElement])
+        /*console.log([`current element at iteration ${iterations}:`,currentElement])
         console.log([`to search at iteration ${iterations}:`,toSearch])
         console.log([`searched at iteration ${iterations}`,searched])
-        console.log([`current preference at iteration ${iterations}`,currentPreference])
+        console.log([`current preference at iteration ${iterations}`,currentPreference])*/
         if (toSearch.includes(currentPreference) === true) {
             for (let i=0; i<toSearch.length; i++) {
                 if (toSearch[i] === currentPreference) {
                     toSearch.splice(i,1);
                 }
             }
+        }
+        if (currentElement === currentPreference/* || currentPreference === undefined*/) {
+            currentPreference = toSearch[0];
         }
         document.getElementById(`cell-${currentElement.position[0]}-${currentElement.position[1]}`).style.border = `3px dashed red`;
         searched.push(currentElement);
@@ -387,10 +383,7 @@ function checkAdjacentConnections(coordinateArray,GridObject) {
 function generateRandomTestGrid(GridObject) {
     let types = ['o','<>','^v','<^>','^v>','<v>','<^v','<^v>','<^','^>','v>','<v']
     for (let i=0; i< GridObject.array.length; i++) {
-        console.log(i)
         let rand = getRandomInt(types.length);
-        console.log(rand)
-        console.log(types[rand])
         GridObject.array[i].setType(types[rand - 1]);
     }
 }
