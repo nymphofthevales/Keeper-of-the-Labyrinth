@@ -1237,6 +1237,7 @@ intro.setNext(enter);
 //v gallery content
 const mainGallery = new Gallery();
 //format: numerical identifier, unlocked, title, description, url, has shadow (functionality for shadow + parallax not done yet)
+let imageUrls = [];
 mainGallery.addItem(0,true,'The Labyrinth','Its twisting passages hearken.','./assets/ui/labyrinth_logo.png',false)
 mainGallery.addItem(1,false,'The Labyrinth Gate','It watches your approach carefully.','./assets/artwork/labyrinth_gate.png',true)
 

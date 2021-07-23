@@ -175,8 +175,8 @@ function drawGrid(GridObject) {
             cell.style.backgroundColor = `rgb(0,0,0)`
             cell.style.height = `${GridObject.cellSize}`;
             cell.style.width = `${GridObject.cellSize}`;
-            //cell.style.border = '1px solid white'
-            //cell.style.textAlign = 'center'
+            cell.style.border = '1px solid white'
+            cell.style.textAlign = 'center'
             cell.style.display = 'relative'
         }
     }
@@ -190,9 +190,9 @@ function populateGrid(GridObject) {
             let p = document.getElementById(`cell-${x}-${y}-content`)
             p.style.margin = 0;
             p.style.padding = 0;
-            //p.style.color = `rgb(255,255,255)`
+            p.style.color = `rgb(255,255,255)`
             p.innerText = GridObject.getColumn(x-1)[y-1].type; //SHOULD SET TYPE HERE
-            p.style.display = 'absolute'
+            //p.style.display = 'absolute'
             //p.style.left = `${(1/2)*GridObject.cellSize}px`;
             //p.style.top = `${(1/2)*GridObject.cellSize}px`;
         }

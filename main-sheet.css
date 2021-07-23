@@ -178,7 +178,7 @@ button:visited {
   grid-column-end: 4;
 }
 
-#currentPosImg, #currentNegImg {
+#currentPosImg, #currentNegImg, .preloadedImage {
   display: block;
   max-height: 70vh;
   max-width: 100%;

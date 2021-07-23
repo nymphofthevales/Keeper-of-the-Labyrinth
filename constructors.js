@@ -1,5 +1,13 @@
 'use strict'
 
+let options = {
+    "textSize":"default",
+    "enableMusic":true,
+    "volume":25,
+    "enableParallax":true,
+    "enableWarnings":false
+}
+
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //v story content
@@ -118,6 +126,7 @@ function Gallery() {
 
 Gallery.prototype.addItem = function(number,unlocked,title,description,src,hasShadow) {
     this.elements[number] = new GalleryItem(unlocked,title,description,src,hasShadow);
+    imageUrls.push(src);
 }
 Gallery.prototype.generatePreviewHTML = function(number) {
     let src = '';
@@ -164,13 +173,6 @@ Gallery.prototype.unlock = function(title) {
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //v music
-let options = {
-    "textSize":"default",
-    "enableMusic":true,
-    "volume":25,
-    "enableParallax":true,
-    "enableWarnings":false
-}
 function Music() {
     this.songs = {};
     this._currentSong = undefined;

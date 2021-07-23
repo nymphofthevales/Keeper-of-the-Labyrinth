@@ -16,7 +16,13 @@ let specialPages = [
     {
         pageObject: intro, 
         action: function() {
-            mainMusic.start('ingress',false,0);
+            if (page === 0) {
+                mainMusic.start('ingress',false,0);
+            }
+            if (page >=2) {
+                manageImage('print','./assets/artwork/labyrinth_gate.png','positive')
+                manageImage('print','./assets/artwork/labyrinth_gate_shadow.png','negative')
+            }
         }
     },
     {

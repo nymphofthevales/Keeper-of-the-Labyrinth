@@ -37,6 +37,8 @@ function getSavedOptions() {
     ipcRenderer.on('recieveOptions',(event,data)=>{
         if (data[0] === true) {
             options = data[1];
+            setOptionsForm();
+            manageTextOptions();
             console.log(`got options, recieved: ${JSON.stringify(data[1])}`)
         } else if (data[0] === false) {
             options = data[1];

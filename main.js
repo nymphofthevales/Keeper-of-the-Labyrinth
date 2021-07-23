@@ -92,10 +92,10 @@ ipcMain.on('updateMasterSave',(event,arg)=>{
     let currentDate = new Date;
     let timestamp = `${currentDate.getFullYear()}/${currentDate.getMonth()}/${currentDate.getDate()}/${currentDate.getTime()}`;
     let currentData = Object.assign({},JSON.parse(masterSave.data));
-    console.log(`input of data at updateMasterSave: ${masterSave.data}, as ${typeof masterSave.data}`)
+    //console.log(`input of data at updateMasterSave: ${masterSave.data}, as ${typeof masterSave.data}`)
     currentData[timestamp] = arg;
     masterSave.set(JSON.stringify(currentData));
-    console.log(`output at updateMasterSave: ${JSON.stringify(currentData)}, as ${typeof JSON.stringify(currentData)}`)
+    //console.log(`output at updateMasterSave: ${JSON.stringify(currentData)}, as ${typeof JSON.stringify(currentData)}`)
 })
 
 ipcMain.on('requestOptions',(event)=>{
@@ -114,7 +114,7 @@ ipcMain.on('requestSaveData',(event)=>{
     }
 })
 ipcMain.on('requestMasterSave',(event)=>{
-    console.log(`input of data at requestMasterSave: ${masterSave.data}, as ${typeof masterSave.data}`)
+    //console.log(`input of data at requestMasterSave: ${masterSave.data}, as ${typeof masterSave.data}`)
     if (masterSave.data !== {} || JSON.stringify(masterSave.data) !== '{}' && masterSave.data !== undefined) {
         labyrinth_window.webContents.send('recieveMasterSave',JSON.parse(masterSave.data))
     } else {

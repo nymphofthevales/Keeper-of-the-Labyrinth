@@ -43,6 +43,17 @@ function print(data,current) {
         listen(btnRefs,current);
     }
 };
+let images = [];
+function preloadImages() {
+    for (let i=0; i < imageUrls.length; i++) {
+        let img = document.createElement('img')
+        document.getElementById('image-positive').appendChild(img).id="currentPosImg";
+        document.getElementById('currentPosImg').src = imageUrls[i]
+        document.getElementById('currentPosImg').id += i;
+        console.log(document.getElementById('image-positive').innerHTML)
+    }
+    document.getElementById('image-positive').innerHTML = '';
+}
 function manageImage(action,url,location) {
     let frame;
     if (action === 'print') {
@@ -52,15 +63,21 @@ function manageImage(action,url,location) {
             frame.appendChild(img).id = 'currentPosImg';
             let currentImage = document.getElementById('currentPosImg');
             currentImage.src = url;
-            frame.style.top = `-35vh`;
-            console.log(`${frame.offsetHeight/2}px`)
-            //in future, perhaps use `${frame.offsetHeight/2}px` but for now, seems to run before the image has rendered, so offsetHeight returns 0 and the process fails. 30vh is a fine approximation for most images. if images were preloaded then might be able to return to using this.
+            if (currentImage.offsetHeight > 0) {
+                frame.style.top = `-${currentImage.offsetHeight/2}px`;
+            } else {
+                frame.style.top = `-35vh`;
+            }
         } else if (location === 'negative') {
             frame = document.getElementById('image-negative')
             frame.appendChild(img).id = 'currentNegImg';
             let currentImage = document.getElementById('currentNegImg');
             currentImage.src = url;
-            frame.style.top = `35vh`
+            if (frame.offsetHeight > 0) {
+                frame.style.top = `${frame.offsetHeight/2}px`;
+            } else {
+                frame.style.top = `35vh`;
+            }
         }
     } else if (action === 'remove') {
         document.getElementById('image-negative').innerHTML = '';
@@ -83,6 +100,8 @@ function progression(current,destination_button_number) {
             console.log(`progressed to ${current.title} (${current.constructor.name})`)
         } else if (page <= current.getLength()) {
             page += 1;
+            manageImage('remove','all','');
+            checkSpecialActions(current);
             print(current.getPage(page),current)
             console.log(`progressed to ${current.title} ${page}`)
         }
@@ -329,6 +348,7 @@ document.addEventListener('mousemove', (e)=>{
 let main_menu = document.getElementById('main-menu-overlay');
 let loading_overlay = document.getElementById('loading-overlay')
 document.getElementById('enter-button').addEventListener('click',()=>{
+    preloadImages();
     if (hasSavedData === false) {
         loadPage(intro,0);
         visited = ['intro'];
@@ -414,6 +434,7 @@ function manageOverlays(action,overlay) {
         }
     } else if (action === "hide") {
         overlayOpen = false;
+        ipcRenderer.send('adjustOptions',options);
         document.getElementById('content').classList.remove('invisible')
         for (let i = 0; i<overlaysList.length; i++) {
             let identifier = `${overlaysList[i]}-overlay`
@@ -461,6 +482,16 @@ function manageTextOptions() {
             textStylesheets[a].disabled = true;
         } else if (textOptions[a].checked === true) {
             textStylesheets[a].disabled = false;
+            switch (textOptions[a].id) {
+                case 'small-text': options.textSize = "small"
+                    break;
+                case 'default-text': options.textSize = "default"
+                    break;
+                case 'medium-text': options.textSize = "medium"
+                    break;
+                case 'large-text': options.textSize = "large"
+                    break;
+            }
         }
     }
 }
@@ -506,6 +537,37 @@ document.getElementById(`parallax-off`).addEventListener('mouseup',()=>{
 document.getElementById(`parallax-on`).addEventListener('mouseup',()=>{
     options['enableParallax'] = true;
 })
+function setOptionsForm() {
+    let warningsOff = document.getElementById(`warnings-off`)
+    let warningsOn = document.getElementById(`warnings-on`)
+    let musicOff = document.getElementById(`music-off`)
+    let musicOn = document.getElementById(`music-on`)
+    let parallaxOff = document.getElementById(`parallax-off`)
+    let parallaxOn = document.getElementById(`parallax-on`)
+    if (options.enableMusic === true) {
+        musicOff.checked = false;
+        musicOn.checked = true;
+    } else {
+        musicOff.checked = true;
+        musicOn.checked = false;
+    }
+    if (options.enableWarnings === true) {
+        warningsOff.checked = false;
+        warningsOn.checked = true;
+    } else {
+        warningsOff.checked = true;
+        warningsOn.checked = false;
+    }
+    if (options.enableParallax === true) {
+        parallaxOff.checked = false;
+        parallaxOn.checked = true;
+    } else {
+        parallaxOff.checked = true;
+        parallaxOn.checked = false;
+    }
+    document.getElementById(`${options.textSize}-text`).checked = true;
+    volumeInput.value = options.volume;
+}
 //^ options
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
