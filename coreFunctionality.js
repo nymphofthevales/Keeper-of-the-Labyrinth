@@ -340,18 +340,8 @@ document.getElementById('enter-button').addEventListener('click',()=>{
     ingame_menu.classList.add('invisible')
     ingameMenuOpen = false;
 })
-document.getElementById('map-button').addEventListener('click',()=>{
-    placeMapSaveButtons();
-    manageOverlays('show','map')
-})
 document.getElementById('options-button').addEventListener('click',()=>{
     manageOverlays('show','options')
-})
-document.getElementById('gallery-button').addEventListener('click',()=>{
-    manageGalleryUnlocks();
-    populateGallery(mainGallery);
-    manageOverlays('show','gallery');
-    setGalleryListeners();
 })
 document.getElementById('credits-button').addEventListener('click',()=>{
     manageOverlays('show','credits')
@@ -384,12 +374,6 @@ document.getElementById('button-housing-10').addEventListener('mouseup',()=>{
     ingame_menu.classList.add('invisible')
     ingameMenuOpen = false;
 })
-//ingame journal
-document.getElementById('button-housing-11').addEventListener('mouseup',()=>{
-    populateJournal();
-    setupJournalButtons();
-    manageOverlays('show','journal')
-});
 //ingame options
 document.getElementById('button-housing-12').addEventListener('mouseup',()=>{
     manageOverlays('show','options')
@@ -526,6 +510,11 @@ document.getElementById(`parallax-on`).addEventListener('mouseup',()=>{
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //v journal
+document.getElementById('button-housing-11').addEventListener('mouseup',()=>{
+    populateJournal();
+    setupJournalButtons();
+    manageOverlays('show','journal')
+});
 function populateJournal() {
     let journal = document.getElementById("journal-contents");
     journal.innerHTML = '';
@@ -568,6 +557,12 @@ function setupJournalButtons() {
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //v gallery
+document.getElementById('gallery-button').addEventListener('click',()=>{
+    manageGalleryUnlocks();
+    populateGallery(mainGallery);
+    manageOverlays('show','gallery');
+    setGalleryListeners();
+})
 function populateGallery(gallery) {
     let frame = document.getElementById('gallery-frame');
     frame.innerHTML = '';
@@ -653,6 +648,10 @@ function manageGalleryUnlocks() {
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //v map
+document.getElementById('map-button').addEventListener('click',()=>{
+    placeMapSaveButtons();
+    manageOverlays('show','map')
+})
 function mapSaveButton(date,timestamp) {
     return `<button class=\"map-save-button\" id=\"map-save-${timestamp}\"><div id=\"map-save-${timestamp}-grid\"><h3>${date}</h3></div></button>`
 }
@@ -696,13 +695,36 @@ function selectMapButton(buttonArray,refNumber) {
         let node = buttonArray[i][0]
         if (i === refNumber) {
             //node.style.backgroundImage = "./assets/ui/map-button-selected.png";
-            node.style.backgroundColor = "red";
+            node.style.border = "2px dashed red";
         } else {
             //node.style.backgroundImage = "./assets/ui/map-button-unselected.png"
-            node.style.backgroundColor = "transparent"
+            node.style.border = "none"
         }
     }
 }
+let menuShown = true;
+function manageSavesMenu() {
+    let nav = document.getElementById('map-saves-frame');
+    if (menuShown === false) {
+        menuShown = true;
+        nav.classList.remove('hidden');
+        nav.classList.remove('closed');
+        nav.classList.add('shown');
+        clearFocus();
+        for (let i=0; i<navButtons.length; i++) {
+            navButtons[i].tabIndex = i+2;
+        }
+    } else if (menuShown === true) {
+        menuShown = false;
+        nav.classList.remove('shown')
+        nav.classList.add('closed');
+        setTimeout(()=>{nav.classList.add('hidden')},500)
+        clearFocus();
+        for (let i=0; i<navButtons.length; i++) {
+            navButtons[i].tabIndex = -1;
+        }
+    };
+};
 //^ map
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
