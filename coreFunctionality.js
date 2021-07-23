@@ -672,6 +672,7 @@ function placeMapSaveButtons() {
     }
     dates = dates.sort(function(a, b){return b[2]-a[2]});
     nav.innerHTML = '';
+    nav.innerHTML += `<button class=\"map-save-button\" id=\"map-save-all\"><div id=\"map-save-all-grid\"><h3>View All</h3></div></button>`
     for (let i=0; i < dates.length; i++) {
         nav.innerHTML += mapSaveButton(dates[i][1],dates[i][2])
         buttons.push([`map-save-${dates[i][2]}`,dates[i][0]]);

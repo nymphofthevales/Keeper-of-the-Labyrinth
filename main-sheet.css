@@ -417,8 +417,8 @@ button:visited {
   align-items: center;
   justify-content: center;
   margin:0;
-  padding: 10px 0 0 0;
-  height: 12vh;
+  padding: 0 0 0 0;
+  height: 10.5vh;
 }
 #map-saves-show-hide {
   position: absolute;
@@ -426,7 +426,7 @@ button:visited {
   left: 0;
 }
 #map-saves-list {
-  height: 38vh;
+  height: 39.5vh;
   overflow-y: scroll;
   z-index: 15;
 }
