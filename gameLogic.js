@@ -19,10 +19,6 @@ let specialPages = [
             if (page === 0) {
                 mainMusic.start('ingress',false,0);
             }
-            if (page >=2) {
-                manageImage('print','./assets/artwork/labyrinth_gate.png','positive')
-                manageImage('print','./assets/artwork/labyrinth_gate_shadow.png','negative')
-            }
         }
     },
     {
@@ -50,9 +46,6 @@ let specialPages = [
     {
         pageObject: obelisk, 
         action: function() {
-            manageImage('print','./assets/artwork/obelisk.png','positive')
-            manageImage('print','./assets/artwork/obelisk_shadow.png','negative')
-            //
             inventory.removeOption('Examine the obelisk',obelisk);
             if (visited.includes('inventory') === true) {
                 obelisk.addOption('Light a candle',CandleAnte);
@@ -64,18 +57,8 @@ let specialPages = [
         }
     },
     {
-        pageObject: castRunes, 
-        action: function() {
-            manageImage('print','./assets/artwork/runes.png','positive')
-            manageImage('print','./assets/artwork/runes_shadow.png','negative')
-        }
-    },
-    {
         pageObject: readRunes, 
         action: function() {
-            manageImage('print','./assets/artwork/runes.png','positive')
-            manageImage('print','./assets/artwork/runes_shadow.png','negative')
-            //
             if (visited.includes('obelisk') === true && visited.includes('inventory') === true && visited.includes('finishCandleAnte') === true && visited.includes('readRunes') === true) {
                 actionFinishedAnte();
             }
@@ -84,33 +67,9 @@ let specialPages = [
     {
         pageObject: CandleAnte, 
         action: function() {
-            manageImage('print','./assets/artwork/anchor.png','positive')
-            manageImage('print','./assets/artwork/anchor_shadow.png','negative')
-            //
             if (visited.includes('obelisk') === true && visited.includes('inventory') === true && visited.includes('finishCandleAnte') === true && visited.includes('readRunes') === true) {
                 actionFinishedAnte();
             }
-        }
-    },
-    {
-        pageObject: finishCandleAnte, 
-        action: function() {
-            manageImage('print','./assets/artwork/anchor.png','positive')
-            manageImage('print','./assets/artwork/anchor_shadow.png','negative')
-        }
-    },
-    {
-        pageObject: Lines, 
-        action: function() {
-            manageImage('print','./assets/artwork/lines.png','positive')
-            manageImage('print','./assets/artwork/lines_shadow.png','negative')
-        }
-    },
-    {
-        pageObject: Wands, 
-        action: function() {
-            manageImage('print','./assets/artwork/wands.png','positive')
-            manageImage('print','./assets/artwork/wands_shadow.png','negative')
         }
     },
     {
@@ -150,9 +109,6 @@ let specialPages = [
     {
         pageObject: Cut, 
         action: function() {
-            manageImage('print','./assets/artwork/blades.png','positive')
-            manageImage('print','./assets/artwork/blades_shadow.png','negative')
-            //
             let failures = checkFailures(generateScores()).failures;
             if (failures.includes('apathyScore')) {
                 Cut.removeOption('Apathy')
@@ -198,9 +154,6 @@ let specialPages = [
     {
         pageObject: Apathy, 
         action: function() {
-            manageImage('print','./assets/artwork/blades.png','positive')
-            manageImage('print','./assets/artwork/blades_shadow.png','negative')
-            //
             if (visited.includes('Cowardice') && visited.includes('Doubt')) {
                 Apathy.clearOptions();
                 Apathy.addOption('Rise for air',freeCistern)
@@ -213,9 +166,6 @@ let specialPages = [
     {
         pageObject: Cowardice, 
         action: function() {
-            manageImage('print','./assets/artwork/blades.png','positive')
-            manageImage('print','./assets/artwork/blades_shadow.png','negative')
-            //
             if (visited.includes('Apathy') && visited.includes('Doubt')) {
                 Cowardice.clearOptions();
                 Cowardice.addOption('Rise for air',freeCistern)
@@ -228,9 +178,6 @@ let specialPages = [
     {
         pageObject: Doubt, 
         action: function() {
-            manageImage('print','./assets/artwork/blades.png','positive')
-            manageImage('print','./assets/artwork/blades_shadow.png','negative')
-            //
             if (visited.includes('Cowardice') && visited.includes('Apathy')) {
                 Doubt.clearOptions();
                 Doubt.addOption('Rise for air',freeCistern)
@@ -243,9 +190,6 @@ let specialPages = [
     {
         pageObject: failApathy, 
         action: function() {
-            manageImage('print','./assets/artwork/drowning.png','positive')
-            manageImage('print','./assets/artwork/drowning_shadow.png','negative')
-            //
             let failApathyVariableText = ''
             if (visited.includes('MoveOnAnte')) {
                 failApathyVariableText + 'my foolish rush through the antechamber—that unreasoned lack of preparations, '
@@ -265,9 +209,6 @@ let specialPages = [
     {
         pageObject: failCowardice, 
         action: function() {
-            manageImage('print','./assets/artwork/drowning.png','positive')
-            manageImage('print','./assets/artwork/drowning_shadow.png','negative')
-            //
             let failCowardiceVariableText = ''
             if ((visited.includes('Fleeing') === true) && (visited.includes(turnFleeing) === false)) {
                 failCowardiceVariableText + 'my lack of ability to even <em>look</em> at whatever had been chasing me, '
@@ -287,9 +228,6 @@ let specialPages = [
     {
         pageObject: failDoubt, 
         action: function() {
-            manageImage('print','./assets/artwork/drowning.png','positive')
-            manageImage('print','./assets/artwork/drowning_shadow.png','negative')
-            //
             let failDoubtVariableText = ''
             if (visited.includes('LeaveWall')) {
                 failDoubtVariableText + 'not when I doubted whether it was right to fix the gap in the wall, '

@@ -43,51 +43,10 @@ function print(data,current) {
         listen(btnRefs,current);
     }
 };
-let images = [];
-function preloadImages() {
-    for (let i=0; i < imageUrls.length; i++) {
-        let img = document.createElement('img')
-        document.getElementById('image-positive').appendChild(img).id="currentPosImg";
-        document.getElementById('currentPosImg').src = imageUrls[i]
-        document.getElementById('currentPosImg').id += i;
-        console.log(document.getElementById('image-positive').innerHTML)
-    }
-    document.getElementById('image-positive').innerHTML = '';
-}
-function manageImage(action,url,location) {
-    let frame;
-    if (action === 'print') {
-        let img = document.createElement('img');
-        if (location === undefined || location === 'positive') {
-            frame = document.getElementById('image-positive');
-            frame.appendChild(img).id = 'currentPosImg';
-            let currentImage = document.getElementById('currentPosImg');
-            currentImage.src = url;
-            if (currentImage.offsetHeight > 0) {
-                frame.style.top = `-${currentImage.offsetHeight/2}px`;
-            } else {
-                frame.style.top = `-35vh`;
-            }
-        } else if (location === 'negative') {
-            frame = document.getElementById('image-negative')
-            frame.appendChild(img).id = 'currentNegImg';
-            let currentImage = document.getElementById('currentNegImg');
-            currentImage.src = url;
-            if (frame.offsetHeight > 0) {
-                frame.style.top = `${frame.offsetHeight/2}px`;
-            } else {
-                frame.style.top = `35vh`;
-            }
-        }
-    } else if (action === 'remove') {
-        document.getElementById('image-negative').innerHTML = '';
-        document.getElementById('image-positive').innerHTML = '';
-    }
-};
 function genActions(current) {
-    manageImage('remove','all','');
     clearFocus();
     visit(current);
+    printStoryImages();
     checkSpecialActions(current);
 }
 function progression(current,destination_button_number) {
@@ -289,6 +248,156 @@ function sendPopup(type,content,current,backUpAble) {
     }
 }
 //^ popup menus
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v image system
+let images = [];
+function preloadImages() {
+    for (let i=0; i < imageUrls.length; i++) {
+        let img = document.createElement('img')
+        document.getElementById('image-positive').appendChild(img).id="currentPosImg";
+        document.getElementById('currentPosImg').src = imageUrls[i]
+        document.getElementById('currentPosImg').id += i;
+        console.log(document.getElementById('image-positive').innerHTML)
+    }
+    document.getElementById('image-positive').innerHTML = '';
+}
+function manageImage(action,url,location) {
+    let frame;
+    if (action === 'print') {
+        let img = document.createElement('img');
+        if (location === undefined || location === 'positive') {
+            frame = document.getElementById('image-positive');
+            frame.appendChild(img).id = 'currentPosImg';
+            let currentImage = document.getElementById('currentPosImg');
+            currentImage.src = url;
+            if (currentImage.offsetHeight > 0) {
+                frame.style.top = `-${currentImage.offsetHeight/2}px`;
+            } else {
+                frame.style.top = `-35vh`;
+            }
+        } else if (location === 'negative') {
+            frame = document.getElementById('image-negative')
+            frame.appendChild(img).id = 'currentNegImg';
+            let currentImage = document.getElementById('currentNegImg');
+            currentImage.src = url;
+            if (frame.offsetHeight > 0) {
+                frame.style.top = `${frame.offsetHeight/2}px`;
+            } else {
+                frame.style.top = `35vh`;
+            }
+        }
+    } else if (action === 'clear') {
+        document.getElementById('image-negative').innerHTML = '';
+        document.getElementById('image-positive').innerHTML = '';
+    }
+};
+function printStoryImages(pageObject) {
+    switch (pageObject) {
+        case intro:
+            if (page >= 2) {
+                manageImage('print','./assets/artwork/labyrinth_gate.png','positive')
+                manageImage('print','./assets/artwork/labyrinth_gate_shadow.png','negative')
+            }
+            break;
+        case obelisk: 
+            manageImage('print','./assets/artwork/obelisk.png','positive')
+            manageImage('print','./assets/artwork/obelisk_shadow.png','negative')
+            break;
+        case castRunes || readRunes:
+            manageImage('print','./assets/artwork/runes.png','positive')
+            manageImage('print','./assets/artwork/runes_shadow.png','negative')
+            break;
+        case CandleAnte || finishCandleAnte || candleDark || windowPlaceCandle:
+            manageImage('print','./assets/artwork/anchor.png','positive')
+            manageImage('print','./assets/artwork/anchor_shadow.png','negative')
+            break;
+        case Lines:
+            manageImage('print','./assets/artwork/lines.png','positive')
+            manageImage('print','./assets/artwork/lines_shadow.png','negative')
+            break;
+        case Approach:
+            manageImage('print','./assets/artwork/rowan.png','positive')
+            manageImage('print','./assets/artwork/rowan_shadow.png','negative')
+            break;
+        case Wands:
+            manageImage('print','./assets/artwork/wands.png','positive')
+            manageImage('print','./assets/artwork/wands_shadow.png','negative')
+            break;
+        case corpseContemplation:
+            //manageImage('print','./assets/artwork/corpses.png','positive')
+            //manageImage('print','./assets/artwork/corpses_shadow.png','negative')
+            break;
+        case darkWindow || windowHandNode || windowHandRight || windowRightNode || windowRightPush || windowHandLeft ||windowLeftNode || windowLeftPush || windowWithdrawl:
+            //manageImage('print','./assets/artwork/window.png','positive')
+            //manageImage('print','./assets/artwork/window_shadow.png','negative')
+            break;
+        case mothNode || mothLands || mothBurns:
+            manageImage('print','./assets/artwork/moth.png','positive')
+            manageImage('print','./assets/artwork/moth_shadow.png','negative')
+            break;
+        case darkNoisesFountain:
+            //manageImage('print','./assets/artwork/fountain.png','positive')
+            //manageImage('print','./assets/artwork/fountain_shadow.png','negative')
+            break;
+        case Falling:
+            //manageImage('print','./assets/artwork/falling.png','positive')
+            //manageImage('print','./assets/artwork/falling_shadow.png','negative')
+            break;
+        case FallToPit || pit || beatRises || scorn || enterScorn:
+            //manageImage('print','./assets/artwork/pit.png','positive')
+            //manageImage('print','./assets/artwork/pit_shadow.png','negative')
+            break;
+        case Lights:
+            manageImage('print','./assets/artwork/lights.png','positive')
+            manageImage('print','./assets/artwork/lights_shadow.png','negative')
+            break;
+        case fungusCistern || enterCistern || echoesCistern || Blades: 
+            if (pageObject === fungusCistern || pageObject === enterCistern) {
+                 if (page >= 1) {
+                    //manageImage('print','./assets/artwork/cistern.png','positive')
+                    //manageImage('print','./assets/artwork/cistern_shadow.png','negative')
+                    }
+                } else {
+                    //manageImage('print','./assets/artwork/cistern.png','positive')
+                    //manageImage('print','./assets/artwork/cistern_shadow.png','negative')
+                }
+            break;
+        case Cut || Apathy || Cowardice || Doubt || freeCistern:
+            manageImage('print','./assets/artwork/blades.png','positive')
+            manageImage('print','./assets/artwork/blades_shadow.png','negative')
+            break;
+        case failApathy || failCowardice || failDoubt || drowningCistern: 
+            if (pageObject === drowningCistern) {
+                if (page <= 1){
+                    manageImage('print','./assets/artwork/drowning.png','positive')
+                    manageImage('print','./assets/artwork/drowning_shadow.png','negative')
+                }
+            } else {
+                manageImage('print','./assets/artwork/drowning.png','positive')
+                manageImage('print','./assets/artwork/drowning_shadow.png','negative')
+            }
+            break;
+        case Waiting: 
+            if (page >= 1) {
+                manageImage('print','./assets/artwork/watching_mask.png','positive')
+                manageImage('print','./assets/artwork/watching_mask_shadow.png','negative')
+            }
+            break;
+        case Altar:
+            //manageImage('print','./assets/artwork/altar.png','positive')
+            //manageImage('print','./assets/artwork/altar_shadow.png','negative')
+            break;
+        default: manageImage('clear','','');
+            break;
+    }
+    if (pageObject.title.slice(0,4) === 'crow') {
+        manageImage('print','./assets/artwork/crow.png','positive')
+        manageImage('print','./assets/artwork/crow_shadow.png','negative')
+    }
+}
+
+//^ image system
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //v cursor and parallax
