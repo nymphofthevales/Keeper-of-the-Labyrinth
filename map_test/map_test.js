@@ -1,14 +1,24 @@
 'use strict'
 
-function Grid(w,h,s) {
-    this.columns = w;
-    this.rows = h;
-    this.cellSize = s;
+function Grid(w,h,s,preset) {
+    if (preset === undefined) {
+        this.columns = w;
+        this.rows = h;
+        this.cellSize = s;
+    } else if (preset !== undefined) {
+        this.columns = preset.width;
+        this.rows = preset.height;
+        this.cellSize = preset.size;
+    }
     this.array = [];
-    for (let i=1; i <= (w * h); i++) {
+    for (let i=1; i <= (this.columns * this.rows); i++) {
         this.array.push(new MapTile(i,this,'o'))
     }
     this.print();
+    if (preset !== undefined) {
+        this.loadInPresetArray(preset);
+    }
+    this.printMapTiles();
 }
 Grid.prototype.getRow = function(num) {
     return this.array.slice(num*this.columns,(num*this.columns) + this.columns);
@@ -20,25 +30,40 @@ Grid.prototype.getColumn = function(num) {
     }
     return column;
 }
-Grid.prototype.insertElement = function(coordinateArray,element,type) {
+Grid.prototype.getIndexFromCoords = function(coordinateArray) {
     let y = coordinateArray[1];
     let x = coordinateArray[0];
-    let row = (y-1) * this.columns;
-    let posXY = row + (x-1);
+    y-=1;
+    x-=1;
+    y *= this.columns;
+    let index = y + x
+    return index
+}
+Grid.prototype.getCoordsFromIndex = function(index) {
+    let x = index % this.columns;
+    let y = Math.floor(index/this.columns);
+    return [x+1,y+1];
+}
+Grid.prototype.insertElement = function(coordinateArray,element,type,opts) {
+    let x = coordinateArray[0];
+    let y = coordinateArray[1];
+    let index = this.getIndexFromCoords([x,y]);
     if (element === 'node') {
-        //this.array[posXY] = new MapNode([x,y],this,type)
-        this.array[posXY] = element;
+        this.array[index] = new MapNode([x,y],this,type,opts)
     } else if (element === 'tile') {
-        this.array[posXY] = new MapTile([x,y],this,type)
+        this.array[index] = new MapTile([x,y],this,type)
     }
     document.getElementById(`cell-${x}-${y}-content`).textContent = type;
 }
 Grid.prototype.getElement = function(coordinateArray) {
-    let y = coordinateArray[1];
+    let index = this.getIndexFromCoords(coordinateArray)
+    return this.array[index];
+}
+Grid.prototype.getElementDOMNode = function(index) {
+    let coordinateArray = this.getCoordsFromIndex(index);
     let x = coordinateArray[0];
-    let row = (y-1) * this.columns;
-    let posXY = row + (x-1);
-    return this.array[posXY];
+    let y = coordinateArray[1];
+    return document.getElementById(`cell-${x}-${y}`);
 }
 Grid.prototype.print = function() {
     createDOMGrid(this);
@@ -55,18 +80,60 @@ Grid.prototype.getNodeList = function() {
     return MapNodeList;
 }
 
-function MapNode(coordinate,GridObject,title) {
-    this.title = title;
+Grid.prototype.printMapTiles = function() {
+    for (let i = 0; i < this.array.length; i++) {
+        let path = ''
+        if (this.array[i].constructor === MapTile) {
+            path = './assets/ui/tileset/passageway/'
+        } else if (this.array[i].constructor === MapNode) {
+            path = './assets/ui/tileset/node_'
+            console.log(this.array[i].unlocked)
+            if (this.array[i].unlocked === true) {
+                path += 'unlocked/'
+            } else if (this.array[i].unlocked === false){
+                path += 'locked/'
+            }
+            path += `${this.array[i].type.length}` 
+            path += '/'
+            console.log(path)
+        }
+        let type = this.array[i].type;
+        let imgUrl = path + type + '.png'
+        let DOMNode = this.getElementDOMNode(i)
+        DOMNode.style.backgroundImage = `url(\"${imgUrl}\")`;
+        DOMNode.childNodes[0].textContent = '';
+    }
+}
+Grid.prototype.loadInPresetArray = function(preset) {
+    let tiles = preset.tiles;
+    for (let i=0; i < tiles.length; i++) {
+        let coordArray = tiles[i][0];
+        let type = tiles[i][1];
+        this.insertElement(coordArray,'tile',type)
+    }
+    let nodes = preset.nodes;
+    for (let i=0; i < nodes.length; i++) {
+        let coordArray = nodes[i][0];
+        let type = nodes[i][1];
+        let opts = {
+            title: nodes[i][2],
+            unlocked: nodes[i][3],
+        }
+        this.insertElement(coordArray,'node',type,opts)
+    }
+}
+
+function MapNode(coordinateArray,GridObject,type,opts) {
+    this.type = type;
+    this.position = coordinateArray;
     this.parentGrid = GridObject;
+    this.distance = 0;
+    //
+    this.title = opts.title;
+    this.unlocked = opts.unlocked;
     this.pageObjects = [];
     this.pageNum = 0;
-    this.highlighted = false;
     this.linkages = [];
-    this.position = [];
-    this.distance = 0;
-    if (typeof coordinate === 'object') {
-        this.position = coordinate;
-    }
 }
 MapNode.prototype.addLinkage = function(MapNodeObject) {
     this.linkages.push(MapNodeObject);
@@ -161,6 +228,10 @@ function createDOMGrid(GridObject) {
     a.style.margin = '0';
     a.style.gridTemplateColumns = generateGridTemplate(GridObject,'columns');
     a.style.gridTemplateRows = generateGridTemplate(GridObject,'rows');
+    //
+    a.style.imageRendering = 'pixelated';
+    //a.style.imageRendering = '-moz-crisp-edges';
+    //a.style.imageRendering = 'crisp-edges';
 
 }
 function drawGrid(GridObject) {
@@ -175,9 +246,13 @@ function drawGrid(GridObject) {
             cell.style.backgroundColor = `rgb(0,0,0)`
             cell.style.height = `${GridObject.cellSize}`;
             cell.style.width = `${GridObject.cellSize}`;
-            cell.style.border = '1px solid white'
-            cell.style.textAlign = 'center'
+            //
+            //cell.style.border = '1px solid white'
+            //cell.style.textAlign = 'center'
             cell.style.display = 'relative'
+            cell.style.backgroundRepeat = 'no-repeat'
+            cell.style.backgroundSize = 'contain'
+            //
         }
     }
 }
@@ -391,4 +466,57 @@ function generateConnections(MapNodeObject,totalNodes) {
     mapGrid.insertElement([2,Math.floor(h/2)],MapNodeObject,'node')
     //place the first node in the middle at the left edge
     placeNewNode(mapGrid,MapNodeObject);
+}
+
+
+let preset = {
+    width: 9,
+    height: 9,
+    size: '100px',
+    tiles: [
+        [
+            [3,5],'<>'
+        ],
+        [
+            [4,5],'<^v>'
+        ],
+        [
+            [5,5],'<>'
+        ],
+        [
+            [4,4],'v>'
+        ],
+        [
+            [4,6],'^>'
+        ],
+        [
+            [5,6],'<>'
+        ],
+        [
+            [5,4],'<>'
+        ],
+        [
+            [7,6],'<^'
+        ],
+        [
+            [7,5],'<v>'
+        ],
+    ],
+    nodes: [
+        [
+            [2,5],'>','Intro',true
+        ],
+        [
+            [6,6],'<^>','Intro',true
+        ],
+        [
+            [6,5],'<^v>','Intro',false
+        ],
+        [
+            [6,4],'<v','Intro',false
+        ],
+        [
+            [8,5],'<','Intro',true
+        ],
+    ]
 }
