@@ -5,6 +5,7 @@ let options = {
     "enableMusic":true,
     "volume":25,
     "enableParallax":true,
+    "enableTextFade":true,
     "enableWarnings":false
 }
 
@@ -232,8 +233,10 @@ Music.prototype.fadeOut = function(seconds) {
         }
         loop();
     }
-    fadeMusic(seconds,this._currentSong)
-    this.currentlyPlaying = false;
+    if (this._currentSong !== undefined) {
+        fadeMusic(seconds,this._currentSong)
+        this.currentlyPlaying = false;
+    }
 }
 Music.prototype._fadeIn = function(seconds) {
     let target = (2*this._maxVolume)/100;

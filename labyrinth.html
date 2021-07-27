@@ -189,12 +189,23 @@
                     <input type="range" id="volume-slider" min="0" max="50" name="volume">
                 </fieldset>
                 <fieldset id="parallax-form-field">
-                    <legend>Parallax</legend>
-                    <input type="radio" id="parallax-on" value="parallax-on" name="parallax" checked>
-                    <label for="parallax-on">On</label>
-                    <input type="radio" id="parallax-off" value="parallax-off" name="parallax">
-                    <label for="parallax-off">Off</label>
-                    <p>Whether images shift with mouse movement or not. Looks cool, but may be disorienting to some.</p>
+                    <legend>Animations</legend>
+                    <fieldset>
+                        <legend>Parallax</legend>
+                        <input type="radio" id="parallax-on" value="parallax-on" name="parallax" checked>
+                        <label for="parallax-on">On</label>
+                        <input type="radio" id="parallax-off" value="parallax-off" name="parallax">
+                        <label for="parallax-off">Off</label>
+                        <p>Whether images shift with mouse movement.</p>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Text Fade</legend>
+                        <input type="radio" id="text-fade-on" value="text-fade-on" name="text-fade" checked>
+                        <label for="text-fade-on">On</label>
+                        <input type="radio" id="text-fade-off" value="text-fade-off" name="text-fade">
+                        <label for="text-fade-off">Off</label>
+                        <p>Whether text fades in/out when changing pages.</p>
+                    </fieldset>
                 </fieldset>
                 <fieldset id="content-warnings-form-field">
                     <legend>Content warnings</legend>

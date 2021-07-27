@@ -4,79 +4,103 @@ function generateButton(number,text) {
     return `<div class=\"button-housing\" id=\"button-housing-${number}\"><div class=\"left-button-frame\" id=\"button-${number}-left\"></div><button id=\"button-${number}-middle\" class=\"middle-button-frame\"><p id=\"button-text-${number}\">${text}</p></button><div class=\"right-button-frame\" id=\"button-${number}-right\"></div></div>`
 }
 function print(data,current) {
-    //data takes form of [page text string, button string or array] as returned by StoryNode or Sequence .getPage()
-    //Sequence.getPage() returns a string, StoryNode an array.
-    let textHouse = document.getElementById("text");
-    let btnHouse = document.getElementById("buttons");
-    textHouse.innerHTML = '';
-    btnHouse.innerHTML = '';
-    let p = () =>  document.createElement("p");
-    //let btn = () => document.createElement("button");
-    let text = data[0];
-    textHouse.appendChild(p()).id="currentText";
-    let currentText = document.getElementById("currentText");
-    currentText.innerHTML = text;
-    if (typeof data[1] === 'string') {
-        //for printing pages from a sequence
-        let buttonText = data[1];
-        //btnHouse.appendChild(btn()).id="sequenceBtn";
-        //let sequenceBtn = document.getElementById("sequenceBtn")
-        //sequenceBtn.innerHTML = button;
-        btnHouse.innerHTML = generateButton(1,buttonText)
-        let sequenceBtn = document.getElementById('button-housing-1')
-        initializeButtons()
-        listen([sequenceBtn],current)
-    } else { 
-        //for printing a StoryNode. saves id references in btnRefs array for later use.
-        let btnRefs = new Array();
-        let currentButtonHtml = ''
-        for (let i=0; i<data[1].length; i++) {
-            let buttonText = data[1][i];
-            currentButtonHtml += generateButton(i+1,buttonText)
+    if (options.enableTextFade === true) {
+        setTimeout(()=>{
+            let content = document.getElementById('story-frame')
+            content.style.animation = '0.5s fade-in'
+            doPrinting();
+        },200)
+    } else {
+        doPrinting();
+    }
+    function doPrinting() {
+        document.getElementById('story-frame').style.opacity = '1.0';
+        //data takes form of [page text string, button string or array] as returned by StoryNode or Sequence .getPage()
+        //Sequence.getPage() returns a string, StoryNode an array.
+        let textHouse = document.getElementById("text");
+        let btnHouse = document.getElementById("buttons");
+        textHouse.innerHTML = '';
+        btnHouse.innerHTML = '';
+        let p = () =>  document.createElement("p");
+        let text = data[0];
+        textHouse.appendChild(p()).id="currentText";
+        let currentText = document.getElementById("currentText");
+        currentText.innerHTML = text;
+        if (typeof data[1] === 'string') {
+            //for printing pages from a sequence
+            let buttonText = data[1];
+            btnHouse.innerHTML = generateButton(1,buttonText)
+            let sequenceBtn = document.getElementById('button-housing-1')
+            initializeButtons()
+            listen([sequenceBtn],current)
+        } else { 
+            //for printing a StoryNode. saves id references in btnRefs array for later use.
+            let btnRefs = new Array();
+            let currentButtonHtml = ''
+            for (let i=0; i<data[1].length; i++) {
+                let buttonText = data[1][i];
+                currentButtonHtml += generateButton(i+1,buttonText)
+            }
+            btnHouse.innerHTML = currentButtonHtml;
+            initializeButtons()
+            for (let i=0; i<data[1].length; i++) {
+                let ref = document.getElementById(`button-housing-${i+1}`)
+                btnRefs.push(ref)
+            }
+            listen(btnRefs,current);
         }
-        btnHouse.innerHTML = currentButtonHtml;
-        initializeButtons()
-        for (let i=0; i<data[1].length; i++) {
-            let ref = document.getElementById(`button-housing-${i+1}`)
-            btnRefs.push(ref)
-        }
-        listen(btnRefs,current);
     }
 };
 function genActions(current) {
     clearFocus();
-    visit(current);
-    printStoryImages();
+    printStoryImages(current);
     checkSpecialActions(current);
 }
 function progression(current,destination_button_number) {
-    if (current.constructor.name === 'Sequence') {
-        if (page >= current.getLength()-1) {
-            page = 0;
-            current = current.getNext();
+    if (options.enableTextFade === true) {
+        document.getElementById('story-frame').style.animation = '0.2s fade-out'
+        setTimeout(()=>{
+            document.getElementById('story-frame').style.opacity = '0.0';
+            doProgression();
+        },200)
+    } else {
+        doProgression();
+    }
+    function doProgression() {
+        if (current.constructor.name === 'Sequence') {
+            if (page >= current.getLength()-1) {
+                page = 0;
+                current = current.getNext();
+                visit(current);
+                genActions(current);
+                print(current.getPage(page),current);
+                console.log(`progressed to ${current.title} (${current.constructor.name})`)
+            } else if (page <= current.getLength()) {
+                page += 1;
+                genActions(current);
+                print(current.getPage(page),current)
+                console.log(`progressed to ${current.title} ${page}`)
+            }
+        } else if (current.constructor.name === 'StoryNode') {
+            let destination = current.getDestinations()[destination_button_number];
+            current = destination;
+            visit(current);
             genActions(current);
-            print(current.getPage(page),current);
+            print(current.getPage(0),current)
             console.log(`progressed to ${current.title} (${current.constructor.name})`)
-        } else if (page <= current.getLength()) {
-            page += 1;
-            manageImage('remove','all','');
-            checkSpecialActions(current);
-            print(current.getPage(page),current)
-            console.log(`progressed to ${current.title} ${page}`)
         }
-    } else if (current.constructor.name === 'StoryNode') {
-        let destination = current.getDestinations()[destination_button_number];
-        current = destination;
-        genActions(current);
-        print(current.getPage(0),current)
-        console.log(`progressed to ${current.title} (${current.constructor.name})`)
     }
 }
 function redirect(time,current) {
+    document.getElementById('buttons').style.visibility = 'hidden';
     console.log(`redirecting to next page in ${time/1000} seconds`)
-    setTimeout(()=>{progression(current)},time)
+    setTimeout(()=>{
+        progression(current)
+        document.getElementById('buttons').style.visibility = 'visible'
+    },time)
 }
 function loadPage(current,page_number) {
+    visit(current);
     genActions(current);
     page = page_number
     print(current.getPage(page_number),current);
@@ -107,7 +131,6 @@ function listen(buttonArray,current) {
         }
     }
 }
-
 function hoverOver(action,number) {
     if (action === 'clear') {
         let left = document.querySelectorAll('.left-button-frame');
@@ -264,32 +287,57 @@ function preloadImages() {
 }
 function manageImage(action,url,location) {
     let frame;
+    let imgId;
+    switch (location) {
+        case 'negative': imgId = 'currentNegImg'
+            break;
+        case 'positive': imgId = 'currentPosImg'
+            break;
+    }
     if (action === 'print') {
+        if (document.getElementById(imgId) === null) {
+            doImagePrinting()
+        } else {
+            //console.log(document.getElementById(imgId).src)
+            let urlFilename = url.split('/');
+            urlFilename = urlFilename[urlFilename.length - 1]
+            let pageFilename = document.getElementById(imgId).src.split('/')
+            pageFilename = pageFilename[pageFilename.length - 1]
+            console.log(pageFilename)
+            console.log(urlFilename)
+            if (pageFilename !== urlFilename) {
+                doImagePrinting()
+            } else {
+                console.log('image already printed')
+            }
+        }
+    } else if (action === 'clear') {
+        document.getElementById('image-negative').innerHTML = '';
+        document.getElementById('image-positive').innerHTML = '';
+    }
+    function doImagePrinting() {
         let img = document.createElement('img');
         if (location === undefined || location === 'positive') {
             frame = document.getElementById('image-positive');
             frame.appendChild(img).id = 'currentPosImg';
             let currentImage = document.getElementById('currentPosImg');
             currentImage.src = url;
-            if (currentImage.offsetHeight > 0) {
+            /*if (currentImage.offsetHeight > 0) {
                 frame.style.top = `-${currentImage.offsetHeight/2}px`;
             } else {
                 frame.style.top = `-35vh`;
-            }
+            }*/
         } else if (location === 'negative') {
             frame = document.getElementById('image-negative')
             frame.appendChild(img).id = 'currentNegImg';
             let currentImage = document.getElementById('currentNegImg');
             currentImage.src = url;
-            if (frame.offsetHeight > 0) {
+            /*if (frame.offsetHeight > 0) {
                 frame.style.top = `${frame.offsetHeight/2}px`;
             } else {
                 frame.style.top = `35vh`;
-            }
+            }*/
         }
-    } else if (action === 'clear') {
-        document.getElementById('image-negative').innerHTML = '';
-        document.getElementById('image-positive').innerHTML = '';
     }
 };
 function printStoryImages(pageObject) {
@@ -316,7 +364,7 @@ function printStoryImages(pageObject) {
             manageImage('print','./assets/artwork/lines.png','positive')
             manageImage('print','./assets/artwork/lines_shadow.png','negative')
             break;
-        case Approach:
+        case Approach || Rowan || letRest:
             manageImage('print','./assets/artwork/rowan.png','positive')
             manageImage('print','./assets/artwork/rowan_shadow.png','negative')
             break;
@@ -437,17 +485,14 @@ document.addEventListener('mousemove', (e)=>{
         let y = e.pageY - (wh/2)
         x = x/(ww/15)
         y = y/(wh/15)
-        let pos = document.getElementById('image-positive');
-        let neg = document.getElementById('image-negative');
-        pos.style.left = `${x}px`
-        neg.style.left = `${-x}px`
-        pos.style.top = `${y-(pos.offsetHeight/2)}px`
-        neg.style.top = `${-y+(neg.offsetHeight/2)}px`
-    } else if (options.enableParallax === false) {
-        let pos = document.getElementById('image-positive');
-        let neg = document.getElementById('image-negative');
-        pos.style.top = `${-(pos.offsetHeight/2)}px`
-        neg.style.top = `${+(neg.offsetHeight/2)}px`
+        if (document.getElementById('currentPosImg') !== null && document.getElementById('currentNegImg') !== null) {
+            let pos = document.getElementById('currentPosImg');
+            let neg = document.getElementById('currentNegImg');
+            pos.style.left = `${x}px`
+            neg.style.left = `${-x}px`
+            pos.style.top = `${y}px`
+            neg.style.top = `${-y}px`
+        }
     }
   });
 //^ cursor and parallax
@@ -457,7 +502,7 @@ document.addEventListener('mousemove', (e)=>{
 let main_menu = document.getElementById('main-menu-overlay');
 let loading_overlay = document.getElementById('loading-overlay')
 document.getElementById('enter-button').addEventListener('click',()=>{
-    preloadImages();
+    //preloadImages();
     if (hasSavedData === false) {
         loadPage(intro,0);
         visited = ['intro'];
@@ -646,6 +691,12 @@ document.getElementById(`parallax-off`).addEventListener('mouseup',()=>{
 document.getElementById(`parallax-on`).addEventListener('mouseup',()=>{
     options['enableParallax'] = true;
 })
+document.getElementById(`text-fade-off`).addEventListener('mouseup',()=>{
+    options['enableTextFade'] = false;
+})
+document.getElementById(`text-fade-on`).addEventListener('mouseup',()=>{
+    options['enableTextFade'] = true;
+})
 function setOptionsForm() {
     let warningsOff = document.getElementById(`warnings-off`)
     let warningsOn = document.getElementById(`warnings-on`)
@@ -653,6 +704,8 @@ function setOptionsForm() {
     let musicOn = document.getElementById(`music-on`)
     let parallaxOff = document.getElementById(`parallax-off`)
     let parallaxOn = document.getElementById(`parallax-on`)
+    let textFadeOff = document.getElementById(`text-fade-off`)
+    let textFadeOn = document.getElementById(`text-fade-on`)
     if (options.enableMusic === true) {
         musicOff.checked = false;
         musicOn.checked = true;
@@ -673,6 +726,13 @@ function setOptionsForm() {
     } else {
         parallaxOff.checked = true;
         parallaxOn.checked = false;
+    }
+    if (options.enableTextFade === true) {
+        textFadeOff.checked = false;
+        textFadeOn.checked = true;
+    } else {
+        textFadeOff.checked = true;
+        textFadeOn.checked = false;
     }
     document.getElementById(`${options.textSize}-text`).checked = true;
     volumeInput.value = options.volume;
