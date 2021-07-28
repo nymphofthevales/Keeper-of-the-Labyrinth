@@ -4,12 +4,11 @@ function Grid(w,h,s,preset) {
     if (preset === undefined) {
         this.columns = w;
         this.rows = h;
-        this.cellSize = s;
     } else if (preset !== undefined) {
         this.columns = preset.width;
         this.rows = preset.height;
-        this.cellSize = preset.size;
     }
+    this.cellSize = s;
     this.array = [];
     for (let i=1; i <= (this.columns * this.rows); i++) {
         this.array.push(new MapTile(i,this,'o'))
@@ -19,6 +18,7 @@ function Grid(w,h,s,preset) {
         this.loadInPresetArray(preset);
     }
     this.printMapTiles();
+    this.initializeMapNodes(this.getMapNodeArray());
 }
 Grid.prototype.getRow = function(num) {
     return this.array.slice(num*this.columns,(num*this.columns) + this.columns);
@@ -70,16 +70,6 @@ Grid.prototype.print = function() {
     drawGrid(this);
     populateGrid(this);
 }
-Grid.prototype.getNodeList = function() {
-    let MapNodeList = [];
-    for (let i=0; i<this.array.length; i++) {
-        if (this.array[i].constructor === MapNode) {
-            MapNodeList.push(this.array[i]);
-        }
-    }
-    return MapNodeList;
-}
-
 Grid.prototype.printMapTiles = function() {
     for (let i = 0; i < this.array.length; i++) {
         let path = ''
@@ -122,6 +112,44 @@ Grid.prototype.loadInPresetArray = function(preset) {
         this.insertElement(coordArray,'node',type,opts)
     }
 }
+Grid.prototype.tracePath = function(node1,node2) {
+    let pathArray = checkGlobalConnection(node1.position,node2.position,this);
+    for (let i=0; i<pathArray.length; i++) {
+        
+    }
+}
+Grid.prototype.getMapNodeArray = function() {
+    let mapNodeArray = [];
+    for (let i=0; i < this.array.length; i++) {
+        if (this.array[i].constructor === MapNode) {
+            mapNodeArray.push(this.array[i])
+        }
+    }
+    return mapNodeArray;
+}
+Grid.prototype.initializeMapNodes = function(mapNodeArray) {
+    let nodeDOMRefs = {}
+    for (let i=0; i < mapNodeArray.length; i++) {
+        //id looks like "cell-x-y"
+        let x = mapNodeArray[i].position[0];
+        let y = mapNodeArray[i].position[1];
+        nodeDOMRefs[`node-${x}-${y}`] = document.getElementById(`cell-${x}-${y}`);
+        let a = nodeDOMRefs[`node-${x}-${y}`];
+        a.addEventListener('mouseover',()=>{
+            hoverMapNode("hover",mapNodeArray,i);
+        });
+        a.addEventListener('mouseout',()=>{
+            hoverMapNode("clear",mapNodeArray,i);
+        })
+        a.addEventListener('mousedown',()=>{
+            clickMapNode(mapNodeArray,i)
+        })
+        a.addEventListener('mouseup',()=>{
+            hoverMapNode("hover",mapNodeArray,i)
+        })
+    }
+    return nodeDOMRefs;
+}
 
 function MapNode(coordinateArray,GridObject,type,opts) {
     this.type = type;
@@ -138,6 +166,7 @@ function MapNode(coordinateArray,GridObject,type,opts) {
 MapNode.prototype.addLinkage = function(MapNodeObject) {
     this.linkages.push(MapNodeObject);
 }
+MapNode.prototype.__proto__ = MapTile.prototype;
 
 function MapTile(number,GridObject,type) {
     this.type = type;
@@ -472,8 +501,8 @@ function generateConnections(MapNodeObject,totalNodes) {
 let preset = {
     width: 9,
     height: 9,
-    size: '100px',
     tiles: [
+        //coordinates, type
         [
             [3,5],'<>'
         ],
@@ -503,6 +532,7 @@ let preset = {
         ],
     ],
     nodes: [
+        //coordinates, type, title, unlocked
         [
             [2,5],'>','Intro',true
         ],
@@ -519,4 +549,51 @@ let preset = {
             [8,5],'<','Intro',true
         ],
     ]
+}
+
+
+
+function hoverMapNode(action,mapNodeArray,index) {
+    let x = mapNodeArray[index].position[0];
+    let y = mapNodeArray[index].position[1];
+    let node = document.getElementById(`cell-${x}-${y}`);
+    let type = mapNodeArray[index].type;
+    let unlocked = mapNodeArray[index].unlocked;
+    //./assets/ui/tileset/node_ + ${locked/unlocked} + / + ${type.length} + / + ${type} + _ + hover
+    let path = './assets/ui/tileset/node_'
+    if (unlocked === true) {
+        path += 'unlocked/'
+    } else if (unlocked === false) {
+        path += 'locked/'
+    }
+    path += `${type.length}/`
+    path += `${type}`
+    if (action === 'clear') {
+        path += '.png'
+        node.style.backgroundImage = `url("${path}")`
+    } else if (action === 'hover') {
+        path += '_hover.png'
+        node.style.backgroundImage = `url("${path}")`
+    }
+}
+
+function clickMapNode(mapNodeArray,index) {
+    let x = mapNodeArray[index].position[0];
+    let y = mapNodeArray[index].position[1];
+    let node = document.getElementById(`cell-${x}-${y}`);
+    let type = mapNodeArray[index].type;
+    let unlocked = mapNodeArray[index].unlocked;
+    //./assets/ui/tileset/node_ + ${locked/unlocked} + / + ${type.length} + / + ${type} + _ + active
+    let path = './assets/ui/tileset/node_'
+    if (unlocked === true) {
+        path += 'unlocked/'
+    } else if (unlocked === false) {
+        path += 'locked/'
+    }
+    path += `${type.length}/`
+    path += `${type}_`
+    path += 'active'
+    path += '.png'
+    console.log(path)
+    node.style.backgroundImage = `url("${path}")`
 }
