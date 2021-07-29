@@ -5,8 +5,16 @@ function Grid(w,h,s,preset) {
         this.columns = w;
         this.rows = h;
     } else if (preset !== undefined) {
-        this.columns = preset.width;
-        this.rows = preset.height;
+        if (preset.width >= w) {
+            this.columns = preset.width;
+        } else {
+            this.columns = w;
+        }
+        if (preset.height >= h) {
+            this.rows = preset.height;
+        } else {
+            this.rows = h;
+        }
     }
     this.cellSize = s;
     this.array = [];
@@ -18,7 +26,7 @@ function Grid(w,h,s,preset) {
         this.loadInPresetArray(preset);
     }
     this.printMapTiles();
-    this.initializeMapNodes(this.getMapNodeArray());
+    //this.initializeMapNodes(this.getMapNodeArray());
 }
 Grid.prototype.getRow = function(num) {
     return this.array.slice(num*this.columns,(num*this.columns) + this.columns);
@@ -126,6 +134,15 @@ Grid.prototype.getMapNodeArray = function() {
         }
     }
     return mapNodeArray;
+}
+Grid.prototype.getTileArray = function() {
+    let tileArray = [];
+    for (let i=0; i < this.array.length; i++) {
+        if (this.array[i].constructor === MapTile) {
+            tileArray.push(this.array[i])
+        }
+    }
+    return tileArray;
 }
 Grid.prototype.initializeMapNodes = function(mapNodeArray) {
     let nodeDOMRefs = {}
@@ -250,8 +267,30 @@ function generateGridTemplate(GridObject,type) {
             return s;
     }
 }
+function MapSave(w,h) {
+    this.width = w;
+    this.height = h;
+    this.tiles = [];
+    this.nodes = [];
+}
+MapSave.prototype.addTile = function(MapTileObject) {
+    this.tiles.push([
+        MapTileObject.position,
+        MapTileObject.type
+    ])
+}
+MapSave.prototype.addNode = function(MapNodeObject) {
+    this.nodes.push([
+        MapNodeObject.position,
+        MapNodeObject.type,
+        MapNodeObject.title,
+        MapNodeObject.unlocked
+    ])
+}
 function createDOMGrid(GridObject) {
-    document.querySelector('body').appendChild(document.createElement('div')).id=`GeneratedGrid`;
+    if (document.getElementById('GeneratedGrid') === null) {
+        document.querySelector('body').appendChild(document.createElement('div')).id=`GeneratedGrid`;
+    }
     const a = document.getElementById('GeneratedGrid')
     a.style.display = 'grid';
     a.style.margin = '0';
@@ -296,11 +335,82 @@ function populateGrid(GridObject) {
             p.style.padding = 0;
             p.style.color = `rgb(255,255,255)`
             p.innerText = GridObject.getColumn(x-1)[y-1].position; //SHOULD SET TYPE HERE
+            //
+            cell.appendChild(document.createElement('select')).id=`cell-${x}-${y}-type-dropdown`;
+            cell.appendChild(document.createElement('select')).id=`cell-${x}-${y}-node-dropdown`;
+            let types = ['o','<>','^v','<^>','^v>','<v>','<^v','<^v>','<^','^>','v>','<v','^','>','v','<']
+            let typeDropdown = document.getElementById(`cell-${x}-${y}-type-dropdown`);
+            let nodeDropdown = document.getElementById(`cell-${x}-${y}-node-dropdown`)
+            for (let i=0; i < types.length; i++) {
+                typeDropdown.appendChild(document.createElement('option')).id = `${x}-${y}-option-${types[i]}`
+                document.getElementById(`${x}-${y}-option-${types[i]}`).value = `${types[i]}`
+                document.getElementById(`${x}-${y}-option-${types[i]}`).innerText = `${types[i]}`
+            }
+            nodeDropdown.appendChild(document.createElement('option')).id=`${x}-${y}-option-tile`
+            document.getElementById(`${x}-${y}-option-tile`).value = "tile";
+            document.getElementById(`${x}-${y}-option-tile`).innerText = "tile";
+            //
+            nodeDropdown.appendChild(document.createElement('option')).id=`${x}-${y}-option-node`
+            document.getElementById(`${x}-${y}-option-node`).value = "node";
+            document.getElementById(`${x}-${y}-option-node`).innerText = "node";
+            //
+            typeDropdown.addEventListener('change',()=>{
+                readInput([x,y],GridObject)
+            })
+            nodeDropdown.addEventListener('change',()=>{
+                readInput([x,y],GridObject)
+            })
             //p.style.display = 'absolute'
             //p.style.left = `${(1/2)*GridObject.cellSize}px`;
             //p.style.top = `${(1/2)*GridObject.cellSize}px`;
         }
     }
+}
+function readInput(coordinateArray,GridObject) {
+    let x = coordinateArray[0];
+    let y = coordinateArray[1];
+    let cell = document.getElementById(`cell-${x}-${y}`)
+    let typeDropdown = document.getElementById(`cell-${x}-${y}-type-dropdown`)
+    let nodeDropdown = document.getElementById(`cell-${x}-${y}-node-dropdown`)
+    let element = GridObject.getElement(coordinateArray);
+    element.type = typeDropdown.value;
+    if (nodeDropdown.value === "node" && document.getElementById(`cell-${x}-${y}-unlocked`) === null) {
+        cell.appendChild(document.createElement('input')).id=`cell-${x}-${y}-title`;
+        cell.appendChild(document.createElement('input')).id=`cell-${x}-${y}-unlocked`;
+        document.getElementById(`cell-${x}-${y}-title`).value = "title";
+        document.getElementById(`cell-${x}-${y}-unlocked`).value = "unlocked";
+        document.getElementById(`cell-${x}-${y}-title`).addEventListener('change',()=>{
+            readInput([x,y],GridObject)
+        })
+        document.getElementById(`cell-${x}-${y}-unlocked`).addEventListener('change',()=>{
+            readInput([x,y],GridObject)
+        })
+    } else if (nodeDropdown.value === "node" && document.getElementById(`cell-${x}-${y}-unlocked`) !== null) {
+        GridObject.insertElement(coordinateArray,'node',typeDropdown.value,{
+            title: document.getElementById(`cell-${x}-${y}-title`).value,
+            unlocked: JSON.parse(document.getElementById(`cell-${x}-${y}-unlocked`).value)
+        })
+    } else if (nodeDropdown.value === "tile" && document.getElementById(`cell-${x}-${y}-unlocked`) !== null) {
+        document.getElementById(`cell-${x}-${y}-title`).remove();
+        document.getElementById(`cell-${x}-${y}-unlocked`).remove();
+        GridObject.insertElement(coordinateArray,'tile',typeDropdown.value)
+    }
+    GridObject.printMapTiles();
+}
+function outputSave(GridObject) {
+    let save = new MapSave(GridObject.columns,GridObject.rows)
+    let array = GridObject.array;
+    for (let i=0; i < array.length; i++) {
+        if (array[i].type !== 'o') {
+            if (array[i].constructor === MapNode) {
+                save.addNode(array[i]);
+            } else if (array[i].constructor === MapTile) {
+                save.addTile(array[i]);
+            }
+        }
+    }
+    document.querySelector('body').appendChild(document.createElement('p')).innerText = JSON.stringify(save)
+    return save;
 }
 //^ constructors
 //CONTENT BREAK

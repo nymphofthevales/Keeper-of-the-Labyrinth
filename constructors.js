@@ -273,15 +273,26 @@ Music.prototype._fadeIn = function(seconds) {
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //v grid 
-function Grid(w,h,s) {
-    this.columns = w;
-    this.rows = h;
+
+function Grid(w,h,s,preset) {
+    if (preset === undefined) {
+        this.columns = w;
+        this.rows = h;
+    } else if (preset !== undefined) {
+        this.columns = preset.width;
+        this.rows = preset.height;
+    }
     this.cellSize = s;
     this.array = [];
-    for (let i=1; i <= (w * h); i++) {
+    for (let i=1; i <= (this.columns * this.rows); i++) {
         this.array.push(new MapTile(i,this,'o'))
     }
     this.print();
+    if (preset !== undefined) {
+        this.loadInPresetArray(preset);
+    }
+    this.printMapTiles();
+    this.initializeMapNodes(this.getMapNodeArray());
 }
 Grid.prototype.getRow = function(num) {
     return this.array.slice(num*this.columns,(num*this.columns) + this.columns);
@@ -293,60 +304,149 @@ Grid.prototype.getColumn = function(num) {
     }
     return column;
 }
-Grid.prototype.insertElement = function(coordinateArray,element,type) {
+Grid.prototype.getIndexFromCoords = function(coordinateArray) {
     let y = coordinateArray[1];
     let x = coordinateArray[0];
-    let row = (y-1) * this.columns;
-    let posXY = row + (x-1);
+    y-=1;
+    x-=1;
+    y *= this.columns;
+    let index = y + x
+    return index
+}
+Grid.prototype.getCoordsFromIndex = function(index) {
+    let x = index % this.columns;
+    let y = Math.floor(index/this.columns);
+    return [x+1,y+1];
+}
+Grid.prototype.insertElement = function(coordinateArray,element,type,opts) {
+    let x = coordinateArray[0];
+    let y = coordinateArray[1];
+    let index = this.getIndexFromCoords([x,y]);
     if (element === 'node') {
-        //this.array[posXY] = new MapNode([x,y],this,type)
-        this.array[posXY] = element;
+        this.array[index] = new MapNode([x,y],this,type,opts)
     } else if (element === 'tile') {
-        this.array[posXY] = new MapTile([x,y],this,type)
+        this.array[index] = new MapTile([x,y],this,type)
     }
     document.getElementById(`cell-${x}-${y}-content`).textContent = type;
 }
 Grid.prototype.getElement = function(coordinateArray) {
-    let y = coordinateArray[1];
+    let index = this.getIndexFromCoords(coordinateArray)
+    return this.array[index];
+}
+Grid.prototype.getElementDOMNode = function(index) {
+    let coordinateArray = this.getCoordsFromIndex(index);
     let x = coordinateArray[0];
-    let row = (y-1) * this.columns;
-    let posXY = row + (x-1);
-    return this.array[posXY];
+    let y = coordinateArray[1];
+    return document.getElementById(`cell-${x}-${y}`);
 }
 Grid.prototype.print = function() {
     createDOMGrid(this);
     drawGrid(this);
     populateGrid(this);
 }
-Grid.prototype.getNodeList = function() {
-    let MapNodeList = [];
-    for (let i=0; i<this.array.length; i++) {
+Grid.prototype.printMapTiles = function() {
+    for (let i = 0; i < this.array.length; i++) {
+        let path = ''
+        if (this.array[i].constructor === MapTile) {
+            path = './assets/ui/tileset/passageway/'
+        } else if (this.array[i].constructor === MapNode) {
+            path = './assets/ui/tileset/node_'
+            console.log(this.array[i].unlocked)
+            if (this.array[i].unlocked === true) {
+                path += 'unlocked/'
+            } else if (this.array[i].unlocked === false){
+                path += 'locked/'
+            }
+            path += `${this.array[i].type.length}` 
+            path += '/'
+            console.log(path)
+        }
+        let type = this.array[i].type;
+        let imgUrl = path + type + '.png'
+        let DOMNode = this.getElementDOMNode(i)
+        DOMNode.style.backgroundImage = `url(\"${imgUrl}\")`;
+        DOMNode.childNodes[0].textContent = '';
+    }
+}
+Grid.prototype.loadInPresetArray = function(preset) {
+    let tiles = preset.tiles;
+    for (let i=0; i < tiles.length; i++) {
+        let coordArray = tiles[i][0];
+        let type = tiles[i][1];
+        this.insertElement(coordArray,'tile',type)
+    }
+    let nodes = preset.nodes;
+    for (let i=0; i < nodes.length; i++) {
+        let coordArray = nodes[i][0];
+        let type = nodes[i][1];
+        let opts = {
+            title: nodes[i][2],
+            unlocked: nodes[i][3],
+        }
+        this.insertElement(coordArray,'node',type,opts)
+    }
+}
+Grid.prototype.tracePath = function(node1,node2) {
+    let pathArray = checkGlobalConnection(node1.position,node2.position,this);
+    for (let i=0; i<pathArray.length; i++) {
+        
+    }
+}
+Grid.prototype.getMapNodeArray = function() {
+    let mapNodeArray = [];
+    for (let i=0; i < this.array.length; i++) {
         if (this.array[i].constructor === MapNode) {
-            MapNodeList.push(this.array[i]);
+            mapNodeArray.push(this.array[i])
         }
     }
-    return MapNodeList;
+    return mapNodeArray;
 }
+Grid.prototype.initializeMapNodes = function(mapNodeArray) {
+    let nodeDOMRefs = {}
+    for (let i=0; i < mapNodeArray.length; i++) {
+        //id looks like "cell-x-y"
+        let x = mapNodeArray[i].position[0];
+        let y = mapNodeArray[i].position[1];
+        nodeDOMRefs[`node-${x}-${y}`] = document.getElementById(`cell-${x}-${y}`);
+        let a = nodeDOMRefs[`node-${x}-${y}`];
+        a.addEventListener('mouseover',()=>{
+            hoverMapNode("hover",mapNodeArray,i);
+        });
+        a.addEventListener('mouseout',()=>{
+            hoverMapNode("clear",mapNodeArray,i);
+        })
+        a.addEventListener('mousedown',()=>{
+            clickMapNode(mapNodeArray,i)
+        })
+        a.addEventListener('mouseup',()=>{
+            hoverMapNode("hover",mapNodeArray,i)
+        })
+    }
+    return nodeDOMRefs;
+}
+
 //^ grid object constructor
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //v map node and tile constructors
-function MapNode(coordinate,GridObject,title) {
-    this.title = title;
+
+function MapNode(coordinateArray,GridObject,type,opts) {
+    this.type = type;
+    this.position = coordinateArray;
     this.parentGrid = GridObject;
+    this.distance = 0;
+    //
+    this.title = opts.title;
+    this.unlocked = opts.unlocked;
     this.pageObjects = [];
     this.pageNum = 0;
-    this.highlighted = false;
     this.linkages = [];
-    this.position = [];
-    this.distance = 0;
-    if (typeof coordinate === 'object') {
-        this.position = coordinate;
-    }
 }
 MapNode.prototype.addLinkage = function(MapNodeObject) {
     this.linkages.push(MapNodeObject);
 }
+MapNode.prototype.__proto__ = MapTile.prototype;
+
 function MapTile(number,GridObject,type) {
     this.type = type;
     this.position = [];
@@ -425,13 +525,19 @@ function generateGridTemplate(GridObject,type) {
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //v grid print functions
+
 function createDOMGrid(GridObject) {
+    document.getElementById('map-housing').innerHTML = '';
     document.getElementById('map-housing').appendChild(document.createElement('div')).id=`GeneratedGrid`;
     const a = document.getElementById('GeneratedGrid')
     a.style.display = 'grid';
     a.style.margin = '0';
     a.style.gridTemplateColumns = generateGridTemplate(GridObject,'columns');
     a.style.gridTemplateRows = generateGridTemplate(GridObject,'rows');
+    //
+    a.style.imageRendering = 'pixelated';
+    //a.style.imageRendering = '-moz-crisp-edges';
+    //a.style.imageRendering = 'crisp-edges';
 
 }
 function drawGrid(GridObject) {
@@ -446,9 +552,13 @@ function drawGrid(GridObject) {
             cell.style.backgroundColor = `rgb(0,0,0)`
             cell.style.height = `${GridObject.cellSize}`;
             cell.style.width = `${GridObject.cellSize}`;
+            //
             //cell.style.border = '1px solid white'
             //cell.style.textAlign = 'center'
             cell.style.display = 'relative'
+            cell.style.backgroundRepeat = 'no-repeat'
+            cell.style.backgroundSize = 'contain'
+            //
         }
     }
 }
@@ -461,15 +571,259 @@ function populateGrid(GridObject) {
             let p = document.getElementById(`cell-${x}-${y}-content`)
             p.style.margin = 0;
             p.style.padding = 0;
-            //p.style.color = `rgb(255,255,255)`
-            p.innerText = GridObject.getColumn(x-1)[y-1].type; //SHOULD SET TYPE HERE
-            p.style.display = 'absolute'
+            p.style.color = `rgb(255,255,255)`
+            p.innerText = GridObject.getColumn(x-1)[y-1].position; //SHOULD SET TYPE HERE
+            //p.style.display = 'absolute'
             //p.style.left = `${(1/2)*GridObject.cellSize}px`;
             //p.style.top = `${(1/2)*GridObject.cellSize}px`;
         }
     }
 }
 //^ grid print functions
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v pathfinding logic
+function comparePosition(A,B) {
+    let x;
+    let y;
+    if (A.position[0] > B.position[0]) {
+        x=true
+    } else {
+        x=false
+    }
+    if (A.position[1] > B.position[1]) {
+        y=true
+    } else {
+        y=false
+    }
+    return [x,y];
+}
+function checkGlobalConnection(startXY,targetXY,GridObject) {
+    GridObject.print();
+    let currentElement = GridObject.getElement(startXY);
+    let path = [];
+    let toSearch = [];
+    let searching = true;
+    let success = true;
+    let iterations = 0;
+    function addToSearch(tileElement) {
+        if (toSearch.includes(tileElement) === false && path.includes(tileElement) === false) {
+            toSearch.push(tileElement)
+        }
+    }
+
+    generateWeightings(targetXY,GridObject)
+    let finish = GridObject.getElement(targetXY);
+    do {
+        iterations +=1;
+        if (currentElement === finish || iterations > 500) {
+            searching = false;
+        }
+        let adjLinks = checkAdjacentConnections(currentElement.position,GridObject)
+        //console.log(adjLinks)
+        if (adjLinks.includes(true) === false) {
+            success = false;
+            searching = false;
+        } else if (adjLinks.includes(true) === true) {
+            for (let i = 0; i < 4; i++) {
+                if (adjLinks[i] === true) {
+                    switch (i) {
+                        case 0: //up 
+                            addToSearch(GridObject.getElement(
+                                [currentElement.position[0],currentElement.position[1]-1]
+                                ))
+                            break;
+                        case 1: //right
+                            addToSearch(GridObject.getElement(
+                                [currentElement.position[0]+1,currentElement.position[1]]
+                                ))
+                            break;
+                        case 2: //down
+                            addToSearch(GridObject.getElement(
+                                [currentElement.position[0],currentElement.position[1]+1]
+                                ))
+                            break;
+                        case 3: //left
+                            addToSearch(GridObject.getElement(
+                                [currentElement.position[0]-1,currentElement.position[1]]
+                                ))
+                            break;
+                    }
+                }
+            }
+        }
+        let currentPreference = {};
+        currentPreference['distance'] = Infinity;
+        for (let i=0; i < toSearch.length; i++) {
+            if (toSearch[i].distance < currentPreference.distance) {
+                currentPreference = toSearch[i];
+            } else if (toSearch[i].distance === currentPreference.distance) {
+                if (isEven(iterations) === true) {
+                    currentPreference = toSearch[i];
+                }
+            }
+        }
+        /*console.log([`current element at iteration ${iterations}:`,currentElement])
+        console.log([`to search at iteration ${iterations}:`,toSearch])
+        console.log([`searched at iteration ${iterations}`,searched])
+        console.log([`current preference at iteration ${iterations}`,currentPreference])*/
+        if (toSearch.includes(currentPreference) === true) {
+            for (let i=0; i<toSearch.length; i++) {
+                if (toSearch[i] === currentPreference) {
+                    toSearch.splice(i,1);
+                }
+            }
+        }
+        if (currentElement === currentPreference) {
+            currentPreference = toSearch[0];
+        }
+        document.getElementById(`cell-${currentElement.position[0]}-${currentElement.position[1]}`).style.border = `3px dashed red`;
+        path.push(currentElement);
+        currentElement = currentPreference;
+    }
+    while (searching === true)
+    if (success === true) {
+        return [true,path]
+    } else if (success === false) {
+        return [false]
+    }
+}
+function generateRandomTestGrid(GridObject) {
+    let types = ['o','<>','^v','<^>','^v>','<v>','<^v','<^v>','<^','^>','v>','<v']
+    for (let i=0; i< GridObject.array.length; i++) {
+        let rand = getRandomInt(types.length);
+        GridObject.array[i].setType(types[rand - 1]);
+    }
+}
+function generateWeightings(targetXY,GridObject) {
+    let finish = GridObject.getElement(targetXY)
+    let weightedArray = GridObject.array;
+    for (let i = 0; i < weightedArray.length; i++) {
+        let a = weightedArray[i];
+        let distance = Math.abs(a.position[0] - finish.position[0]);
+        distance += Math.abs(a.position[1] - finish.position[1]);
+        a.distance = distance;
+        document.getElementById(`cell-${a.position[0]}-${a.position[1]}-content`).innerText = `${distance}`
+        let x;
+        switch(GridObject.height > GridObject.width) {
+            case true: x = GridObject.rows;
+                break;
+            case false: x = GridObject.columns;
+                break;
+        }
+        let c = Math.floor(240-((240/x)*(a.distance)));
+        let color = `rgb(${c},${c},108)`;
+        document.getElementById(`cell-${a.position[0]}-${a.position[1]}`).style.backgroundColor = color;
+    }
+}
+function checkAdjacentConnections(coordinateArray,GridObject) {
+    let element = GridObject.getElement(coordinateArray);
+    let u;
+    let r;
+    let d;
+    let l;
+    let type = element.type;
+    if (element.getAdjacent('above') !== undefined) {
+        if (type.includes('^') === true && element.getAdjacent('above').type.includes('v') === true) {
+            u = true;
+        } else {
+            u = false;
+        }
+    } else {
+        u = false;
+    }
+    if (element.getAdjacent('right') !== undefined) {
+        if (type.includes('>') === true && element.getAdjacent('right').type.includes('<') === true) {
+            r= true;
+        } else {
+            r = false;
+        }
+    } else {
+        r= false;
+    }
+    if (element.getAdjacent('below') !== undefined) {
+        if (type.includes('v') === true && element.getAdjacent('below').type.includes('^') === true) {
+            d= true;
+        } else {
+            d = false;
+        }
+    } else {
+        d= false;
+    }
+    if (element.getAdjacent('left') !== undefined) {
+        if (type.includes('<') === true && element.getAdjacent('left').type.includes('>') === true) {
+            l= true;
+        } else {
+            l = false;
+        }
+    } else {
+        l= false;
+    }
+    return [u,r,d,l]
+}
+
+function generateConnections(MapNodeObject,totalNodes) {
+    let w = (2 * totalNodes) + 2;
+    let h = Math.floor((3/4) * w);
+    if (isEven(h) === true) {
+        h += 1;
+    };
+    let mapGrid = new Grid(w,h,'100px');
+    //generate a new grid with an odd height and large enough to contain all given nodes
+    mapGrid.insertElement([2,Math.floor(h/2)],MapNodeObject,'node')
+    //place the first node in the middle at the left edge
+    placeNewNode(mapGrid,MapNodeObject);
+}
+//^ map pathfinding
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
+//v map node interaction management
+
+function hoverMapNode(action,mapNodeArray,index) {
+    let x = mapNodeArray[index].position[0];
+    let y = mapNodeArray[index].position[1];
+    let node = document.getElementById(`cell-${x}-${y}`);
+    let type = mapNodeArray[index].type;
+    let unlocked = mapNodeArray[index].unlocked;
+    //./assets/ui/tileset/node_ + ${locked/unlocked} + / + ${type.length} + / + ${type} + _ + hover
+    let path = './assets/ui/tileset/node_'
+    if (unlocked === true) {
+        path += 'unlocked/'
+    } else if (unlocked === false) {
+        path += 'locked/'
+    }
+    path += `${type.length}/`
+    path += `${type}`
+    if (action === 'clear') {
+        path += '.png'
+        node.style.backgroundImage = `url("${path}")`
+    } else if (action === 'hover') {
+        path += '_hover.png'
+        node.style.backgroundImage = `url("${path}")`
+    }
+}
+
+function clickMapNode(mapNodeArray,index) {
+    let x = mapNodeArray[index].position[0];
+    let y = mapNodeArray[index].position[1];
+    let node = document.getElementById(`cell-${x}-${y}`);
+    let type = mapNodeArray[index].type;
+    let unlocked = mapNodeArray[index].unlocked;
+    //./assets/ui/tileset/node_ + ${locked/unlocked} + / + ${type.length} + / + ${type} + _ + active
+    let path = './assets/ui/tileset/node_'
+    if (unlocked === true) {
+        path += 'unlocked/'
+    } else if (unlocked === false) {
+        path += 'locked/'
+    }
+    path += `${type.length}/`
+    path += `${type}_`
+    path += 'active'
+    path += '.png'
+    console.log(path)
+    node.style.backgroundImage = `url("${path}")`
+}
+//^ map node interaction management
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //v misc utility functions
