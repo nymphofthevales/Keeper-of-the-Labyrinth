@@ -519,6 +519,7 @@ button:visited {
   height: 85%;
   width: 90%;
   margin: 0 auto;
+  padding-top: 30px;
 }
 #options-form {
   margin: 0 auto;

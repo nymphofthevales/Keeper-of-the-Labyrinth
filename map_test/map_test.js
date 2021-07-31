@@ -169,7 +169,7 @@ Grid.prototype.printMapTiles = function() {
             path = './assets/ui/tileset/passageway/'
         } else if (this.array[i].constructor === MapNode) {
             path = './assets/ui/tileset/node_'
-            console.log(this.array[i].unlocked)
+            //console.log(this.array[i].unlocked)
             if (this.array[i].unlocked === true) {
                 path += 'unlocked/'
             } else if (this.array[i].unlocked === false){
@@ -177,7 +177,7 @@ Grid.prototype.printMapTiles = function() {
             }
             path += `${this.array[i].type.length}` 
             path += '/'
-            console.log(path)
+            //console.log(path)
         }
         let type = this.array[i].type;
         let imgUrl = path + type + '.png'
@@ -446,6 +446,10 @@ function populateGrid(GridObject) {
             nodeDropdown.addEventListener('change',()=>{
                 readInput([x,y],GridObject)
             })
+            let children = cell.childNodes;
+            for (let i=0; i<children.length; i++) {
+                children[i].style.opacity = 0.3;
+            }
         }
     }
 }
@@ -460,8 +464,12 @@ function readInput(coordinateArray,GridObject) {
     if (nodeDropdown.value === "node" && document.getElementById(`cell-${x}-${y}-unlocked`) === null) {
         cell.appendChild(document.createElement('input')).id=`cell-${x}-${y}-title`;
         cell.appendChild(document.createElement('input')).id=`cell-${x}-${y}-unlocked`;
-        document.getElementById(`cell-${x}-${y}-title`).value = "title";
-        document.getElementById(`cell-${x}-${y}-unlocked`).value = "unlocked";
+        let title = document.getElementById(`cell-${x}-${y}-title`)
+        title.value = "title";
+        title.style.opacity = 0.3;
+        let unlocked = document.getElementById(`cell-${x}-${y}-unlocked`)
+        unlocked.value = "unlocked";
+        unlocked.style.opacity = 0.3;
         document.getElementById(`cell-${x}-${y}-title`).addEventListener('change',()=>{
             readInput([x,y],GridObject)
         })
@@ -731,7 +739,7 @@ function clickMapNode(mapNodeArray,index) {
     path += `${type}_`
     path += 'active'
     path += '.png'
-    console.log(path)
+    //console.log(path)
     node.style.backgroundImage = `url("${path}")`
 }
 
