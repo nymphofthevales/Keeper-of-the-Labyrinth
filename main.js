@@ -97,6 +97,10 @@ ipcMain.on('updateMasterSave',(event,arg)=>{
     masterSave.set(JSON.stringify(currentData));
     //console.log(`output at updateMasterSave: ${JSON.stringify(currentData)}, as ${typeof JSON.stringify(currentData)}`)
 })
+ipcMain.on('setMasterSave',(event,arg)=>{
+    console.log(`master save was set to: ${JSON.stringify(arg)}`)
+    masterSave.set(JSON.stringify(arg));
+})
 
 ipcMain.on('requestOptions',(event)=>{
     if (optSave.data !== '' && optSave.data !== undefined) {

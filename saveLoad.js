@@ -157,6 +157,7 @@ function sortSaveObject(saveObject) {
         }
     }
     console.log([`Produced:`,resultObject])
+    ipcRenderer.send('setMasterSave',resultObject);
     return resultObject;
 }
 
