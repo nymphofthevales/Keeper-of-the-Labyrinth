@@ -292,7 +292,7 @@ function Grid(w,h,s,preset) {
         this.loadInPresetArray(preset);
     }
     this.printMapTiles();
-    this.initializeMapNodes(this.getMapNodeArray());
+    this.initializeMapNodes(this.getNodes());
 }
 Grid.prototype.getRow = function(num) {
     return this.array.slice(num*this.columns,(num*this.columns) + this.columns);
@@ -351,7 +351,7 @@ Grid.prototype.printMapTiles = function() {
             path = './assets/ui/tileset/passageway/'
         } else if (this.array[i].constructor === MapNode) {
             path = './assets/ui/tileset/node_'
-            console.log(this.array[i].unlocked)
+            //console.log(this.array[i].unlocked)
             if (this.array[i].unlocked === true) {
                 path += 'unlocked/'
             } else if (this.array[i].unlocked === false){
@@ -359,7 +359,7 @@ Grid.prototype.printMapTiles = function() {
             }
             path += `${this.array[i].type.length}` 
             path += '/'
-            console.log(path)
+            //console.log(path)
         }
         let type = this.array[i].type;
         let imgUrl = path + type + '.png'
@@ -382,6 +382,7 @@ Grid.prototype.loadInPresetArray = function(preset) {
         let opts = {
             title: nodes[i][2],
             unlocked: nodes[i][3],
+            pageObject: nodes[i][4]
         }
         this.insertElement(coordArray,'node',type,opts)
     }
@@ -392,7 +393,7 @@ Grid.prototype.tracePath = function(node1,node2) {
         
     }
 }
-Grid.prototype.getMapNodeArray = function() {
+Grid.prototype.getNodes = function() {
     let mapNodeArray = [];
     for (let i=0; i < this.array.length; i++) {
         if (this.array[i].constructor === MapNode) {
@@ -424,6 +425,21 @@ Grid.prototype.initializeMapNodes = function(mapNodeArray) {
     }
     return nodeDOMRefs;
 }
+Grid.prototype.getPreset = function() {
+    let save = new MapSave(this.columns,this.rows)
+    let array = this.array;
+    for (let i=0; i < array.length; i++) {
+        if (array[i].type !== 'o') {
+            if (array[i].constructor === MapNode) {
+                save.addNode(array[i]);
+            } else if (array[i].constructor === MapTile) {
+                save.addTile(array[i]);
+            }
+        }
+    }
+    //document.querySelector('body').appendChild(document.createElement('p')).innerText = JSON.stringify(save)
+    return save;
+}
 
 //^ grid object constructor
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
@@ -438,7 +454,7 @@ function MapNode(coordinateArray,GridObject,type,opts) {
     //
     this.title = opts.title;
     this.unlocked = opts.unlocked;
-    this.pageObjects = [];
+    this.pageObject = opts.pageObject;
     this.pageNum = 0;
     this.linkages = [];
 }
@@ -521,14 +537,35 @@ function generateGridTemplate(GridObject,type) {
             return s;
     }
 }
+function MapSave(w,h) {
+    this.width = w;
+    this.height = h;
+    this.tiles = [];
+    this.nodes = [];
+}
+MapSave.prototype.addTile = function(MapTileObject) {
+    this.tiles.push([
+        MapTileObject.position,
+        MapTileObject.type
+    ])
+}
+MapSave.prototype.addNode = function(MapNodeObject) {
+    this.nodes.push([
+        MapNodeObject.position,
+        MapNodeObject.type,
+        MapNodeObject.title,
+        MapNodeObject.unlocked,
+        MapNodeObject.pageObject
+    ])
+}
 //^ map node and tile constructors
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //v grid print functions
 
 function createDOMGrid(GridObject) {
-    document.getElementById('map-housing').innerHTML = '';
-    document.getElementById('map-housing').appendChild(document.createElement('div')).id=`GeneratedGrid`;
+    document.getElementById('map').innerHTML = '';
+    document.getElementById('map').appendChild(document.createElement('div')).id=`GeneratedGrid`;
     const a = document.getElementById('GeneratedGrid')
     a.style.display = 'grid';
     a.style.margin = '0';
@@ -549,16 +586,12 @@ function drawGrid(GridObject) {
             let cell = document.getElementById(`cell-${j}-${i}`);
             cell.style.gridColumn = `${j}/${j+1}`;
             cell.style.gridRow = `${i}/${i+1}`;
-            cell.style.backgroundColor = `rgb(0,0,0)`
             cell.style.height = `${GridObject.cellSize}`;
             cell.style.width = `${GridObject.cellSize}`;
-            //
-            //cell.style.border = '1px solid white'
-            //cell.style.textAlign = 'center'
+            //cell.classList.add('grid-cell');
             cell.style.display = 'relative'
             cell.style.backgroundRepeat = 'no-repeat'
             cell.style.backgroundSize = 'contain'
-            //
         }
     }
 }
@@ -573,9 +606,26 @@ function populateGrid(GridObject) {
             p.style.padding = 0;
             p.style.color = `rgb(255,255,255)`
             p.innerText = GridObject.getColumn(x-1)[y-1].position; //SHOULD SET TYPE HERE
-            //p.style.display = 'absolute'
-            //p.style.left = `${(1/2)*GridObject.cellSize}px`;
-            //p.style.top = `${(1/2)*GridObject.cellSize}px`;
+        }
+    }
+}
+function appendNodeTitles(GridObject) {
+    let nodes = GridObject.getNodes();
+    for (let i=0; i<nodes.length; i++) {
+        let DOMRef = GridObject.getElementDOMNode(GridObject.getIndexFromCoords(nodes[i].position));
+        let x = nodes[i].position[0];
+        let y = nodes[i].position[1];
+        DOMRef.innerHTML = '';
+        DOMRef.classList.add('grid-node')
+        DOMRef.appendChild(document.createElement('div')).id=`cell-${x}-${y}-hovertext`;
+        let hoverText = document.getElementById(`cell-${x}-${y}-hovertext`)
+        hoverText.classList.add('node-title');
+        hoverText.appendChild(document.createElement('h3')).id=`cell-${x}-${y}-hovertext-content`
+        let content = document.getElementById(`cell-${x}-${y}-hovertext-content`)
+        if (nodes[i].unlocked === true) {
+            content.innerText = `${nodes[i].title}`
+        } else if (nodes[i].unlocked === false) {
+            content.innerText = `?`
         }
     }
 }
@@ -820,7 +870,7 @@ function clickMapNode(mapNodeArray,index) {
     path += `${type}_`
     path += 'active'
     path += '.png'
-    console.log(path)
+    //console.log(path)
     node.style.backgroundImage = `url("${path}")`
 }
 //^ map node interaction management
@@ -848,25 +898,13 @@ function dateStampToWords(date/* date as string in format "year/month/day" */) {
     month = months[month];
     let s = day.charAt(day.length-1)
     switch (s) {
-        case 0: day += 'th'
+        case 0 || 4 || 5 || 6 || 7 || 8 || 9: day += 'th'
         break;
         case 1: day += 'st'
         break;
         case 2: day += 'nd'
         break;
         case 3: day += 'rd'
-        break;
-        case 4: day += 'th'
-        break;
-        case 5: day += 'th'
-        break;
-        case 6: day += 'th'
-        break;
-        case 7: day += 'th'
-        break;
-        case 8: day += 'th'
-        break;
-        case 9: day += 'th'
         break;
     }
     return `${month} ${day}, ${year}`

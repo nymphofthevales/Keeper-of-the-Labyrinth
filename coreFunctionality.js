@@ -558,6 +558,10 @@ document.getElementById('button-housing-13').addEventListener('mouseup',()=>{
     main_menu.classList.remove('invisible')
     mainMenuOpen = true;
     ingameMenuOpen = false;
+    saveParameters()
+    getMasterSave()
+    sortSaveObject(masterSave)
+    mainMusic.fadeOut(1)
 })
 //^ ingame menu
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
@@ -596,6 +600,7 @@ function manageOverlays(action,overlay) {
             reference.classList.add('invisible');
         }
     }
+    clearFocus();
 }
 //^ overlay management
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
@@ -879,15 +884,66 @@ function manageGalleryUnlocks() {
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //v map
+
+let labyrinthMap = new Grid(0,0,"70px",mapPresets.labyrinthProper)
 document.getElementById('map-button').addEventListener('click',()=>{
-    placeMapSaveButtons();
-    manageOverlays('show','map')
+    getMasterSave();
+    setTimeout(()=>{
+        placeMapSaveButtons()
+        manageOverlays('show','map')
+        centerMap()
+        appendNodeTitles(labyrinthMap)
+        setMapNodeListeners()
+    },100)
 })
+document.getElementById('map-zoom-in').addEventListener('click',()=>{
+    let size = labyrinthMap.cellSize
+    size = parseInt(size.slice(0,-2));
+    if (size + 10 < window.innerHeight/5) {
+        size += 10;
+    }
+    size = size + 'px'
+    labyrinthMap = new Grid(0,0,size,labyrinthMap.getPreset())
+    centerMap();
+    appendNodeTitles(labyrinthMap);
+    setMapNodeListeners();
+})
+document.getElementById('map-zoom-out').addEventListener('click',()=>{
+    let size = labyrinthMap.cellSize
+    size = parseInt(size.slice(0,-2));
+    if (size - 10 > 0) {
+        size -= 10;
+    }
+    size = size + 'px'
+    labyrinthMap = new Grid(0,0,size,labyrinthMap.getPreset())
+    centerMap();
+    appendNodeTitles(labyrinthMap);
+    setMapNodeListeners();
+})
+document.getElementById('map-toggle-saves').addEventListener('click',()=>{
+    manageSavesMenu();
+    clearFocus();
+}) 
+document.getElementById('node-inspector-close').addEventListener('click',()=>{
+    document.getElementById('map-node-inspector-frame').classList.add('invisible')
+})
+let savesShown = false;
+function manageSavesMenu() {
+    let savesFrame = document.getElementById('map-saves-frame')
+    if (savesShown === false) {
+        savesFrame.classList.remove('invisible');
+        savesShown = true;
+        //console.log('saves shown')
+    } else if (savesShown === true) {
+        savesFrame.classList.add('invisible');
+        savesShown = false;
+        //console.log('saves hidden')
+    }
+}
 function mapSaveButton(date,timestamp) {
     return `<button class=\"map-save-button\" id=\"map-save-${timestamp}\"><div id=\"map-save-${timestamp}-grid\"><h3>${date}</h3></div></button>`
 }
 function placeMapSaveButtons() {
-    getMasterSave();
     let saves = sortSaveObject(masterSave);
     let d = Object.keys(saves);
     console.log(d)
@@ -908,55 +964,104 @@ function placeMapSaveButtons() {
         nav.innerHTML += mapSaveButton(dates[i][1],dates[i][2])
         buttons.push([`map-save-${dates[i][2]}`,dates[i][0]]);
     }
-    console.log(buttons);
+    //console.log(buttons);
     for (let i=0; i<buttons.length; i++) {
         buttons[i][0] = document.getElementById(`${buttons[i][0]}`)
         buttons[i][0].addEventListener('click',()=>{
-            printMap(saves[`${buttons[i][1]}`]);
+            printMap(saves[`${buttons[i][1]}`].visited);
             selectMapButton(buttons,i);
         })
     }
+    document.getElementById('map-save-all').addEventListener('click',()=>{
+        printMap(sumOfActions(sortSaveObject(masterSave)));
+        document.getElementById('map-save-all').classList.add("selected-map-save");
+        for (let i=0; i<buttons.length; i++) {
+            buttons[i][0].classList.remove('selected-map-save')
+        }
+        manageSavesMenu();
+    })
     return buttons;
-}
-
-function printMap(saveObject) {
-    console.log(['printing',saveObject])
 }
 function selectMapButton(buttonArray,refNumber) {
     for (let i=0; i<buttonArray.length; i++) {
         let node = buttonArray[i][0]
         if (i === refNumber) {
-            //node.style.backgroundImage = "./assets/ui/map-button-selected.png";
-            node.style.border = "2px dashed red";
+            node.classList.add("selected-map-save");
         } else {
-            //node.style.backgroundImage = "./assets/ui/map-button-unselected.png"
-            node.style.border = "none"
+            node.classList.remove("selected-map-save");
+            document.getElementById('map-save-all').classList.remove("selected-map-save");
         }
     }
+    manageSavesMenu();
 }
-let menuShown = true;
-function manageSavesMenu() {
-    let nav = document.getElementById('map-saves-frame');
-    if (menuShown === false) {
-        menuShown = true;
-        nav.classList.remove('hidden');
-        nav.classList.remove('closed');
-        nav.classList.add('shown');
-        clearFocus();
-        for (let i=0; i<navButtons.length; i++) {
-            navButtons[i].tabIndex = i+2;
+function printMap(visitedArray) {
+    console.log(visitedArray)
+    let nodes = labyrinthMap.getNodes();
+    for (let i=0; i<nodes.length; i++) {
+        for (let j = 0; j<visitedArray.length; j++) {
+            if (visitedArray[j] === nodes[i].pageObject) {
+                nodes[i].unlocked = true;
+                break
+            } else {
+                nodes[i].unlocked = false;
+            }
         }
-    } else if (menuShown === true) {
-        menuShown = false;
-        nav.classList.remove('shown')
-        nav.classList.add('closed');
-        setTimeout(()=>{nav.classList.add('hidden')},500)
-        clearFocus();
-        for (let i=0; i<navButtons.length; i++) {
-            navButtons[i].tabIndex = -1;
+    }
+    labyrinthMap.printMapTiles()
+    centerMap();
+    appendNodeTitles(labyrinthMap);
+    setMapNodeListeners();
+}
+function setMapNodeListeners() {
+    let nodes = labyrinthMap.getNodes();
+    for (let i=0; i<nodes.length; i++) {
+        let DOMRef = labyrinthMap.getElementDOMNode(labyrinthMap.getIndexFromCoords(nodes[i].position))
+        DOMRef.addEventListener('click',()=>{
+            printNodeInspector(nodes[i]);
+        })
+    }
+}
+function printNodeInspector(MapNodeObject) {
+    let title = document.getElementById('node-inspector-title');
+    let textContent = document.getElementById('node-inspector-text-content')
+    let choices = document.getElementById('node-inspector-choices')
+    title.innerHTML = '';
+    textContent.innerHTML = '';
+    choices.innerHTML = '';
+    let PageInstances = SequenceInstances.concat(StoryNodeInstances);
+    if (MapNodeObject.unlocked === true) {
+        for (let j=0; j<PageInstances.length; j++) {
+            if (PageInstances[j].title === MapNodeObject.pageObject) {
+                if (PageInstances[j].constructor === Sequence) {
+                    for (let k = 0; k < PageInstances[j]._pages.length; k++) {
+                        textContent.appendChild(document.createElement('p')).id = 'Map-Node-' + PageInstances[j].title + [k];
+                        let a = document.getElementById('Map-Node-' + PageInstances[j].title + [k]);
+                        a.innerHTML = PageInstances[j].getPage(k)[0];
+                    }
+                } else if (PageInstances[j].constructor === StoryNode) {
+                    textContent.appendChild(document.createElement('p')).id = 'Map-Node-' + PageInstances[j].title + '0';
+                        let a = document.getElementById('Map-Node-' + PageInstances[j].title + '0');
+                        a.innerHTML = PageInstances[j]._text;
+                }
+            }
         }
-    };
-};
+        title.innerText = MapNodeObject.title;
+    } else if (MapNodeObject.unlocked === false) {
+        title.innerText = '?'
+        textContent.appendChild(document.createElement('p')).id = 'Map-Node-' + MapNodeObject.pageObject + 0;
+        document.getElementById(`Map-Node-${MapNodeObject.pageObject}0`).innerHTML = "Explore the <span class=\"labyrinth-color\">labyrinth</span> to unlock this node."
+    }
+    document.getElementById('map-node-inspector-frame').classList.remove('invisible');
+}
+function centerMap() {
+    let housing = document.getElementById('map-housing');
+    housing.scrollTop = (housing.scrollHeight - housing.clientHeight)/2
+    housing.scrollLeft = 0;
+}
+//when map loads, set scrolltop of map frame to 1/2 height of content -height of frame
+//
+
+
 //^ map
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
