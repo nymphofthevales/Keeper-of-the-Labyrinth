@@ -266,7 +266,7 @@ function sendPopup(type,content,current,backUpAble) {
             warningFrame.classList.remove('invisible');
             popup.classList.remove('invisible');
         } else {
-            console.log('content warnings not enabled; not sent')
+            console.log('content warnings disabled; not sent')
         }
     }
 }
@@ -281,7 +281,7 @@ function preloadImages() {
         document.getElementById('image-positive').appendChild(img).id="currentPosImg";
         document.getElementById('currentPosImg').src = imageUrls[i]
         document.getElementById('currentPosImg').id += i;
-        console.log(document.getElementById('image-positive').innerHTML)
+        //console.log(document.getElementById('image-positive').innerHTML)
     }
     document.getElementById('image-positive').innerHTML = '';
 }
@@ -303,8 +303,8 @@ function manageImage(action,url,location) {
             urlFilename = urlFilename[urlFilename.length - 1]
             let pageFilename = document.getElementById(imgId).src.split('/')
             pageFilename = pageFilename[pageFilename.length - 1]
-            console.log(pageFilename)
-            console.log(urlFilename)
+            //console.log(pageFilename)
+            //console.log(urlFilename)
             if (pageFilename !== urlFilename) {
                 doImagePrinting()
             } else {
@@ -826,12 +826,11 @@ function setGalleryBackButton() {
 function manageGalleryUnlocks() {
     getMasterSave();
     let actions = sumOfActions(masterSave);
-    console.log(actions);
+    //console.log(actions);
     for (let i = 0; i < actions.length; i++) {
         switch (actions[i]) {
             case 'intro': 
                 mainGallery.unlock('The Labyrinth Gate')
-                console.log('unlocking gate')
                 break;
             case 'finishCandleAnte': 
                 mainGallery.unlock('An Anchor')
@@ -885,15 +884,18 @@ function manageGalleryUnlocks() {
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //v map
 
-let labyrinthMap = new Grid(0,0,"70px",mapPresets.labyrinthProper)
+let labyrinthMap = new Grid(0,0,"70px",mapPresets.antechamber)
+function prepareMap() {
+    centerMap()
+    appendNodeTitles(labyrinthMap)
+    setMapNodeListeners()
+}
 document.getElementById('map-button').addEventListener('click',()=>{
     getMasterSave();
     setTimeout(()=>{
         placeMapSaveButtons()
         manageOverlays('show','map')
-        centerMap()
-        appendNodeTitles(labyrinthMap)
-        setMapNodeListeners()
+        prepareMap()
     },100)
 })
 document.getElementById('map-zoom-in').addEventListener('click',()=>{
@@ -904,9 +906,7 @@ document.getElementById('map-zoom-in').addEventListener('click',()=>{
     }
     size = size + 'px'
     labyrinthMap = new Grid(0,0,size,labyrinthMap.getPreset())
-    centerMap();
-    appendNodeTitles(labyrinthMap);
-    setMapNodeListeners();
+    prepareMap()
 })
 document.getElementById('map-zoom-out').addEventListener('click',()=>{
     let size = labyrinthMap.cellSize
@@ -916,9 +916,7 @@ document.getElementById('map-zoom-out').addEventListener('click',()=>{
     }
     size = size + 'px'
     labyrinthMap = new Grid(0,0,size,labyrinthMap.getPreset())
-    centerMap();
-    appendNodeTitles(labyrinthMap);
-    setMapNodeListeners();
+    prepareMap()
 })
 document.getElementById('map-toggle-saves').addEventListener('click',()=>{
     manageSavesMenu();
@@ -946,7 +944,7 @@ function mapSaveButton(date,timestamp) {
 function placeMapSaveButtons() {
     let saves = sortSaveObject(masterSave);
     let d = Object.keys(saves);
-    console.log(d)
+    //console.log(d)
     let dates = [];
     let buttons = [];
     let nav = document.getElementById('map-saves-list');
@@ -995,7 +993,7 @@ function selectMapButton(buttonArray,refNumber) {
     manageSavesMenu();
 }
 function printMap(visitedArray) {
-    console.log(visitedArray)
+    //console.log(visitedArray)
     let nodes = labyrinthMap.getNodes();
     for (let i=0; i<nodes.length; i++) {
         for (let j = 0; j<visitedArray.length; j++) {
@@ -1008,9 +1006,7 @@ function printMap(visitedArray) {
         }
     }
     labyrinthMap.printMapTiles()
-    centerMap();
-    appendNodeTitles(labyrinthMap);
-    setMapNodeListeners();
+    prepareMap()
 }
 function setMapNodeListeners() {
     let nodes = labyrinthMap.getNodes();

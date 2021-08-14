@@ -93,19 +93,19 @@ function loadData(data) {
 };
 
 function sortSaveObject(saveObject) {
-    console.log([`Recieved:`, saveObject])
+    //console.log([`Recieved:`, saveObject])
     let iterable = Object.keys(saveObject);
-    console.log(iterable);
+    //console.log(iterable);
     let failures = [];
     let successes = [];
     let resultObject = {};
 
     for (let i = 0; i < iterable.length; i++) {
         for (let l = (i + 1); l < iterable.length; l++) {
-            console.log([`comparing`,iterable[i],`to`,iterable[l]])
+            //console.log([`comparing`,iterable[i],`to`,iterable[l]])
             let result = pruneSaves(saveObject[iterable[i]],saveObject[iterable[l]],iterable[i],iterable[l])
             for (let j=0; j < result.length; j++) {
-                console.log([`pushing to failures object:`,result[j]])
+                //console.log([`pushing to failures object:`,result[j]])
                 failures.push(result[j]);
             }
         }
@@ -156,7 +156,7 @@ function sortSaveObject(saveObject) {
             }
         }
     }
-    console.log([`Produced:`,resultObject])
+    //console.log([`Produced:`,resultObject])
     ipcRenderer.send('setMasterSave',resultObject);
     return resultObject;
 }
@@ -167,7 +167,7 @@ function sumOfActions(sortedSaveObject) {
     let summedActions = [];
     for (let i = 0; i < iterable.length; i++) {
         for (let j = 0; j < sortedSaveObject[iterable[i]].visited.length; j++) {
-            console.log(sortedSaveObject[iterable[i]].visited[j])
+            //console.log(sortedSaveObject[iterable[i]].visited[j])
             if (summedActions.includes(sortedSaveObject[iterable[i]].visited[j]) === false) {
                 summedActions.push(sortedSaveObject[iterable[i]].visited[j])
             }

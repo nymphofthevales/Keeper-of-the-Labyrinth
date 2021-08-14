@@ -210,7 +210,7 @@ Music.prototype.fadeOut = function(seconds) {
     function fadeMusic(seconds,audioObject) {
         let timeout = 50;
         let step = (audioObject.volume/seconds)*(timeout/1000);
-        console.log(step)
+        //console.log(step)
         function loop() {
             setTimeout(()=>{
                 stopFadeIn = true;
@@ -219,7 +219,7 @@ Music.prototype.fadeOut = function(seconds) {
                 } else {
                     audioObject.volume -= step;
                 }
-                console.log(audioObject.volume)
+                //console.log(audioObject.volume)
                 if (audioObject.volume > 0 && stopFadeOut === false) {
                     stillFading = true;
                     loop();
@@ -245,11 +245,11 @@ Music.prototype._fadeIn = function(seconds) {
         audioObject.play();
         let timeout = 50;
         let step = (target/seconds)*(timeout/1000);
-        console.log(step)
+        //console.log(step)
         function loop(i) {
             setTimeout(()=>{
                 stopFadeOut = true;
-                console.log(audioObject.volume)
+                //console.log(audioObject.volume)
                 if (audioObject.volume + step > 1 || audioObject.volume + step > target) {
                     audioObject.volume = target;
                 } else {
