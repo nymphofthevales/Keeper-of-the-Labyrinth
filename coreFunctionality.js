@@ -111,13 +111,12 @@ function loadPage(current,page_number) {
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //v story and ingame menu buttons
 function listen(buttonArray,current) {
-    preloadCurrent = current;
-     window.onbeforeunload = () => {
-        saveParameters()
+    window.onbeforeunload = () => {
+        saveParameters(current)
         return undefined
     }
-    document.getElementById('button-housing-13').removeEventListener('click',saveParameters,true)
-    document.getElementById('button-housing-13').addEventListener('click',saveParameters,true)
+    document.getElementById('button-housing-13').removeEventListener('click',()=>{saveParameters(current)},true)
+    document.getElementById('button-housing-13').addEventListener('click',()=>{saveParameters(current)},true)
     if (current.constructor.name === 'Sequence') {
         let btn = buttonArray[0];
         btn.addEventListener('click',() => {
@@ -207,24 +206,29 @@ function sendPopup(type,content,current,backUpAble) {
     let warningFrame = document.getElementById('warning-popup')
     loadFrame.classList.add('invisible');
     warningFrame.classList.add('invisible')
+    getSaveData();
+    function loadSavedActions() {
+        loadPage(savedPageInstance,page);
+        popup.classList.add('invisible');
+        //runLoadingSequence();
+        document.getElementById('main-menu-overlay').classList.add('invisible');
+        mainMenuOpen = false;
+        manageOverlays('hide','all')
+    }
+    function loadIntroActions() {
+        loadPage(intro,0);
+        visited = ['intro'];
+        popup.classList.add('invisible');
+        //runLoadingSequence();
+        document.getElementById('main-menu-overlay').classList.add('invisible');
+        mainMenuOpen = false;
+        manageOverlays('hide','all')
+    }
     if (type === 'load') {
-        document.getElementById('popup-yes').addEventListener('click',()=>{
-            loadPage(savedPageInstance,page);
-            popup.classList.add('invisible');
-            //runLoadingSequence();
-            document.getElementById('main-menu-overlay').classList.add('invisible');
-            mainMenuOpen = false;
-            manageOverlays('hide','all')
-        })
-        document.getElementById('popup-no').addEventListener('click',()=>{
-            loadPage(intro,0);
-            visited = ['intro'];
-            popup.classList.add('invisible');
-            //runLoadingSequence();
-            document.getElementById('main-menu-overlay').classList.add('invisible');
-            mainMenuOpen = false;
-            manageOverlays('hide','all')
-        })
+        document.getElementById('popup-yes').removeEventListener('click',()=>{loadSavedActions()})
+        document.getElementById('popup-yes').addEventListener('click',()=>{loadSavedActions()})
+        document.getElementById('popup-no').removeEventListener('click',()=>{loadIntroActions()})
+        document.getElementById('popup-no').addEventListener('click',()=>{loadIntroActions()})
         loadFrame.classList.remove('invisible')
         popup.classList.remove('invisible');
     } else if (type === 'warning') {
@@ -558,7 +562,6 @@ document.getElementById('button-housing-13').addEventListener('mouseup',()=>{
     main_menu.classList.remove('invisible')
     mainMenuOpen = true;
     ingameMenuOpen = false;
-    saveParameters()
     getMasterSave()
     sortSaveObject(masterSave)
     mainMusic.fadeOut(1)

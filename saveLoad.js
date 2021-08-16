@@ -63,7 +63,8 @@ function getMasterSave() {
     })
 }
 
-function saveParameters(){
+function saveParameters(current){
+    preloadCurrent = current;
     save(preloadCurrent,page)
 }
 function save(current,savedPage) {
