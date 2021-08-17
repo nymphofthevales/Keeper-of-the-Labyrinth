@@ -959,28 +959,73 @@ dyingLight.setNext(dark);
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //v garden
+
+const StrangerEnd = new Sequence();
+StrangerEnd.title="StrangerEnd"
+StrangerEnd.addPage('I look forward, at the sky, and the path before me. It is overcast and uncertain. It does not seem like it will grace me with snow.<br><br>It is ignoring me.','Continue');
+StrangerEnd.setNext(dyingLight);
+
+const StrangerRemain = new Sequence();
+StrangerRemain.title="StrangerRemain"
+StrangerRemain.addBatchPage(['She says she did not think I would speak to her. As she says this, a different tone enters her voice:<br><br>.something like rain and salt, a cold day in autumn when the waves crash, sending their spray into the air and coming to rest over an unassuming cairn by the beach. A place of rest, a place of endings.','She says: \"Perhaps my wanderings will be over soon. But it will not do you well to rush.\"'],'next');
+StrangerRemain.addPage('I try to ask what she means, but by the time I open my lips she is gone—just the presence of cool mist around me.','Carry on')
+StrangerRemain.setNext(StrangerEnd);
+
+const StrangerFace = new Sequence();
+StrangerFace.title="StrangerFace"
+StrangerFace.addBatchPage(['I take a questing step to the right; the passage is wide enough for three to stand across it, shoulder to shoulder, and so I should have room to manoeuvre past her without disturbance. A few loose strands of hair give her profile the effect of being windswept, not the hair itself but the whole image, sand falling away, leaves in a summer storm beating against the sky and generating indistinct shadows to flicker and dance among themselves.','As I watch this scene I realize I still have not seen her face; only the leaves and storm and sand. It is as if the act of looking upon her sends me elsewhere, and with my vision lensed through her strange magics the face itself remains hidden even in plain sight.','With another step I finish my circle to stand squarely before her. She is saying something, something which I feel I should know, must hear, but I cannot hear it; only the wind.'],'next');
+StrangerFace.addPage('And then she is gone, or perhaps never was. The wind alone bids me on my way.','Carry on')
+StrangerFace.setNext(StrangerEnd);
+
+const StrangerSpeakNode = new StoryNode();
+StrangerSpeakNode.title="StrangerSpeakNode"
+StrangerSpeakNode.setText("Mist gathers around her as she speaks. Still she does not look at me—only away, into the grey distance. I can imagine her eyes: distant and wandering, vacant and tired.  If she were to meet my gaze, how would it feel?");
+StrangerSpeakNode.addOption('Circle around to face her.',StrangerFace);
+StrangerSpeakNode.addOption('Remain behind her, and continue listening.',StrangerRemain);
+
+const StrangerSpeak = new Sequence();
+StrangerSpeak.title="StrangerSpeak"
+StrangerSpeak.addBatchPage(['I ask if she\'s lost.','She seems to start at the sound of my voice, and a shiver passes through her whole body like a storm-warning, deep in the bones.<br><br>.She replies in a calm and steady voice, cold even, though not unfamiliar. She speaks in tones of soil and stone, deep and smooth and grounded.','She says she <i>is</i>. lost. That she\'s been lost for a long time. That she has wandered here for an age.'],'next');
+StrangerSpeak.setNext(StrangerSpeakNode);
+
+const StrangerTouch = new Sequence();
+StrangerTouch.title="StrangerTouch"
+StrangerTouch.addBatchPage(['I reach out to touch the figure upon the shoulder. As my hand hovers just above her cloak, I feel a buzzing sensation in the air, like insect-noise made physical.','The feeling intensifies as my hand falls in slow motion, enveloping my skin and sending a warm, numbing sensation into my flesh.<br><br>When I make contact I feel a sudden jolt—my vision swims for a moment, my focus broken.'],'next');
+StrangerTouch.addPage('When I regain my focus the figure is gone. My hand hovers still in empty air, feeling a little cold.','Carry on');
+StrangerTouch.setNext(StrangerEnd);
+
+const StrangerNode = new StoryNode();
+StrangerNode.title="StrangerNode"
+StrangerNode.setText('She looks about like a younger version of me, an inch shorter perhaps, as I was a year ago—or, no, looking again I see that she is taller, or perhaps stronger—the opposite, as I may be a year from now. Just as I feel I have some sense of her, her form shifts again in the gloom; a child; a wise woman; a corpse; like I am looking in the shards of a broken mirror, a thousand possibilities distorted in each fragment.')
+StrangerNode.addOption('Speak',StrangerSpeak);
+StrangerNode.addOption('Touch her shoulder',StrangerTouch);
+
+const approachStranger = new Sequence();
+approachStranger.title="approachStranger"
+approachStranger.addBatchPage(['As I approach, they stand stone-still, reminiscent of a runestone haloed in the rising sun.<br><br>Why do I think of sun when I look upon them?','The sky is dim still, overcast in the winter fugue. I stop, standing just a pace away from them now, close enough that I could touch them, close enough I can see the details in her coat, the circular brand embroidered upon its collar, the strands of her hair messy and loose, tearing free from her hastily done braids, her smooth skin limned in silver as of frost or spirit.','Still she does not face me. I am ignored.'],'next');
+approachStranger.setNext();
+
 const approachQuietly = new Sequence();
 approachQuietly.title="approachQuietly"
-approachQuietly.addPage('I approach, trying not to disturb them.','next')
+approachQuietly.addPage('I approach warily, trying not to disturb them.','next')
 approachQuietly.setNext();
-//content tbd
 
 const getAttention = new Sequence();
 getAttention.title="getAttention"
 getAttention.addPage('I call out to them—could they be lost? Any of the people from the village would know not to come close to the <span class="labyrinth-color">labyrinth</span>, but an outsider may have been curious and become lost. <br><br>They don\'t seem to hear me, or else they ignore me.','approach')
-getAttention.addPage('I approach warily.','next');
-//content tbd
+getAttention.addPage('I approach warily. When I get a little closer, I call out again, and again I am greeted with no response.','next');
+getAttention.setNext();
 
-const Ignoring = new StoryNode();
-Ignoring.title="Ignoring"
-Ignoring.setText('I walk some distance into the halls beyond the garden, thoughtless, wandering. My feet carry me forward relentlessly; I find myself trapped in my head, pacing back and forth over the same thoughts. Then I look up, and every thought flees. I freeze.<br><br>There is a figure standing before me, a few paces away, right in the middle of the passage. Their back is to me.');
-Ignoring.addOption('Try to get their attention',getAttention);
-Ignoring.addOption('Approach them quietly',approachQuietly)
+const Stranger = new StoryNode();
+Stranger.title="Stranger"
+Stranger.setText('I walk some distance into the halls beyond the garden, thoughtless, wandering. My feet carry me forward relentlessly; I find myself trapped in my head, pacing back and forth over the same thoughts. Then I look up, and every thought flees. I freeze.<br><br>There is a figure standing before me, a few paces away, right in the middle of the passage. Mist fills the air such that they appear to be only a shadow, a mirage, within it. Their back is to me.');
+Stranger.addOption('Try to get their attention',getAttention);
+Stranger.addOption('Approach them quietly',approachQuietly)
 
 const MoveOnGarden = new Sequence();
 MoveOnGarden.title="MoveOnGarden"
 MoveOnGarden.addPage('I shake my head, as if to clear it. If the rowan is dead then so what? Everything dies eventually. This dead garden is of no worth to me. I need to reach the center as soon as I can, finish my work, and maybe then I\'ll be able to return to the village before the festivities are over.','Leave');
-MoveOnGarden.setNext(Ignoring);
+MoveOnGarden.setNext(Stranger);
 
 const letRest = new Sequence();
 letRest.title="letRest"
@@ -1269,6 +1314,8 @@ intro.title='intro'
 intro.addBatchPage(['The ice of the bay stretches out endlessly before the jagged black slate beach. Its shimmer is dead under the sunless sky.','Today is the day of solstice. The time for the sacred rite for which I have been preparing all year has finally come.','The gate of the <span class="labyrinth-color">labyrinth</span> watches us as we approach. I can feel its gaze beating down and I turn up the hood of my cloak against it. My cloak is wool; heavy against the bitter wind and rough against my skin. But it is warm, thankfully, and its weight is a comfort to me despite the mark of my station upon the collar.','The <span class="labyrinth-color">labyrinth</span> has been here longer than anyone can remember. Some say it was never built, but born. Either way, at this point it\'s more a part of the land than it is a structure upon it; its granite stones rise far above the crashing waves, solid in their roots. Whatever tectonic god placed them here intended them to stay a long time. But even stone crumbles eventually.','The most important thing is the boundaries: between dead and living, self and other, light and darkness, seen and unseen.<br><br>But there are no boundaries, really, are there?<br><br>No such thing as light nor shadow, just shades of grey blending together until suddenly what you thought <em>was</em> is something else. Blurred shapes darting through your periphery. Despite this, we have to delineate these boundaries. Obelisk in the woods, talisman on the door, walls drawing the line around our little village. It keeps us safe. Keeps what\'s out there, there, and what\'s here, here. Even if it is abstract.<br><br>It\'s all we can do.','Since no boundary is absolute, the walls of the <span class="labyrinth-color">labyrinth</span> cannot be thought of as containing anything. They hold no space between them, only distort it, twist what would be a straight path into a curved one, wend it back on itself into a horseshoe, a spiral. What the <span class="labyrinth-color">labyrinth</span> contains is unstoppable. The only thing that can be done is to put time and space between it and us.<br><br>That\'s my job, as Keeper of the Labyrinth.'],'next')
 intro.addPage('The men, here to see me off, wait at the gate. They do not feel its gaze, though they can see the vast eye carved on its keystone just the same. It is my sacred duty alone to enter the <span class="labyrinth-color">labyrinth</span>, and navigate its winding passageways to the centre where my quarry rests. On the shortest day of each year, the village witch, taking the title of Keeper, is sent away into those frozen halls to meet with it, eschewing the warm fires and feasting of the village\'s Midwinter festival for a greater task. Since the passing of my teacher last spring, this year it is my turn.<br><br>My boots scuff softly as I stop in the entrance.', 'enter')
 intro.setNext(enter);
+
+PageInstances = SequenceInstances.concat(StoryNodeInstances);
 //^ story content
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////

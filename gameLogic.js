@@ -5,6 +5,54 @@
 
 'use strict'
 
+let gameStats = {
+    apathy: 0,
+    cowardice: 0,
+    doubt: 0,
+    inventorySeen: false, //inventory
+    obeliskExamined: false,//obelisk
+    anteAnchored: false,//CandleAnte
+    wallAnchored: false,//
+    darkAnchored: false,
+    ritualRunes: false,
+    ritualLines: false,
+    ritualWands: false,
+    ritualLights: false,
+    ritualBladesSuccess: false,
+    ritualBladesDrowned: false,
+    lostShadow: false,
+    injuredHand: false,
+    scornedLight: false,
+    contaminatedHand: false,
+    candlesUsed: 0,
+}
+
+function setGameStats() {
+    //this needs to run just after the current page has been added to the visited array
+    for (let i=0; i<PageInstances.length; i++) {
+        for (let j=0; j<visited.length; j++) {
+            if (PageInstances[i].title === visited[j]) {
+                switch (PageInstances[i].title) {
+                    case "" || "" || "": 
+                    break;
+                    case "": 
+                    break;
+                    case "": 
+                    break;
+                    case "": 
+                    break;
+                    case "": 
+                    break;
+                    case "": 
+                    break;
+                    case "": 
+                    break;
+                }
+            }
+        }
+    }
+}
+
 let visited = new Array();
 function visit(current) {
     if (visited.includes(current.title) === false) {
