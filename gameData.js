@@ -694,33 +694,49 @@ darkApproachTree.setNext(darkTreeNode);
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //v noises
+const darkNoisesSecondChamber = new Sequence();
+darkNoisesSecondChamber.title="darkNoisesSecondChamber"
+darkNoisesSecondChamber.addBatchPage(['','',''],'');
+darkNoisesSecondChamber.setNext();
+
+const darkNoisesSecondChamberEntryAlternate = new Sequence();
+darkNoisesSecondChamberEntryAlternate.title="darkNoisesSecondChamberEntryAlternate"
+darkNoisesSecondChamberEntryAlternate.addBatchPage(['I hesitate before the archway, and then notice that there\'s something different about this one; the hue of the shadow, perhaps, the quality of the light it pushes out of the space it envelops, the pattern of its ripples…','My reflection gazes at me patiently, hand hovering in the air, about to reach out. Then she does, takes my hand in hers as we meet at the surface, and I let myself be guided forward gently. The darkness feels cold as ice-water around me, but it does not soak into my clothes or flesh; I emerge after a few steps perfectly dry, though it drips away behind me, pulled back into its rippling mass filling the arch.'],'next');
+darkNoisesSecondChamberEntryAlternate.setNext(darkNoisesSecondChamber)
+
 const darkNoisesSecondChamberEntry = new Sequence();
 darkNoisesSecondChamberEntry.title = "darkNoisesSecondChamberEntry"
-//content tbd
+darkNoisesSecondChamberEntry.addBatchPage(['I stand before the archway. When I gaze within, the darkness inside shimmers, not receding at the touch of my candlelight, but undulating softly like the surface of a pool. It seems far more material than shadow should be. I see my reflection warped within its surface—she is dancing, wavering with the fluid, enraptured by the rhythm.','I reach a questing hand to touch the surface of the shadow, and my reflection reaches out in response; she takes my hand and guides me through gracefully. The darkness feels cold as ice-water around me, but it does not soak into my clothes or flesh; I emerge after a few steps perfectly dry, though it drips away behind me, pulled back into its rippling mass filling the arch.'],'next');
+darkNoisesSecondChamberEntry.setNext(darkNoisesSecondChamber);
 
-const darkNoisesGiveUp = new StoryNode();
+const darkNoisesGiveUp = new Sequence();
 darkNoisesGiveUp.title="darkNoisesGiveUp"
-darkNoisesGiveUp.setText('I decide to give up—this song shall remain a mystery to me tonight. It still calls out behind me as I turn heel and return down the hall, but it recedes with every step. I reach the intersection, and another path remains open to me. The path winds away, curving out of sight. Looking off into the distance I see a silhouette against the sky towering over it.');
-darkNoisesGiveUp.addOption('Follow the curving path',darkApproachTree);
+darkNoisesGiveUp.addPage('I decide to give up—this song shall remain a mystery to me tonight. It still calls out behind me as I turn heel and return down the hall, but it recedes with every step. I reach the intersection, and another path remains open to me.','next');
+darkNoisesGiveUp.addPage('The path winds away, curving out of sight. Looking off into the distance I see a silhouette against the sky towering over it.','Follow the curving path');
+darkNoisesGiveUp.setNext(darkApproachTree);
 
 const darkNoisesFountain = new Sequence();
 darkNoisesFountain.title="darkNoisesFountain"
 darkNoisesFountain.addPage('The fountain rises from the darkness into my candle-light as I approach. It sprawls across the centre of the room like molten wax, its edges just rising a foot or so above the ground. It must be a few paces across and, kneeling, I can see its low walls composed of flat stones placed vertically and pasted with lime to seal their gaps enough to hold water. Its construction seems carefully conceived.','next')
 darkNoisesFountain.addPage('Currently it is dry. Squinting into the distance I can see a plinth rising in the middle.','Examine the plinth')
-darkNoisesFountain.addPage('I step into the circle of the fountain to get a close look at the plinth; a narrow shaft rising to shoulder height, gently molded and smoothed with lime cement and decorated with carved swooping and curling lines.<br><br>Atop, it holds a crest adorned with a symbol depicting three concentric rings.','Turn back to the rest of the chamber')
+darkNoisesFountain.addPage('I step into the circle of the fountain to get a close look at the plinth; a narrow shaft rising to shoulder height, gently molded and smoothed with lime cement and decorated with carved swooping and curling lines.<br><br>Atop, it holds a crest adorned with a symbol depicting four concentric rings.','Turn back to the rest of the chamber')
 
 const darkNoisesAnalysis = new Sequence();
 darkNoisesAnalysis.title="darkNoisesAnalysis"
 darkNoisesAnalysis.addPage('I\'m close enough now that I can hear the tracery of a pattern in those rippling bell-drops. They jump in a pseudo-random way, but the pattern of notes seems to almost orbit around a centre point. The ripples draw out from a centre which remains inaudible, unplayed, in each set. For each set of six notes, only five bells play—leaving one key unvoiced. It\'s as if these chiming voices want to tell me something through that which they do not say.','Listen')
-darkNoisesAnalysis.addPage('The pattern as far as I can hear plays like so:<span class="noises-notes"><br>••••&nbsp&nbsp•<br>••&nbsp&nbsp•••<br>•&nbsp&nbsp••••<br>•••&nbsp&nbsp••</span>','Turn back to the rest of the chamber')
+darkNoisesAnalysis.addPage('The pattern as far as I can hear plays like so:<span class="noises-notes"><br>••••&nbsp&nbsp•<br>••&nbsp&nbsp•••<br>•&nbsp&nbsp••••<br>•••&nbsp&nbsp••<br>•••••&nbsp&nbsp<br>•&nbsp&nbsp••••</span>','Turn back to the rest of the chamber')
 
 const darkNoisesReflection = new Sequence();
 darkNoisesReflection.title="darkNoisesReflection"
 darkNoisesReflection.addBatchPage(['I stand before the archway.','When I gaze within, the darkness inside shimmers, not receding at the touch of my candlelight, but undulating softly like the surface of a pool. It seems far more material than shadow should be. I see my reflection warped within its surface—so warped I cannot make out an expression upon her face, but she must be unhappy, or scared, or tired.'],'next')
 darkNoisesReflection.addPage('I reach out to touch the surface, probing whether entry would even be possible, and as I do the darkness reaches out to me, extruding itself in a thin band like gravity broke around it and the fluid drips sideways, the first droplet splashing on my hand, the second becoming a waterfall flowing between my fingers, running up my arm, and pooling behind me and around me, welling up to encompass my whole body.','recoil');
-darkNoisesReflection.addPage('I recoil in horror, straining to break free of it, but it holds fast. More black tendrils reach out toward me, wrapping around my other hand and torso, and I feel it pull me towards the opening. Breaking the surface feels like diving into ice-water, sending reverberations down my spine and shock crashing over my head and—','next')
+darkNoisesReflection.addPage('I recoil in horror, straining to break free of it, but it holds fast. More black tendrils reach out toward me, and the inky black crashes around me. I feel myself pulled towards the opening. Breaking the surface is a dive into icy ocean, like walking on the ice and suddenly feeling it give way beneath your step, sending reverberations up my spine and shock crashing over my head and—','next')
 darkNoisesReflection.addPage('I stand before the archway.','next')
 darkNoisesReflection.addPage('My reflection looks calm, and tired. Perhaps another path will lead me closer to the source; I hear the bells breaking around me in their rhythm still.','Turn back to the rest of the chamber')
+
+const darkNoisesReflectionAlternate = new Sequence();
+darkNoisesReflectionAlternate.title="darkNoisesReflectionAlternate"
+darkNoisesReflectionAlternate.addPage('I stand before the archway, uneasy on my feet. The shadow within wavers like before, seeming all-too-eager to pull me in again. Reluctantly, I reach out and submit myself to the shadow again, hoping for some other outcome, but it is the same. Dark tendrils envelop me and drag me into their depths, before spitting me out once more; standing there, as if no such thing had just occurred.<br><br>My reflection seems to mock me, a grin lying impishly on her face.','Turn back to the rest of the chamber');
 
 const darkNoiseArches = new StoryNode();
 darkNoiseArches.title="darkNoiseArches"
@@ -743,6 +759,7 @@ darkNoisesChamber.addOption('Return the way you came',darkNoisesGiveUp)
 darkNoisesFountain.setNext(darkNoisesChamber)
 darkNoisesAnalysis.setNext(darkNoisesChamber)
 darkNoisesReflection.setNext(darkNoisesChamber)
+darkNoisesReflectionAlternate.setNext(darkNoisesChamber)
 darkNoiseArches.addOption('Turn back to the rest of the chamber',darkNoisesChamber)
 
 const darkNoises = new Sequence();
