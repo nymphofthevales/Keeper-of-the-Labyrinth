@@ -14,6 +14,7 @@ let options = {
 //v story content
 let SequenceInstances = [];
 let StoryNodeInstances = [];
+let PageInstances;
 function Sequence() {
     this.title = String();
     this._pages = new Array(0),
@@ -77,6 +78,14 @@ StoryNode.prototype.removeOption = function(name,destination) {
 StoryNode.prototype.clearOptions = function() {
     //removes all options from a StoryNode
     this._buttons = [];
+}
+StoryNode.prototype.getOptions = function() { 
+    //for comparing against
+    let optionsStrings = []
+    for (i=0; i<this._buttons.length; i++) {
+        optionsStrings.push(this._buttons[i][0])
+    }
+    return optionsStrings;
 }
 StoryNode.prototype.getPage = function() {
     //returns text string and decomposes buttons in form [name,destination] -> [name,name,name]

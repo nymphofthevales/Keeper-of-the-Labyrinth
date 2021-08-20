@@ -777,7 +777,7 @@ function populateJournal() {
     }
 }
 function setupJournalButtons() {
-    let tableOfContents = ['intro','ante','castRunes','enterProper','Fleeing','BridgeWall','Watching','ApproachWall','Lines','Pressing','BridgeGarden','Garden','Approach','Wands','Ignoring','dyingLight','corpses','darkWindow','mothNode','darkApproachTree','Falling','darkNoises','darkContemplation','crow','pit','Lights','scorn','alone','fungus','fungusCistern','enterCistern','echoesCistern','Blades','Apathy','Cowardice','Doubt','failApathy','failCowardice','failDoubt','drowningCistern','freeCistern','tools','swimCaveCistern','enterCave','Waiting','Altar','egress']
+    let tableOfContents = ['intro','ante','castRunes','enterProper','Fleeing','BridgeWall','Watching','ApproachWall','Lines','Pressing','BridgeGarden','Garden','Approach','Wands','Stranger','dyingLight','corpses','darkWindow','mothNode','darkApproachTree','Falling','darkNoises','darkContemplation','crow','pit','Lights','scorn','alone','fungus','fungusCistern','enterCistern','echoesCistern','Blades','Apathy','Cowardice','Doubt','failApathy','failCowardice','failDoubt','drowningCistern','freeCistern','tools','swimCaveCistern','enterCave','Waiting','Altar','egress']
     for (let i = 0; i < tableOfContents.length; i++) {
         let b = document.getElementById('contents-button-' + tableOfContents[i]);
         let journal_entry = document.getElementById(tableOfContents[i] + '0');
@@ -888,10 +888,10 @@ function manageGalleryUnlocks() {
 //v map
 
 let labyrinthMap = new Grid(0,0,"70px",mapPresets.antechamber)
-function prepareMap() {
+function prepareMap(visitedArray) {
     centerMap()
     appendNodeTitles(labyrinthMap)
-    setMapNodeListeners()
+    setMapNodeListeners(visitedArray)
 }
 document.getElementById('map-button').addEventListener('click',()=>{
     getMasterSave();
@@ -1009,28 +1009,45 @@ function printMap(visitedArray) {
         }
     }
     labyrinthMap.printMapTiles()
-    prepareMap()
+    prepareMap(visitedArray)
 }
-function setMapNodeListeners() {
+function setMapNodeListeners(visitedArray) {
     let nodes = labyrinthMap.getNodes();
     for (let i=0; i<nodes.length; i++) {
         let DOMRef = labyrinthMap.getElementDOMNode(labyrinthMap.getIndexFromCoords(nodes[i].position))
         DOMRef.addEventListener('click',()=>{
-            printNodeInspector(nodes[i]);
+            printNodeInspector(nodes[i],visitedArray);
         })
     }
 }
-function printNodeInspector(MapNodeObject) {
+function loadInFromMap(PageInstance,visitedArray) {
+    for (let i=0; i<visitedArray.length; i++) {
+        if (visitedArray[i] === PageInstance.title) {
+            visited = visitedArray.slice(0,i+1)
+        }
+    }
+    loadPage(PageInstance,0)
+    //runLoadingSequence();
+    document.getElementById('main-menu-overlay').classList.add('invisible');
+    mainMenuOpen = false;
+    manageOverlays('hide','all')
+    document.getElementById('map-node-inspector-frame').classList.add('invisible')
+}
+
+function printNodeInspector(MapNodeObject,visitedArray) {
     let title = document.getElementById('node-inspector-title');
     let textContent = document.getElementById('node-inspector-text-content')
     let choices = document.getElementById('node-inspector-choices')
+    let loadIn = document.getElementById('node-inspector-load-in')
     title.innerHTML = '';
     textContent.innerHTML = '';
     choices.innerHTML = '';
-    let PageInstances = SequenceInstances.concat(StoryNodeInstances);
     if (MapNodeObject.unlocked === true) {
+        loadIn.classList.remove('invisible')
         for (let j=0; j<PageInstances.length; j++) {
             if (PageInstances[j].title === MapNodeObject.pageObject) {
+                loadIn.removeEventListener('click',()=>{loadInFromMap(PageInstances[j],visitedArray)})
+                loadIn.addEventListener('click',()=>{loadInFromMap(PageInstances[j],visitedArray)})
                 if (PageInstances[j].constructor === Sequence) {
                     for (let k = 0; k < PageInstances[j]._pages.length; k++) {
                         textContent.appendChild(document.createElement('p')).id = 'Map-Node-' + PageInstances[j].title + [k];
@@ -1047,6 +1064,7 @@ function printNodeInspector(MapNodeObject) {
         title.innerText = MapNodeObject.title;
     } else if (MapNodeObject.unlocked === false) {
         title.innerText = '?'
+        loadIn.classList.add('invisible');
         textContent.appendChild(document.createElement('p')).id = 'Map-Node-' + MapNodeObject.pageObject + 0;
         document.getElementById(`Map-Node-${MapNodeObject.pageObject}0`).innerHTML = "Explore the <span class=\"labyrinth-color\">labyrinth</span> to unlock this node."
     }
@@ -1057,10 +1075,6 @@ function centerMap() {
     housing.scrollTop = (housing.scrollHeight - housing.clientHeight)/2
     housing.scrollLeft = 0;
 }
-//when map loads, set scrolltop of map frame to 1/2 height of content -height of frame
-//
-
-
 //^ map
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////

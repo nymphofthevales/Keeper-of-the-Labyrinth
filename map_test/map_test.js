@@ -179,7 +179,26 @@ Grid.prototype.printMapTiles = function() {
             path += '/'
             //console.log(path)
         }
-        let type = this.array[i].type;
+        let type = '';
+        for (let a=0; a<this.array[i].type.length; a++) {
+            console.log(this.array[i].type.charAt(a))
+            if (a>0 && a<type.length) {
+                type += '_'
+            }
+            switch (this.array[i].type.charAt(a)) {
+                case "<": type += "left"
+                    break;
+                case "^": type += "up"
+                    break;
+                case "v": type += "down"
+                    break;
+                case ">": type += "right"
+                    break;
+                case "o": type += "none"
+                    break;
+            }
+        }
+        console.log(type)
         let imgUrl = path + type + '.png'
         let DOMNode = this.getElementDOMNode(i)
         DOMNode.style.backgroundImage = `url(\"${imgUrl}\")`;
@@ -260,7 +279,7 @@ function MapNode(coordinateArray,GridObject,type,opts) {
     //
     this.title = opts.title;
     this.unlocked = opts.unlocked;
-    this.pageObjects = [];
+    this.pageObject = opts.pageObject;
     this.pageNum = 0;
     this.linkages = [];
 }
@@ -360,7 +379,7 @@ function MapSave(w,h) {
 MapSave.prototype.addTile = function(MapTileObject) {
     this.tiles.push([
         MapTileObject.position,
-        MapTileObject.type
+        MapTileObject.type,
     ])
 }
 MapSave.prototype.addNode = function(MapNodeObject) {
@@ -368,7 +387,8 @@ MapSave.prototype.addNode = function(MapNodeObject) {
         MapNodeObject.position,
         MapNodeObject.type,
         MapNodeObject.title,
-        MapNodeObject.unlocked
+        MapNodeObject.unlocked,
+        MapNodeObject.pageObject
     ])
 }
 function createDOMGrid(GridObject) {
@@ -468,7 +488,7 @@ function readInput(coordinateArray,GridObject) {
         title.value = "title";
         title.style.opacity = 0.3;
         let unlocked = document.getElementById(`cell-${x}-${y}-unlocked`)
-        unlocked.value = "unlocked";
+        unlocked.value = "pageObject";
         unlocked.style.opacity = 0.3;
         document.getElementById(`cell-${x}-${y}-title`).addEventListener('change',()=>{
             readInput([x,y],GridObject)
@@ -479,7 +499,9 @@ function readInput(coordinateArray,GridObject) {
     } else if (nodeDropdown.value === "node" && document.getElementById(`cell-${x}-${y}-unlocked`) !== null) {
         GridObject.insertElement(coordinateArray,'node',typeDropdown.value,{
             title: document.getElementById(`cell-${x}-${y}-title`).value,
-            unlocked: JSON.parse(document.getElementById(`cell-${x}-${y}-unlocked`).value)
+            unlocked: false,
+            //unlocked: JSON.parse(document.getElementById(`cell-${x}-${y}-unlocked`).value)
+            pageObject: document.getElementById(`cell-${x}-${y}-unlocked`).value
         })
     } else if (nodeDropdown.value === "tile" && document.getElementById(`cell-${x}-${y}-unlocked`) !== null) {
         document.getElementById(`cell-${x}-${y}-title`).remove();
@@ -712,7 +734,26 @@ function hoverMapNode(action,mapNodeArray,index) {
         path += 'locked/'
     }
     path += `${type.length}/`
-    path += `${type}`
+    let typeString = '';
+    for (let a=0; a<type.length; a++) {
+        console.log(type.charAt(a))
+        if (a>0 && a<type.length) {
+            typeString += '_'
+        }
+        switch (type.charAt(a)) {
+            case "<": typeString += "left"
+                break;
+            case "^": typeString += "up"
+                break;
+            case "v": typeString += "down"
+                break;
+            case ">": typeString += "right"
+                break;
+            case "o": typeString += "none"
+                break;
+        }
+    }
+    path += typeString;
     if (action === 'clear') {
         path += '.png'
         node.style.backgroundImage = `url("${path}")`
@@ -736,7 +777,26 @@ function clickMapNode(mapNodeArray,index) {
         path += 'locked/'
     }
     path += `${type.length}/`
-    path += `${type}_`
+    let typeString = '';
+    for (let a=0; a<type.length; a++) {
+        console.log(type.charAt(a))
+        if (a>0 && a<type.length) {
+            typeString += '_'
+        }
+        switch (type.charAt(a)) {
+            case "<": typeString += "left"
+                break;
+            case "^": typeString += "up"
+                break;
+            case "v": typeString += "down"
+                break;
+            case ">": typeString += "right"
+                break;
+            case "o": typeString += "none"
+                break;
+        }
+    }
+    path += `${typeString}_`
     path += 'active'
     path += '.png'
     //console.log(path)
