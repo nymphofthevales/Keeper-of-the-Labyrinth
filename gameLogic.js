@@ -4,6 +4,12 @@
 //
 
 'use strict'
+let visited = new Array();
+function visit(current) {
+    if (visited.includes(current.title) === false) {
+        visited.push(current.title);
+    };
+};
 
 let gameStats = {
     apathy: 0,
@@ -53,12 +59,173 @@ function setGameStats() {
     }
 }
 
-let visited = new Array();
-function visit(current) {
-    if (visited.includes(current.title) === false) {
-        visited.push(current.title);
-    };
-};
+function manageMusic(current) {
+    switch (current.title) {
+        case 'intro' && page === 0: 
+            mainMusic.start('ingress',false,0);
+            break;
+    }
+}
+function printStoryImages(pageObject) {
+    switch (pageObject) {
+        case intro:
+            if (page >= 2) {
+                manageImage('print','./assets/artwork/labyrinth_gate.png','positive')
+                manageImage('print','./assets/artwork/labyrinth_gate_shadow.png','negative')
+            }
+            break;
+        case obelisk: 
+            manageImage('print','./assets/artwork/obelisk.png','positive')
+            manageImage('print','./assets/artwork/obelisk_shadow.png','negative')
+            break;
+        case castRunes || readRunes:
+            manageImage('print','./assets/artwork/runes.png','positive')
+            manageImage('print','./assets/artwork/runes_shadow.png','negative')
+            break;
+        case CandleAnte || finishCandleAnte || candleDark || windowPlaceCandle:
+            manageImage('print','./assets/artwork/anchor.png','positive')
+            manageImage('print','./assets/artwork/anchor_shadow.png','negative')
+            break;
+        case Lines:
+            manageImage('print','./assets/artwork/lines.png','positive')
+            manageImage('print','./assets/artwork/lines_shadow.png','negative')
+            break;
+        case Approach || Rowan || letRest:
+            manageImage('print','./assets/artwork/rowan.png','positive')
+            manageImage('print','./assets/artwork/rowan_shadow.png','negative')
+            break;
+        case Wands:
+            manageImage('print','./assets/artwork/wands.png','positive')
+            manageImage('print','./assets/artwork/wands_shadow.png','negative')
+            break;
+        case corpseContemplation:
+            //manageImage('print','./assets/artwork/corpses.png','positive')
+            //manageImage('print','./assets/artwork/corpses_shadow.png','negative')
+            break;
+        case darkWindow || windowHandNode || windowHandRight || windowRightNode || windowRightPush || windowHandLeft ||windowLeftNode || windowLeftPush || windowWithdrawl:
+            //manageImage('print','./assets/artwork/window.png','positive')
+            //manageImage('print','./assets/artwork/window_shadow.png','negative')
+            break;
+        case mothNode || mothLands || mothBurns:
+            manageImage('print','./assets/artwork/moth.png','positive')
+            manageImage('print','./assets/artwork/moth_shadow.png','negative')
+            break;
+        case darkNoisesFountain:
+            //manageImage('print','./assets/artwork/fountain.png','positive')
+            //manageImage('print','./assets/artwork/fountain_shadow.png','negative')
+            break;
+        case Falling:
+            //manageImage('print','./assets/artwork/falling.png','positive')
+            //manageImage('print','./assets/artwork/falling_shadow.png','negative')
+            break;
+        case FallToPit || pit || beatRises || scorn || enterScorn:
+            //manageImage('print','./assets/artwork/pit.png','positive')
+            //manageImage('print','./assets/artwork/pit_shadow.png','negative')
+            break;
+        case Lights:
+            manageImage('print','./assets/artwork/lights.png','positive')
+            manageImage('print','./assets/artwork/lights_shadow.png','negative')
+            break;
+        case fungusCistern || enterCistern || echoesCistern || Blades: 
+            if (pageObject === fungusCistern || pageObject === enterCistern) {
+                 if (page >= 1) {
+                    //manageImage('print','./assets/artwork/cistern.png','positive')
+                    //manageImage('print','./assets/artwork/cistern_shadow.png','negative')
+                    }
+                } else {
+                    //manageImage('print','./assets/artwork/cistern.png','positive')
+                    //manageImage('print','./assets/artwork/cistern_shadow.png','negative')
+                }
+            break;
+        case Cut || Apathy || Cowardice || Doubt || freeCistern:
+            manageImage('print','./assets/artwork/blades.png','positive')
+            manageImage('print','./assets/artwork/blades_shadow.png','negative')
+            break;
+        case failApathy || failCowardice || failDoubt || drowningCistern: 
+            if (pageObject === drowningCistern) {
+                if (page <= 1){
+                    manageImage('print','./assets/artwork/drowning.png','positive')
+                    manageImage('print','./assets/artwork/drowning_shadow.png','negative')
+                }
+            } else {
+                manageImage('print','./assets/artwork/drowning.png','positive')
+                manageImage('print','./assets/artwork/drowning_shadow.png','negative')
+            }
+            break;
+        case Waiting: 
+            if (page >= 1) {
+                manageImage('print','./assets/artwork/watching_mask.png','positive')
+                manageImage('print','./assets/artwork/watching_mask_shadow.png','negative')
+            }
+            break;
+        case Altar:
+            //manageImage('print','./assets/artwork/altar.png','positive')
+            //manageImage('print','./assets/artwork/altar_shadow.png','negative')
+            break;
+        default: manageImage('clear','','');
+            break;
+    }
+    if (pageObject.title.slice(0,4) === 'crow') {
+        manageImage('print','./assets/artwork/crow.png','positive')
+        manageImage('print','./assets/artwork/crow_shadow.png','negative')
+    }
+}
+function manageGalleryUnlocks() {
+    getMasterSave();
+    let actions = sumOfActions(masterSave);
+    //console.log(actions);
+    for (let i = 0; i < actions.length; i++) {
+        switch (actions[i]) {
+            case 'intro': 
+                mainGallery.unlock('The Labyrinth Gate')
+                break;
+            case 'finishCandleAnte': 
+                mainGallery.unlock('An Anchor')
+                break;
+            case 'obelisk': 
+                mainGallery.unlock('The Obelisk')
+                break;
+            case 'readRunes': 
+                mainGallery.unlock('Ritual of Runes');
+                mainGallery.unlock('The Runes')
+                break;
+            case 'Lines': 
+                mainGallery.unlock('Ritual of Lines')
+                mainGallery.unlock('The Chalk')
+                break;
+            case 'Rowan': 
+                mainGallery.unlock('The Rowan')
+                break;
+            case 'Wands': 
+                mainGallery.unlock('Ritual of Wands')
+                mainGallery.unlock('The Wand')
+                break;
+            case 'windowPlaceCandle': 
+                mainGallery.unlock('An Anchor')
+                break;
+            case 'mothLands': 
+                mainGallery.unlock('The Moth')
+                break;
+            case 'crow': 
+                mainGallery.unlock('The Crow')
+                break;
+            case 'Lights': 
+                mainGallery.unlock('Ritual of Lights')
+                mainGallery.unlock('The Candles')
+                break;
+            case 'Blades': 
+                mainGallery.unlock('Ritual of Blades')
+                mainGallery.unlock('The Knife')
+                break;
+            case 'drowningCistern': 
+                mainGallery.unlock('Drowning')
+                break;
+            case 'Waiting': 
+                mainGallery.unlock('The Watching Masks')
+                break;
+        }
+    }
+}
 
 let specialPages = [
     {

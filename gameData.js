@@ -1,15 +1,82 @@
 'use strict'
 
-const credits = new StoryNode();
+const credits = new Sequence();
+credits.title="credits"
+credits.addPage('<i>Keeper of the <span class="labyrinth-color">Labyrinth</span></i><br>©2021<br>Written and developed by Athena Abbott.','next');
+credits.addPage('Thank you for seeing this journey through to the end.<br><br>In all you do, may your light shine brightly.','End.')
 
 const egress = new Sequence();
 egress.title="egress"
-egress.addBatchPage(['The lights of the village crest the hill before me. The glow of dawn caresses the horizon beyond them, and the sight whispers <em>home</em>.',' Already I can feel the warmth of the fires on my skin, the festival glow in the faces of my friends, smell the sweet honey-cakes we save to carry us through the winter. I sigh deeply into the night air, and for the first time since I set foot through the gate of the labyrinth, truly relax.','The twisting walls and passageways of the labyrinth cannot contain anything, only distort that which enters, twist it back around on itself, and bring unto them the unstoppable change which it embodies. I shall traverse that labyrinth again, but for this year, my task is done, and I can allow myself to rest.','I met my quarry in the centre, learned her gaze, contemplated her secrets. What more could I have done? I saw the borders between me and her, saw them dissolve, did my best to keep up with the shifting paradigms.','And here I stand, as a testament to my trial. Here I am still, though different from the woman who entered—and here I stand, on the precipice between the past and future, ready to redefine myself and find my path.'],'next');
+egress.addBatchPage(['The stone of the steps leading up from the altar are bowed out in the middle, carved by time and the weight of a thousand footsteps. How many times has a Keeper passed here? How many bright souls have called this journey their own? How many have struggled, and hurt, and fallen along the way?','The number is unfathomable. Perhaps for many, though, they were not here: they wandered only in dreaming, or only in metaphor. But still their footsteps grace its halls, still their cries echo out.<br><br>Still their bodies lie upon the altar of change.','Finally I come to an egress.','The heavy shadow of the labyrinth waits behind me as I leave, watching my back. The air is hushed and cold around me, the sky clear. The stars shine brightly above.','For a time, the only sound is the crunch and creak of my boots in the mid-winter snows. Then, the lights of the village crest the hill before me.'],'next');
+egress.addBatchPage(['The glow of dawn caresses the horizon beyond them, and the sight whispers <em>home</em>.',' Already I can feel the warmth of the fires on my skin, the festival glow in the faces of my friends, smell the sweet honey-cakes we save to carry us through the winter. I sigh deeply into the night air, and for the first time since I set foot through the gate of the labyrinth, truly relax.','The twisting walls and passageways of the labyrinth cannot contain anything, only distort that which enters, twist it back around on itself, and bring unto them the unstoppable change which it embodies. I shall traverse that labyrinth again, but for this year, my task is done, and I can allow myself to rest.','I met my quarry in the centre, learned her gaze, contemplated her secrets. What more could I have done? I saw the borders between me and her, saw them dissolve, did my best to keep up with the shifting paradigms.','And here I stand, as a testament to my trial. Here I am still, though different from the woman who entered—and here I stand, on the precipice between the past and future, ready to redefine myself and find my path.'],'next');
 egress.addPage('Many turns await me.','Take another step, ever onward')
 egress.setNext(credits)
 
+const Changing = new Sequence();
+Changing.addBatchPage(['She looks me up and down one more time, with compassion in her eyes, then gives me a satisfied nod.<br><br>\"It\'s okay.\"','I am obsolete. I know that she is better than me, deserves to take my place. It\'s scary to see her go on, to know that whatever being that now takes my name and shape in the world will be something different than I once was, but also good.','Two things are true:<ul><li>One, that she carries me with her, and always will. I am an inevitable ghost in her body; my residue is what makes her me.</li><li>Two, that I will remain here, lost in the labyrinth. Pieces of me will never be known again, forgotten in the twisting halls of this place.</li><ul>For the sake of the former, I know she will try not to resent the latter.','Maybe I will resent it. After all; I will not be gone, not dead, really. Simply left behind. But she will go on in change: she will be better, more free, more whole, just more, for every experience I brought her from my journey in the labyrinth; and I\'m sure she will believe that leaving me behind, or letting me leave myself behind, was the right choice for our sake.<br><br>I trust her.','I take a seat upon the edge of the altar, and watch her leave. She gives me one last smile, then waves like it\'s nothing—like she\'s a friend on her way home for dinner—with no special affect; as if she\'ll see me again tomorrow, and it\'s all just another normal farewell.<br><br>I smile back.','I brush a hand across the wall of the archway as I exit. Leaving her sitting there upon the altar, I can\'t help thinking one thing: I\'m glad she gets a chance to rest.'],'next');
+Changing.addPage('She looks so battered, sitting there, a shadow of pain and exhaustion, a candle stub, burnt down to almost nothing, a broken wand, a crushed chalk, a scattered rune-casting, a dulled and chipped blade. Worn, after all she had been through. Some of it done to her, unavoidable, some of it her own fault—but all in all, how could I blame her? It\'s the hurt that matters, not the cause. And so, I\'m glad that she gets to rest—I can carry that light onward, I can see to the future—let her domain be the past.','Leave')
+Changing.setNext(egress);
+
+const AltarRest = new StoryNode();
+AltarRest.title="AltarRest"
+AltarRest.setText('\"You\'ve been through a lot, haven\'t you?\"<br><br>There is a questing tone in her voice, but it\'s not a question when she says it, nor is it a statement of fact; if anything, it feels more like an order. A gentle one, a caring one, but commanding nonetheless.  Looking up at her, I can see that her eyes are full of passion and kindness, the sort of fire that couldn\'t burn you even if you wanted it to.<br><br>She\'s asking me to rest.')
+AltarRest.addOption('\"I have.\"',Changing)
+//AltarRest.addOption('\"Not so much that I cannot continue.\"',)
+
+const AltarTakeHand = new Sequence();
+AltarTakeHand.title="AltarTakeHand"
+AltarTakeHand.addBatchPage(['I take her hand. Her fingers are long and gentle, though strength lies dormant within them. She is cool to the touch, and that touch is soothing against my scratched and wounded hands warm with blood.','She pulls herself to her feet, rising from the altar. As she does, she uses me for aid but relies too on her own strength, push and pull like a dance between us. But if she is the moon, then I am the tide; and not the other way around. She is stronger than me. I can sense it within her patient grip.','She stands before me then, calm and unwavering, starlight reflecting in her eyes. She seems lost in thought for many long moments, her eyes moving across my face in quiet scrutiny, assaying my wounds, real and unreal. Finally she speaks again.'],'next');
+AltarTakeHand.setNext(AltarRest);
+
+const AltarForgiveness = new Sequence();
+AltarForgiveness.title="AltarForgiveness"
+AltarForgiveness.addBatchPage(['\"If you\'re afraid, there\'s nothing to be done. You are free to go your own way, of course. I\'m here for you. I am you. I\'m just a little more patient. Your time will come to change. When you\'re ready.\"<br><br>And with that, she smiles again.','She steps forward, reaches out towards me, and I flinch before I realize that she\'s giving me something. It\'s not easy for me to trust her. But also, it doesn\'t make sense not to. In her hands is my bag of tools; what I had thought lost to the waters. <i>Nothing is ever truly lost.</i> Then too, she doffs her cloak, and drapes it around my shoulders.','It\'s warm.','It\'s <i>warm</i>.','The tears pour forth like summer rain, and I find myself feeling silly for ever having been afraid, foolish and blubbering like a child. I squeeze my eyes shut tight, as if to hide my sudden, unmistakable embarrassment, and in that moment of darkness and warmth, I feel hands upon my cheek, brushing away my tears.','My eyes blink open in surprise and I meet hers, deep as the night and sweet like honey, glittering with starlight. Just then, she leans in, and kisses me upon the forehead.<br><br>\"Go on now. Be gentle with yourself; you know, she scares easily.\"<br><br>I laugh at that, despite myself.<br><br>\"I will.\"'],'next')
+AltarForgiveness.addPage('And I turn away.<br><br>\"Thank you.\"','Leave')
+AltarForgiveness.addPage('She seats herself lightly upon the edge of the altar, and watches me go. I have a feeling that she\'s proud of me, even if I don\'t deserve it.','next')
+AltarForgiveness.setNext(egress)
+
+const AltarRushPast = new Sequence();
+AltarRushPast.title="AltarRushPast"
+AltarRushPast.addBatchPage(['Whatever my fate may be, I\'m not going down without a fight. I muster whatever energy I have left, and try to push past her.','To my surprise, she does not stop me. She does not hurt me. In truth, she gets out of my way—steps aside slightly to make room, lets me pass. As I do, she just stares at me again, with that gentle gaze from before, the one that says <i>\"It\'s okay. You\'re safe here.\"</i><br><br>And I stop in my tracks. I feel hot tears running down my cheeks, though I\'m not sure why. I just stare at her.'],'next')
+AltarRushPast.setNext(AltarForgiveness)
+
+const AltarGiveIn = new Sequence();
+AltarGiveIn.title="AltarGiveIn"
+AltarGiveIn.addPage('I try to relax, and step towards her once more, gingerly.<br><br>\"What now?\"','next');
+AltarGiveIn.setNext(AltarForgiveness);
+
+const AltarRecoilNode = new StoryNode();
+AltarRecoilNode.title="AltarRecoilNode"
+AltarRecoilNode.setText('In any case, she stands between me and the exit.')
+AltarRecoilNode.addOption('Rush past her',AltarRushPast)
+AltarRecoilNode.addOption('Give in',AltarGiveIn)
+
+const AltarRecoil = new Sequence();
+AltarRecoil.title="AltarRecoil"
+AltarRecoil.addBatchPage(['I step back in horror, seeking nothing but to distance myself from this strange doppelgänger.','What is this? What new trial is this that the labyrinth has placed before me? How much more will I have to endure before the night is done?','She tilts her head, curious. As she does the tendrils of her hair, dark in the night, fall to the side, revealing something unmistakeable. The distant starlight catches on an earring she wears; it seems to be mother-of-pearl, inlaid with brass or copper, and hung by a small hole drilled near the top.<br><br>I have never worn anything like it. In that instant I know: she is not me, or not any me that I have yet known. I convince myself of this fact; she is my enemy, she must be.'],'next')
+AltarRecoil.addPage('The woman who is not me rises slowly, in confidence. She never needed my aid to stand. Why did she ask? Her gaze is firm upon me as she stands there unwavering, considering me before she speaks once more.<br><br>\"I\'m sorry. Are you afraid?\"','Respond')
+AltarRecoil.addBatchPage('\"I won\'t let you take my place.\"<br><br>It surprises me as I say it; so defensive, so fearful. But I find that it was exactly what had been on my mind. She does not reply, only stands there with her head tilted again, a ruthful expression crossing her face, looking at me like I\'m a wounded animal, cornered and dangerous, but one that she\'s sorry she has to put down. She\'s not going to apologize again, but I get the feeling that whether she takes my place or not is not my choice to make.','next')
+AltarRecoil.setNext(AltarRecoilNode)
+
+const AltarNode = new StoryNode();
+AltarNode.title="AltarNode"
+AltarNode.setText('She reaches out a hand.')
+AltarNode.addOption('Take her hand',AltarTakeHand)
+AltarNode.addOption('Recoil',AltarRecoil)
+
 const Altar = new Sequence();
 Altar.title="Altar"
+Altar.addBatchPage(['This chamber is open to the sky, and the stars twinkle far above. A gentle moonlight suffuses the air—the clouds which overcast the sky must have cleared while I was in the cistern. It\'s not huge, nowhere near as wide as the pit through which I entered this subterranean area, but still feels…powerful. Strong. The rough-hewn granite walls encircle three standing stones, and an altar in the centre. An archway on the far side of the chamber houses stairs which ascend rapidly out of sight.','I have the strongest sense that I have been here before. The rational part of my mind tells me that no, that isn\'t possible, you can\t have been.<br><br>But I can\'t help the feeling.','There is a body on the altar.'],'next')
+Altar.addPage('She wears my cloak, and my bag held loosely in her hands, clasped over her stomach. She too, wears my hair, my skin, and even the little mole on the left side of my neck. And I know that she is me, in my entirety. The sisters of the cistern were parts of me, personified and warped, the worst parts, fighting to destroy me, but she is whole. Every piece and more.  She is the better me; one a little braver, a little stronger, a little more steadfast. Improvements made by degrees. She seems older somehow, though no wrinkles line her face yet nor grey in her hair.','Approach the altar')
+Altar.addBatchPage(['I approach her gingerly, unsure of what to believe, much less of what to do, and as I reach her side, she opens her eyes.','At first she does not look at me. Her eyes open lazily, as if waking from a long sleep, stare up at the sky for many moments, then blink shut once more, yawning and stretching like a smug cat. She turns over and pushes herself up to a seated position, with her legs bent to one side. ','The way her gaze meets mine makes me feel uneasy, like she looks through me, like she doesn\'t need eyes to see me, like she already knows every dirty secret and fear and regret I\'ve ever had and every fucking mistake and—<br><br>And she smiles.','She smiles, warmly, with all the love in the world. Gods.','And the little wrinkle at the corner of her mouth says \"It\'s okay,\" and the way her right eye droops says \"I forgive you,\" and her voice says:<br><br>\"Would you help me up?\"'],'next')
+Altar.setNext(AltarNode)
+
+const AltarApproach = new Sequence();
+AltarApproach.title="AltarApproach"
+AltarApproach.addPage('I approach gingerly, my one hand against the ceiling to gauge its height as I continue so as to not hit my head. It steadily declines, pushing me down and down, forcing me to prostrate myself against the floor. Before I know it I am crawling, with the stone pressing in around me on all sides. It holds me, drawing me forward, for at this point the only way I can go is forward, squirming through the labyrinth\'s grip.','Crawl onward')
+AltarApproach.addPage('I feel the abrasion scrape and tear my hands, my arms, my knees. But it is not violent. Merely difficult. There is a vast difference between the pains brought on by malevolence and those brought on by hardship. If I am to see this through to the end, it will hurt—that is all.<br><br>.Most worthwhile journeys will inevitably have an element of hardship. Meanwhile those journeys that bring violence unto oneself or others are rarely worthwhile.','next');
+AltarApproach.addPage('I feel the hold loosen around me, and just as gradually as my crawl began, I soon find myself standing once more, in another chamber. The tunnel in the wall through which I entered seems only a warped projection behind me, stretching off into darkness.','Examine the chamber')
+AltarApproach.setNext(Altar)
 
 const Waiting = new Sequence();
 Waiting.title="Waiting"
@@ -21,7 +88,7 @@ const Cave = new StoryNode();
 Cave.title="Cave"
 Cave.setText('Two paths lie before me. One slopes gently downwards, and looking down it I feel a deep thrumming noise reverberating from it. I can\'t tell whether I\'m actually hearing it or only feeling it—it resonates through my body, calling like a dirge. The other passage is level, but the ceiling comes down further in—it might be a squeeze.');
 Cave.addOption('Follow the dirge',Waiting);
-Cave.addOption('Brave the squeeze',Altar);
+Cave.addOption('Brave the squeeze',AltarApproach);
 
 Waiting.setNext(Cave);
 

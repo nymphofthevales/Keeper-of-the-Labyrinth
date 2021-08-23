@@ -181,7 +181,7 @@ Grid.prototype.printMapTiles = function() {
         }
         let type = '';
         for (let a=0; a<this.array[i].type.length; a++) {
-            console.log(this.array[i].type.charAt(a))
+            //console.log(this.array[i].type.charAt(a))
             if (a>0 && a<type.length) {
                 type += '_'
             }
@@ -198,7 +198,7 @@ Grid.prototype.printMapTiles = function() {
                     break;
             }
         }
-        console.log(type)
+        //console.log(type)
         let imgUrl = path + type + '.png'
         let DOMNode = this.getElementDOMNode(i)
         DOMNode.style.backgroundImage = `url(\"${imgUrl}\")`;
@@ -438,7 +438,7 @@ function populateGrid(GridObject) {
             p.style.margin = 0;
             p.style.padding = 0;
             p.style.color = `rgb(255,255,255)`
-            p.innerText = GridObject.getColumn(x-1)[y-1].position; //SHOULD SET TYPE HERE
+            p.innerText = GridObject.getColumn(x-1)[y-1].position;
             //
             //v visual editor code
             //
@@ -497,11 +497,16 @@ function readInput(coordinateArray,GridObject) {
             readInput([x,y],GridObject)
         })
     } else if (nodeDropdown.value === "node" && document.getElementById(`cell-${x}-${y}-unlocked`) !== null) {
+        let pageObjects = document.getElementById(`cell-${x}-${y}-unlocked`).value.split(',')
+        let pageObjectArray = [];
+        for (let v=0; v<pageObjects.length; v++) {
+            pageObjectArray.push(`\"${pageObjects[i]}\"`)
+        }
         GridObject.insertElement(coordinateArray,'node',typeDropdown.value,{
             title: document.getElementById(`cell-${x}-${y}-title`).value,
             unlocked: false,
             //unlocked: JSON.parse(document.getElementById(`cell-${x}-${y}-unlocked`).value)
-            pageObject: document.getElementById(`cell-${x}-${y}-unlocked`).value
+            pageObject: JSON.parse("[" + document.getElementById(`cell-${x}-${y}-unlocked`).value + "]")
         })
     } else if (nodeDropdown.value === "tile" && document.getElementById(`cell-${x}-${y}-unlocked`) !== null) {
         document.getElementById(`cell-${x}-${y}-title`).remove();
@@ -736,7 +741,7 @@ function hoverMapNode(action,mapNodeArray,index) {
     path += `${type.length}/`
     let typeString = '';
     for (let a=0; a<type.length; a++) {
-        console.log(type.charAt(a))
+        //console.log(type.charAt(a))
         if (a>0 && a<type.length) {
             typeString += '_'
         }
@@ -779,7 +784,7 @@ function clickMapNode(mapNodeArray,index) {
     path += `${type.length}/`
     let typeString = '';
     for (let a=0; a<type.length; a++) {
-        console.log(type.charAt(a))
+        //console.log(type.charAt(a))
         if (a>0 && a<type.length) {
             typeString += '_'
         }
@@ -801,228 +806,4 @@ function clickMapNode(mapNodeArray,index) {
     path += '.png'
     //console.log(path)
     node.style.backgroundImage = `url("${path}")`
-}
-
-
-let antechamber = {
-    width: 20,
-    height: 13,
-    tiles: [
-        //coordinates, type
-        [
-            [3,7],'<>'
-        ],
-        [
-            [4,7],'<>'
-        ],
-        [
-            [5,6],'^v'
-        ],
-        [
-            [5,8],'^v'
-        ],
-        [
-            [5,5],'v>'
-        ],
-        [
-            [5,9],'^>'
-        ],
-        [
-            [6,5],'<>'
-        ],
-        [
-            [6,9],'<>'
-        ],
-        [
-            [7,6],'^v'
-        ],
-        [
-            [7,8],'^v'
-        ],
-        [
-            [8,7],'<>'
-        ],
-        [
-            [9,7],'<^v'
-        ],
-        [
-            [9,6],'v>'
-        ],
-        [
-            [9,8],'^>'
-        ],
-        [
-            [10,7],'^v'
-        ],
-        [
-            [10,5],'v>'
-        ],
-        [
-            [10,9],'^>'
-        ],
-        [
-            [11,5],'<>'
-        ],
-        [
-            [11,9],'<>'
-        ],
-        [
-            [11,6],'<v'
-        ],
-        [
-            [11,8],'<^'
-        ],
-        [
-            [11,7],'^v>'
-        ],
-        [
-            [12,5],'<>'
-        ],
-        [
-            [12,9],'<>'
-        ],
-        [
-            [12,7],'<>'
-        ],
-        [
-            [13,7],'<^v'
-        ],
-        [
-            [13,6],'v>'
-        ],
-        [
-            [13,8],'^>'
-        ],
-        [
-            [13,5],'<^'
-        ],
-        [
-            [13,9],'<v'
-        ],
-        [
-            [13,10],'^>'
-        ],
-        [
-            [13,4],'v>'
-        ],
-        [
-            [14,9],'^v'
-        ],
-        [
-            [14,5],'^v'
-        ],
-        [
-            [14,10],'<^>'
-        ],
-        [
-            [14,4],'<v>'
-        ],
-        [
-            [14,7],'^v'
-        ],
-        [
-            [15,6],'<v'
-        ],
-        [
-            [15,7],'^v>'
-        ],
-        [
-            [15,8],'<^'
-        ],
-        [
-            [15,4],'<>'
-        ],
-        [
-            [15,10],'<>'
-        ],
-        [
-            [16,4],'<v'
-        ],
-        [
-            [16,10],'<^'
-        ],
-        [
-            [16,5],'^>'
-        ],
-        [
-            [16,9],'v>'
-        ],
-        [
-            [17,5],'<v'
-        ],
-        [
-            [17,9],'<^'
-        ],
-        [
-            [17,6],'^v'
-        ],
-        [
-            [17,8],'^v'
-        ],
-        [
-            [17,7],'<^v>'
-        ],
-        [
-            [18,7],'<>'
-        ],
-    ],
-    nodes: [
-        //coordinates, type, title, unlocked
-        [
-            [2,7],'>','Intro',true
-        ],
-        [
-            [5,7],'<^v','Enter',false
-        ],
-        [
-            [7,5],'<v','Left',false
-        ],
-        [
-            [7,9],'<^','Right',false
-        ],
-        [
-            [7,7],'^v>','The Antechamber',false
-        ],
-        [
-            [10,6],'<^v>','The Obelisk',false
-        ],
-        [
-            [10,8],'<^v>','A Witch\'s Tools',false
-        ],
-        [
-            [14,6],'<^v>','Light a candle',false
-        ],
-        [
-            [14,8],'<^v>','The Ritual of Runes',false
-        ],
-        [
-            [16,7],'<>','Leave',false
-        ],
-        [
-            [16,5],'^>','Move on',false
-        ],
-        [
-            [16,9],'v>','Move on',false
-        ],
-        [
-            [19,7],'<','The Labyrinth Proper',false
-        ],
-    ]
-}
-
-let labyrinthProper = {
-    width: 20,
-    height: 13,
-    tiles: [
-        //coordinates, type
-        [
-            [3,7],'<>'
-        ],
-    ],
-    nodes: [
-        //coordinates, type, title, unlocked
-        [
-            [2,7],'>','Intro',true
-        ],
-    ]
 }

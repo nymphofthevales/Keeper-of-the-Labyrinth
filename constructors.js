@@ -65,7 +65,9 @@ function StoryNode() {
 StoryNode.prototype.addOption = function(name,destination) {
     //name is string, destination is a pointer to another sequence or node
     name = capitalize(name);
-    this._buttons.push([name, destination]);
+    if (this.getOptions.includes(name) === false) {
+        this._buttons.push([name, destination])
+    }
 }
 StoryNode.prototype.removeOption = function(name,destination) {
     //takes in string name and pointer destination and removes option that has either that name or that destination
