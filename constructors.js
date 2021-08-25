@@ -65,9 +65,10 @@ function StoryNode() {
 StoryNode.prototype.addOption = function(name,destination) {
     //name is string, destination is a pointer to another sequence or node
     name = capitalize(name);
-    if (this.getOptions.includes(name) === false) {
+    //check the docs on .includes() later
+    //if (this.getOptions.includes(name) === false) {
         this._buttons.push([name, destination])
-    }
+    //}
 }
 StoryNode.prototype.removeOption = function(name,destination) {
     //takes in string name and pointer destination and removes option that has either that name or that destination
@@ -924,6 +925,13 @@ function clearFocus() {
     let clr = document.getElementById('focus-clear');
     clr.focus();
     clr.blur();
+}
+function getPageInstanceList() {
+    let list = [];
+    for (let i=0; i< PageInstances.length; i++) {
+        list.push(PageInstances[i].title);
+    }
+    return list
 }
 //^ misc utility functions
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////

@@ -13,6 +13,7 @@ egress.addPage('Many turns await me.','Take another step, ever onward')
 egress.setNext(credits)
 
 const Changing = new Sequence();
+Changing.title="Changing"
 Changing.addBatchPage(['She looks me up and down one more time, with compassion in her eyes, then gives me a satisfied nod.<br><br>\"It\'s okay.\"','I am obsolete. I know that she is better than me, deserves to take my place. It\'s scary to see her go on, to know that whatever being that now takes my name and shape in the world will be something different than I once was, but also good.','Two things are true:<ul><li>One, that she carries me with her, and always will. I am an inevitable ghost in her body; my residue is what makes her me.</li><li>Two, that I will remain here, lost in the labyrinth. Pieces of me will never be known again, forgotten in the twisting halls of this place.</li><ul>For the sake of the former, I know she will try not to resent the latter.','Maybe I will resent it. After all; I will not be gone, not dead, really. Simply left behind. But she will go on in change: she will be better, more free, more whole, just more, for every experience I brought her from my journey in the labyrinth; and I\'m sure she will believe that leaving me behind, or letting me leave myself behind, was the right choice for our sake.<br><br>I trust her.','I take a seat upon the edge of the altar, and watch her leave. She gives me one last smile, then waves like it\'s nothing—like she\'s a friend on her way home for dinner—with no special affect; as if she\'ll see me again tomorrow, and it\'s all just another normal farewell.<br><br>I smile back.','I brush a hand across the wall of the archway as I exit. Leaving her sitting there upon the altar, I can\'t help thinking one thing: I\'m glad she gets a chance to rest.'],'next');
 Changing.addPage('She looks so battered, sitting there, a shadow of pain and exhaustion, a candle stub, burnt down to almost nothing, a broken wand, a crushed chalk, a scattered rune-casting, a dulled and chipped blade. Worn, after all she had been through. Some of it done to her, unavoidable, some of it her own fault—but all in all, how could I blame her? It\'s the hurt that matters, not the cause. And so, I\'m glad that she gets to rest—I can carry that light onward, I can see to the future—let her domain be the past.','Leave')
 Changing.setNext(egress);
@@ -1426,20 +1427,20 @@ mainGallery.addItem(9,false,'The Wand','An unused inventory sprite created early
 mainGallery.addItem(10,false,'An Anchor','The candle stand upright; its light anchors my power to this place.','./assets/artwork/anchor.png',true)
 mainGallery.addItem(11,false,'The Moth','Perhaps to end in a conflagration of light is better than to end alone in the darkness.','./assets/artwork/moth.png',true)
 mainGallery.addItem(12,false,'The Crow','Perhaps it did speak, but only in signs, in gaze and gesture, in feather and beak, in imagination, in silence.','./assets/artwork/crow.png',true)
-//mainGallery.addItem(13,false,'The Dead','','./assets/artwork/corpses.png',true)
+mainGallery.addItem(13,false,'The Dead','<i>What stranger will hold yours in their hands<br>wondering the same,<br>when your time comes?</i>','./assets/artwork/corpses.png',true)
 
-//mainGallery.addItem(14,false,'The Pit','','./assets/artwork/pit.png',true)
+mainGallery.addItem(14,false,'The Pit','A beat rises in my bones, its wild rhythm calling me forth to the centre.','./assets/artwork/pit.png',true)
 mainGallery.addItem(15,false,'Ritual of Lights','I can burn brighter than the sun, if I let myself dance without fear.','./assets/artwork/lights.png',true)
 mainGallery.addItem(16,false,'The Candles','An unused inventory sprite created early in development.','./assets/artwork/candles_item.png',false)
 
-//mainGallery.addItem(17,false,'The Cistern','','./assets/artwork/cistern.png',true)
+mainGallery.addItem(17,false,'The Cistern','The echoing reflections show not myself but an infinite array of <em>possible</em> selves, each a reply to that before her, iterating toward some final shape which remains unknown.','./assets/artwork/cistern.png',true)
 mainGallery.addItem(18,false,'Ritual of Blades','My apathy. My cowardice. My doubt.<br>I wrench myself free of their grip; they will not best me this time.','./assets/artwork/blades.png',true)
 mainGallery.addItem(19,false,'The Knife','An unused inventory sprite created early in development.','./assets/artwork/knife_item.png',false)
 mainGallery.addItem(20,false,'Drowning','Darkness encroaches on the edges of my vision, and I choke as I feel the water take me.','./assets/artwork/drowning.png',true)
 
 mainGallery.addItem(21,false,'The Watching Masks','How could we know her until she chooses to know herself?','./assets/artwork/watching_mask.png',true)
-//mainGallery.addItem(22,false,'The Altar','','./assets/artwork/altar.png',true)
-//mainGallery.addItem(23,false,'Her','','./assets/artwork/her.png',true)
+mainGallery.addItem(22,false,'The Altar','I have the strongest sense that I have been here before. The rational part of my mind tells me that <i>no, that isn\'t possible, you can\'t have been.</i>','./assets/artwork/altar.png',true)
+mainGallery.addItem(23,false,'Her','Looking up at her, I can see that her eyes are full of passion and kindness, the sort of fire that couldn\'t burn you even if you wanted it to.','./assets/artwork/her.png',true)
 //^ gallery content
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////

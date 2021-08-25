@@ -279,7 +279,7 @@ function MapNode(coordinateArray,GridObject,type,opts) {
     //
     this.title = opts.title;
     this.unlocked = opts.unlocked;
-    this.pageObject = opts.pageObject;
+    this.pageObjects = opts.pageObjects;
     this.pageNum = 0;
     this.linkages = [];
 }
@@ -388,7 +388,7 @@ MapSave.prototype.addNode = function(MapNodeObject) {
         MapNodeObject.type,
         MapNodeObject.title,
         MapNodeObject.unlocked,
-        MapNodeObject.pageObject
+        MapNodeObject.pageObjects
     ])
 }
 function createDOMGrid(GridObject) {
@@ -506,7 +506,7 @@ function readInput(coordinateArray,GridObject) {
             title: document.getElementById(`cell-${x}-${y}-title`).value,
             unlocked: false,
             //unlocked: JSON.parse(document.getElementById(`cell-${x}-${y}-unlocked`).value)
-            pageObject: JSON.parse("[" + document.getElementById(`cell-${x}-${y}-unlocked`).value + "]")
+            pageObjects: pageObjectArray //JSON.parse("[" + document.getElementById(`cell-${x}-${y}-unlocked`).value + "]")
         })
     } else if (nodeDropdown.value === "tile" && document.getElementById(`cell-${x}-${y}-unlocked`) !== null) {
         document.getElementById(`cell-${x}-${y}-title`).remove();
