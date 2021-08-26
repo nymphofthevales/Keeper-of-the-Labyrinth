@@ -180,24 +180,31 @@ button:visited {
 
 #currentPosImg, #currentNegImg {
   display: block;
+  position: absolute;
+  top:0;
+  left:0;
   max-height: 70vh;
-  max-width: 100%;
+  width: 40vw;
 }
 #image-positive, #image-negative {
   background-color: transparent;
   position: relative;
-  height: 100%;
+  height: auto;
   width: 100%;
 }
 #image-positive {
-  top: -25vh;
+  z-index: 2;
 }
 #image-negative {
-  top: 25vh;
+  z-index: 1;
 }
 #image-frame {
-  max-width: 40vw;
-  width: auto;
+  position: relative;
+  width: 40vw;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 .fade-in {
   opacity: 0.0;

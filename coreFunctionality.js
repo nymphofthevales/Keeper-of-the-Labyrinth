@@ -292,6 +292,8 @@ function preloadImages() {
 function manageImage(action,url,location) {
     let frame;
     let imgId;
+    let div = () => document.createElement('div')
+    let img = () => document.createElement('img')
     switch (location) {
         case 'negative': imgId = 'currentNegImg'
             break;
@@ -299,16 +301,16 @@ function manageImage(action,url,location) {
             break;
     }
     if (action === 'print') {
+        if (document.getElementById('image-frame') === null) {
+            document.getElementById('content').appendChild(div()).id = "image-frame";
+        }
         if (document.getElementById(imgId) === null) {
             doImagePrinting()
         } else {
-            //console.log(document.getElementById(imgId).src)
             let urlFilename = url.split('/');
             urlFilename = urlFilename[urlFilename.length - 1]
             let pageFilename = document.getElementById(imgId).src.split('/')
             pageFilename = pageFilename[pageFilename.length - 1]
-            //console.log(pageFilename)
-            //console.log(urlFilename)
             if (pageFilename !== urlFilename) {
                 doImagePrinting()
             } else {
@@ -316,31 +318,23 @@ function manageImage(action,url,location) {
             }
         }
     } else if (action === 'clear') {
-        document.getElementById('image-negative').innerHTML = '';
-        document.getElementById('image-positive').innerHTML = '';
+        if (document.getElementById('image-frame') !== null) {
+            document.getElementById('image-frame').remove();
+        }
     }
     function doImagePrinting() {
-        let img = document.createElement('img');
         if (location === undefined || location === 'positive') {
+            document.getElementById('image-frame').appendChild(div()).id="image-positive"
             frame = document.getElementById('image-positive');
-            frame.appendChild(img).id = 'currentPosImg';
+            frame.appendChild(img()).id = 'currentPosImg';
             let currentImage = document.getElementById('currentPosImg');
             currentImage.src = url;
-            /*if (currentImage.offsetHeight > 0) {
-                frame.style.top = `-${currentImage.offsetHeight/2}px`;
-            } else {
-                frame.style.top = `-35vh`;
-            }*/
         } else if (location === 'negative') {
+            document.getElementById('image-frame').appendChild(div()).id="image-negative"
             frame = document.getElementById('image-negative')
-            frame.appendChild(img).id = 'currentNegImg';
+            frame.appendChild(img()).id = 'currentNegImg';
             let currentImage = document.getElementById('currentNegImg');
             currentImage.src = url;
-            /*if (frame.offsetHeight > 0) {
-                frame.style.top = `${frame.offsetHeight/2}px`;
-            } else {
-                frame.style.top = `35vh`;
-            }*/
         }
     }
 };
@@ -762,6 +756,9 @@ function manageGalleryUnlocks() {
                 break;
             case 'corpseContemplation': 
                 mainGallery.unlock('The Dead')
+                break;
+            case 'Falling': 
+                mainGallery.unlock('Falling')
                 break;
             case 'beatRises': 
                 mainGallery.unlock('The Pit')
