@@ -180,23 +180,19 @@ button:visited {
 
 #currentPosImg, #currentNegImg {
   display: block;
-  position: absolute;
+  position: relative;
   top:0;
   left:0;
   max-height: 70vh;
   width: 40vw;
 }
-#image-positive, #image-negative {
-  background-color: transparent;
-  position: relative;
-  height: auto;
-  width: 100%;
-}
-#image-positive {
+#currentPosImg {
   z-index: 2;
+  left: 50%;
 }
-#image-negative {
+#currentNegImg {
   z-index: 1;
+  left: -50%;
 }
 #image-frame {
   position: relative;

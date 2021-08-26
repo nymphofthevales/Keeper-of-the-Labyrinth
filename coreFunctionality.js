@@ -324,15 +324,11 @@ function manageImage(action,url,location) {
     }
     function doImagePrinting() {
         if (location === undefined || location === 'positive') {
-            document.getElementById('image-frame').appendChild(div()).id="image-positive"
-            frame = document.getElementById('image-positive');
-            frame.appendChild(img()).id = 'currentPosImg';
+            document.getElementById('image-frame').appendChild(img()).id = 'currentPosImg';
             let currentImage = document.getElementById('currentPosImg');
             currentImage.src = url;
         } else if (location === 'negative') {
-            document.getElementById('image-frame').appendChild(div()).id="image-negative"
-            frame = document.getElementById('image-negative')
-            frame.appendChild(img()).id = 'currentNegImg';
+            document.getElementById('image-frame').appendChild(img()).id = 'currentNegImg';
             let currentImage = document.getElementById('currentNegImg');
             currentImage.src = url;
         }
@@ -381,8 +377,8 @@ document.addEventListener('mousemove', (e)=>{
         if (document.getElementById('currentPosImg') !== null && document.getElementById('currentNegImg') !== null) {
             let pos = document.getElementById('currentPosImg');
             let neg = document.getElementById('currentNegImg');
-            pos.style.left = `${x}px`
-            neg.style.left = `${-x}px`
+            pos.style.left = `calc(${x}px + 50%)`
+            neg.style.left = `calc(${-x}px - 50%)`
             pos.style.top = `${y}px`
             neg.style.top = `${-y}px`
         }
