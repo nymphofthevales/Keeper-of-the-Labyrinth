@@ -100,9 +100,9 @@ function redirect(time,current) {
     },time)
 }
 function loadPage(current,page_number) {
+    page = page_number
     visit(current);
     genActions(current);
-    page = page_number
     print(current.getPage(page_number),current);
     console.log(`${current.title} ${page} was loaded`);
 };

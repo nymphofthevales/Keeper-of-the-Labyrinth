@@ -72,17 +72,19 @@ function printStoryImages(pageObject) {
             if (page >= 2) {
                 manageImage('print','./assets/artwork/labyrinth_gate.png','positive')
                 manageImage('print','./assets/artwork/labyrinth_gate_shadow.png','negative')
+            } else {
+                manageImage('clear','','');
             }
             break;
         case obelisk: 
             manageImage('print','./assets/artwork/obelisk.png','positive')
             manageImage('print','./assets/artwork/obelisk_shadow.png','negative')
             break;
-        case castRunes || readRunes:
+        case castRunes: case readRunes:
             manageImage('print','./assets/artwork/runes.png','positive')
             manageImage('print','./assets/artwork/runes_shadow.png','negative')
             break;
-        case CandleAnte || finishCandleAnte || candleDark || windowPlaceCandle:
+        case CandleAnte: case finishCandleAnte: case candleDark: case windowPlaceCandle: case darkAnotherCandle:
             manageImage('print','./assets/artwork/anchor.png','positive')
             manageImage('print','./assets/artwork/anchor_shadow.png','negative')
             break;
@@ -90,7 +92,7 @@ function printStoryImages(pageObject) {
             manageImage('print','./assets/artwork/lines.png','positive')
             manageImage('print','./assets/artwork/lines_shadow.png','negative')
             break;
-        case Approach || Rowan || letRest:
+        case Approach: case Rowan: case letRest:
             manageImage('print','./assets/artwork/rowan.png','positive')
             manageImage('print','./assets/artwork/rowan_shadow.png','negative')
             break;
@@ -99,14 +101,14 @@ function printStoryImages(pageObject) {
             manageImage('print','./assets/artwork/wands_shadow.png','negative')
             break;
         case corpseContemplation:
-            //manageImage('print','./assets/artwork/corpses.png','positive')
-            //manageImage('print','./assets/artwork/corpses_shadow.png','negative')
+            manageImage('print','./assets/artwork/corpses.png','positive')
+            manageImage('print','./assets/artwork/corpses_shadow.png','negative')
             break;
-        case darkWindow || windowHandNode || windowHandRight || windowRightNode || windowRightPush || windowHandLeft ||windowLeftNode || windowLeftPush || windowWithdrawl:
+        case darkWindow: case windowHandNode: case windowHandRight: case windowRightNode: case windowRightPush: case windowHandLeft: case windowLeftNode: case windowLeftPush: case windowWithdrawl:
             //manageImage('print','./assets/artwork/window.png','positive')
             //manageImage('print','./assets/artwork/window_shadow.png','negative')
             break;
-        case mothNode || mothLands || mothBurns:
+        case mothNode: case mothLands: case mothBurns:
             manageImage('print','./assets/artwork/moth.png','positive')
             manageImage('print','./assets/artwork/moth_shadow.png','negative')
             break;
@@ -115,33 +117,33 @@ function printStoryImages(pageObject) {
             //manageImage('print','./assets/artwork/fountain_shadow.png','negative')
             break;
         case Falling:
-            //manageImage('print','./assets/artwork/falling.png','positive')
-            //manageImage('print','./assets/artwork/falling_shadow.png','negative')
+            manageImage('print','./assets/artwork/falling.png','positive')
+            manageImage('print','./assets/artwork/falling_shadow.png','negative')
             break;
-        case FallToPit || pit || beatRises || scorn || enterScorn:
-            //manageImage('print','./assets/artwork/pit.png','positive')
-            //manageImage('print','./assets/artwork/pit_shadow.png','negative')
+        case FallToPit: case pit: case beatRises: case scorn: case enterScorn:
+            manageImage('print','./assets/artwork/pit.png','positive')
+            manageImage('print','./assets/artwork/pit_shadow.png','negative')
             break;
         case Lights:
             manageImage('print','./assets/artwork/lights.png','positive')
             manageImage('print','./assets/artwork/lights_shadow.png','negative')
             break;
-        case fungusCistern || enterCistern || echoesCistern || Blades: 
+        case fungusCistern: case enterCistern: case echoesCistern: case Blades: case freeCistern: case tools:
             if (pageObject === fungusCistern || pageObject === enterCistern) {
                  if (page >= 1) {
-                    //manageImage('print','./assets/artwork/cistern.png','positive')
-                    //manageImage('print','./assets/artwork/cistern_shadow.png','negative')
+                    manageImage('print','./assets/artwork/cistern.png','positive')
+                    manageImage('print','./assets/artwork/cistern_shadow.png','negative')
                     }
                 } else {
-                    //manageImage('print','./assets/artwork/cistern.png','positive')
-                    //manageImage('print','./assets/artwork/cistern_shadow.png','negative')
+                    manageImage('print','./assets/artwork/cistern.png','positive')
+                    manageImage('print','./assets/artwork/cistern_shadow.png','negative')
                 }
             break;
-        case Cut || Apathy || Cowardice || Doubt || freeCistern:
+        case Cut: case Apathy: case Cowardice: case Doubt:
             manageImage('print','./assets/artwork/blades.png','positive')
             manageImage('print','./assets/artwork/blades_shadow.png','negative')
             break;
-        case failApathy || failCowardice || failDoubt || drowningCistern: 
+        case failApathy: case failCowardice: case failDoubt: case drowningCistern: 
             if (pageObject === drowningCistern) {
                 if (page <= 1){
                     manageImage('print','./assets/artwork/drowning.png','positive')
