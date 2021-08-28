@@ -904,15 +904,17 @@ function printMap(visitedArray) {
     let nodes = labyrinthMap.getNodes();
     for (let i=0; i<nodes.length; i++) {
         let successes = [];
-        for (let j = 0; j<visitedArray.length; j++) {
-            for (let k=0; k<nodes[i].pageObjects.length; k++) {
+        for (let k=0; k<nodes[i].pageObjects.length; k++) {
+            for (let j = 0; j<visitedArray.length; j++) {
                 if (visitedArray[j] === nodes[i].pageObjects[k]) {
                     successes.push(true)
+                    break
                 } else {
                     successes.push(false)
                 }
             }
         }
+        console.log(successes)
         if (successes.includes(true) === true) {
             nodes[i].unlocked = true;
         } else {
