@@ -763,10 +763,16 @@ darkApproachTree.setNext(darkTreeNode);
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //v noises
+const darkNoisesLeaveSecondChamber = new Sequence();
+darkNoisesLeaveSecondChamber.addPage('I circle the fountain, following the path of one of those ripples. It brings me clockwise around once, then twice, then thrice, then the wave crashes against the rim of the fountain, reverberates like a taut string, and sends me shooting out through the arch at the far side of the chamber. With a new spring in my step I continue into the passages beyond the music.','Continue');
+darkNoisesLeaveSecondChamber.setNext(darkApproachBench);
+
 const darkNoisesSecondChamber = new Sequence();
 darkNoisesSecondChamber.title="darkNoisesSecondChamber"
-darkNoisesSecondChamber.addBatchPage(['','',''],'');
-darkNoisesSecondChamber.setNext();
+darkNoisesSecondChamber.addPage('The chamber into which I emerge is a perfect mirror of the one I entered: six archways arranged around a semicircle, now behind me, a clear exit ahead of me, and a circular fountain occupying the centre.','Examine the fountain')
+darkNoisesSecondChamber.addBatchPage(['The fountain is as it was in the chamber before but for one difference: it is filled to the brim. Not with inky shadows like the arches which stand by my side, but with pure, clear, water; clearer even than that which rises from the town well, most days. It is still, but somehow no ice glazes its surface despite the winter chill. My candle\'s light bounces across the surface of the water like rain on wet stone.','The plinth rising from the centre of the fountain looks like a suspended column of water, frozen in the moment of time after the droplet hits. As I gaze upon it, it melts away, falling into its reflection in the dark water before rippling back into the light, up and down, into shadow and mirror.','Each undulation sends out ripples, echoing around it, and a droplet flung into the air almost in slow motion. Each droplet then falls, sending out a clear ringing note as it shatters upon meeting its reflection. As I gaze upon it, I can hear that music of crashing bells, intoning in numerous overlapping rhythms rippling around me and filling the air.','I stand there, letting the music wash over me for a time, eyes closed, relaxing as much as I can.'],'next');
+darkNoisesSecondChamber.addPage('There\'s something wonderful in the cacophony; such a simple source, reflected back on itself over and over and over to create such complexity! Perhaps there is a sort of life here, in this music. Perhaps that is the only thing it could be called.','Leave the chamber')
+darkNoisesSecondChamber.setNext(darkNoisesLeaveSecondChamber);
 
 const darkNoisesSecondChamberEntryAlternate = new Sequence();
 darkNoisesSecondChamberEntryAlternate.title="darkNoisesSecondChamberEntryAlternate"
