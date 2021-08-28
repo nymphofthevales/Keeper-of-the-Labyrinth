@@ -903,19 +903,27 @@ function printMap(visitedArray) {
     //console.log(visitedArray)
     let nodes = labyrinthMap.getNodes();
     for (let i=0; i<nodes.length; i++) {
+        let successes = [];
         for (let j = 0; j<visitedArray.length; j++) {
             for (let k=0; k<nodes[i].pageObjects.length; k++) {
                 if (visitedArray[j] === nodes[i].pageObjects[k]) {
-                    nodes[i].unlocked = true;
-                    break
+                    successes.push(true)
                 } else {
-                    nodes[i].unlocked = false;
+                    successes.push(false)
                 }
             }
+        }
+        if (successes.includes(true) === true) {
+            nodes[i].unlocked = true;
+        } else {
+            nodes[i].unlocked = false;
         }
     }
     labyrinthMap.printMapTiles()
     prepareMap(visitedArray)
+}
+function unlockVisitedMapNodes() {
+    
 }
 function setMapNodeListeners(visitedArray) {
     let nodes = labyrinthMap.getNodes();
@@ -950,20 +958,22 @@ function printNodeInspector(MapNodeObject,visitedArray) {
     choices.innerHTML = '';
     if (MapNodeObject.unlocked === true) {
         loadIn.classList.remove('invisible')
-        for (let j=0; j<PageInstances.length; j++) {
-            if (PageInstances[j].title === MapNodeObject.pageObject) {
-                loadIn.removeEventListener('click',()=>{loadInFromMap(PageInstances[j],visitedArray)})
-                loadIn.addEventListener('click',()=>{loadInFromMap(PageInstances[j],visitedArray)})
-                if (PageInstances[j].constructor === Sequence) {
-                    for (let k = 0; k < PageInstances[j]._pages.length; k++) {
-                        textContent.appendChild(document.createElement('p')).id = 'Map-Node-' + PageInstances[j].title + [k];
-                        let a = document.getElementById('Map-Node-' + PageInstances[j].title + [k]);
-                        a.innerHTML = PageInstances[j].getPage(k)[0];
+        for (let i=0; i < MapNodeObject.pageObjects.length; i++) {
+            for (let j=0; j<PageInstances.length; j++) {
+                if (PageInstances[j].title === MapNodeObject.pageObjects[i]) {
+                    loadIn.removeEventListener('click',()=>{loadInFromMap(PageInstances[j],visitedArray)})
+                    loadIn.addEventListener('click',()=>{loadInFromMap(PageInstances[j],visitedArray)})
+                    if (PageInstances[j].constructor === Sequence) {
+                        for (let k = 0; k < PageInstances[j]._pages.length; k++) {
+                            textContent.appendChild(document.createElement('p')).id = 'Map-Node-' + PageInstances[j].title + [k];
+                            let a = document.getElementById('Map-Node-' + PageInstances[j].title + [k]);
+                            a.innerHTML = PageInstances[j].getPage(k)[0];
+                        }
+                    } else if (PageInstances[j].constructor === StoryNode) {
+                        textContent.appendChild(document.createElement('p')).id = 'Map-Node-' + PageInstances[j].title + '0';
+                            let a = document.getElementById('Map-Node-' + PageInstances[j].title + '0');
+                            a.innerHTML = PageInstances[j]._text;
                     }
-                } else if (PageInstances[j].constructor === StoryNode) {
-                    textContent.appendChild(document.createElement('p')).id = 'Map-Node-' + PageInstances[j].title + '0';
-                        let a = document.getElementById('Map-Node-' + PageInstances[j].title + '0');
-                        a.innerHTML = PageInstances[j]._text;
                 }
             }
         }

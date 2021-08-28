@@ -413,7 +413,11 @@ Grid.prototype.loadInPresetArray = function(preset) {
         let opts = {
             title: nodes[i][2],
             unlocked: nodes[i][3],
-            pageObject: nodes[i][4]
+        }
+        if (typeof nodes[i][4] === "string") {
+            opts['pageObjects'] = [nodes[i][4]]
+        } else {
+            opts['pageObjects'] = nodes[i][4]
         }
         this.insertElement(coordArray,'node',type,opts)
     }
@@ -485,7 +489,7 @@ function MapNode(coordinateArray,GridObject,type,opts) {
     //
     this.title = opts.title;
     this.unlocked = opts.unlocked;
-    this.pageObject = opts.pageObject;
+    this.pageObjects = opts.pageObjects;
     this.pageNum = 0;
     this.linkages = [];
 }
@@ -586,7 +590,7 @@ MapSave.prototype.addNode = function(MapNodeObject) {
         MapNodeObject.type,
         MapNodeObject.title,
         MapNodeObject.unlocked,
-        MapNodeObject.pageObject
+        MapNodeObject.pageObjects
     ])
 }
 //^ map node and tile constructors
