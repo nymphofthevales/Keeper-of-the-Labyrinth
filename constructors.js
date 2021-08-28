@@ -373,7 +373,26 @@ Grid.prototype.printMapTiles = function() {
             path += '/'
             //console.log(path)
         }
-        let type = this.array[i].type;
+        let type = '';
+        for (let a=0; a<this.array[i].type.length; a++) {
+            //console.log(this.array[i].type.charAt(a))
+            if (a>0 && a<type.length) {
+                type += '_'
+            }
+            switch (this.array[i].type.charAt(a)) {
+                case "<": type += "left"
+                    break;
+                case "^": type += "up"
+                    break;
+                case "v": type += "down"
+                    break;
+                case ">": type += "right"
+                    break;
+                case "o": type += "none"
+                    break;
+            }
+        }
+        //console.log(type)
         let imgUrl = path + type + '.png'
         let DOMNode = this.getElementDOMNode(i)
         DOMNode.style.backgroundImage = `url(\"${imgUrl}\")`;
@@ -855,7 +874,26 @@ function hoverMapNode(action,mapNodeArray,index) {
         path += 'locked/'
     }
     path += `${type.length}/`
-    path += `${type}`
+    let typeString = '';
+    for (let a=0; a<type.length; a++) {
+        //console.log(type.charAt(a))
+        if (a>0 && a<type.length) {
+            typeString += '_'
+        }
+        switch (type.charAt(a)) {
+            case "<": typeString += "left"
+                break;
+            case "^": typeString += "up"
+                break;
+            case "v": typeString += "down"
+                break;
+            case ">": typeString += "right"
+                break;
+            case "o": typeString += "none"
+                break;
+        }
+    }
+    path += typeString;
     if (action === 'clear') {
         path += '.png'
         node.style.backgroundImage = `url("${path}")`
@@ -879,7 +917,26 @@ function clickMapNode(mapNodeArray,index) {
         path += 'locked/'
     }
     path += `${type.length}/`
-    path += `${type}_`
+    let typeString = '';
+    for (let a=0; a<type.length; a++) {
+        //console.log(type.charAt(a))
+        if (a>0 && a<type.length) {
+            typeString += '_'
+        }
+        switch (type.charAt(a)) {
+            case "<": typeString += "left"
+                break;
+            case "^": typeString += "up"
+                break;
+            case "v": typeString += "down"
+                break;
+            case ">": typeString += "right"
+                break;
+            case "o": typeString += "none"
+                break;
+        }
+    }
+    path += `${typeString}_`
     path += 'active'
     path += '.png'
     //console.log(path)
