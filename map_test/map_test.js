@@ -38,7 +38,7 @@ Grid.prototype.getColumn = function(num) {
     }
     return column;
 }
-/*Grid.prototype.pruneHeight = function() {
+Grid.prototype.pruneHeight = function() {
     console.log(`height: ${this.rows}`)
     function checkTop(GridObject) {
         let topRow = GridObject.getRow(1)
@@ -121,7 +121,7 @@ Grid.prototype.pruneWidth = function() {
     }
     this.print();
 }
-*/
+
 Grid.prototype.getIndexFromCoords = function(coordinateArray) {
     let y = coordinateArray[1];
     let x = coordinateArray[0];
@@ -274,6 +274,30 @@ Grid.prototype.initializeMapNodes = function(mapNodeArray) {
         })
     }
     return nodeDOMRefs;
+}
+Grid.prototype.printCellCoords = function() {
+    for (let y = 1; y <= this.rows; y++) {
+        for (let x = 1; x <= this.columns; x++) {
+            let cell = document.getElementById(`cell-${x}-${y}`);
+            cell.appendChild(document.createElement('p')).id= `cell-${x}-${y}-content`
+            let p = document.getElementById(`cell-${x}-${y}-content`)
+            p.style.margin = 0;
+            p.style.padding = 0;
+            p.style.position = 'absolute';
+            p.style.right = 0;
+            p.style.bottom = 0;
+            p.style.color = `rgb(255,255,255)`
+            p.tabIndex = 5;
+            p.innerText = this.getColumn(x-1)[y-1].position;
+        }
+    }
+}
+Grid.prototype.removeCellCoords = function() {
+    for (let y = 1; y <= this.rows; y++) {
+        for (let x = 1; x <= this.columns; x++) {
+            document.getElementById(`cell-${x}-${y}-content`).remove();
+        }
+    }
 }
 
 function MapNode(coordinateArray,GridObject,type,opts) {
@@ -505,7 +529,7 @@ function readInput(coordinateArray,GridObject) {
         let pageObjects = document.getElementById(`cell-${x}-${y}-unlocked`).value.split(',')
         let pageObjectArray = [];
         for (let v=0; v<pageObjects.length; v++) {
-            pageObjectArray.push(`\"${pageObjects[i]}\"`)
+            pageObjectArray.push(`${pageObjects[v]}`)
         }
         GridObject.insertElement(coordinateArray,'node',typeDropdown.value,{
             title: document.getElementById(`cell-${x}-${y}-title`).value,
