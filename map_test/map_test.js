@@ -220,6 +220,11 @@ Grid.prototype.loadInPresetArray = function(preset) {
             title: nodes[i][2],
             unlocked: nodes[i][3],
         }
+        if (typeof nodes[i][4] === "string") {
+            opts['pageObjects'] = [nodes[i][4]]
+        } else {
+            opts['pageObjects'] = nodes[i][4]
+        }
         this.insertElement(coordArray,'node',type,opts)
     }
 }

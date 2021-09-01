@@ -924,9 +924,6 @@ function printMap(visitedArray) {
     labyrinthMap.printMapTiles()
     prepareMap(visitedArray)
 }
-function unlockVisitedMapNodes() {
-    
-}
 function setMapNodeListeners(visitedArray) {
     let nodes = labyrinthMap.getNodes();
     for (let i=0; i<nodes.length; i++) {
