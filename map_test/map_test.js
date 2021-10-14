@@ -38,90 +38,6 @@ Grid.prototype.getColumn = function(num) {
     }
     return column;
 }
-/*Grid.prototype.pruneHeight = function() {
-    console.log(`height: ${this.rows}`)
-    function checkTop(GridObject) {
-        let topRow = GridObject.getRow(1)
-        for (let i=0; i < topRow.length; i++) {
-            console.log(topRow[i].type)
-            if (topRow[i].type !== 'o') {
-                console.log(true)
-                return true
-            }
-        }
-        return false
-    }
-    function checkBottom(GridObject) {
-        let bottomRow = GridObject.getRow(GridObject.rows);
-        for (let i=0; i < bottomRow.length; i++) {
-            if (bottomRow[i].type !== 'o') {
-                console.log(true)
-                return true
-            }
-        }
-        return false
-    }
-    let top = checkTop(this)
-    let iteration = 1;
-    let working = true;
-    while (top === false) {
-        for (let i = 1; i <= this.rows; i++) {
-            let row = this.getRow(i)
-            for (let j=0; j < row.length; j++){
-                row[j].position[1] -= 1;
-                //console.log(row[j].position)
-                //if (this.array[i].position[1] < 1) {
-                //    this.array.splice(i,1);
-                //}
-            }
-        }
-        if (checkTop(this) === true && iteration % this.columns === 0) {
-            working = false;
-        }
-        iteration += 1;
-        console.log(iteration)
-        top = checkTop(this)
-    }
-    let bottom = checkBottom(this)
-    while (bottom === false) {
-        this.rows -= 1;
-        bottom = checkBottom(this);
-    }
-    console.log(`height: ${this.rows}`)
-    this.print();
-    //this.printMapTiles();
-    //this.initializeMapNodes(this.getMapNodeArray());
-}
-Grid.prototype.pruneWidth = function() {
-    function checkLeft(GridObject) {
-        let leftColumn = GridObject.getColumn(1)
-        for (let i=0; i < leftColumn.length; i++) {
-            if (leftColumn[i].type !== 'o') {
-                return true
-            }
-        }
-        return false
-    }
-    function checkRight(GridObject) {
-        let rightColumn = GridObject.getColumn(this.columns - 1);
-        for (let i=0; i < rightColumn.length; i++) {
-            if (rightColumn[i].type !== 'o') {
-                return true
-            }
-        }
-        return false
-    }
-    while (checkLeft(this) === false) {
-        for (let i = 0; i < this.array.length; i++) {
-            this.array[i].position[1] -= 1;
-        }
-    }
-    while (checkRight(this) === false) {
-        this.columns -= 1;
-    }
-    this.print();
-}
-*/
 Grid.prototype.getIndexFromCoords = function(coordinateArray) {
     let y = coordinateArray[1];
     let x = coordinateArray[0];
@@ -505,7 +421,7 @@ function readInput(coordinateArray,GridObject) {
         let pageObjects = document.getElementById(`cell-${x}-${y}-unlocked`).value.split(',')
         let pageObjectArray = [];
         for (let v=0; v<pageObjects.length; v++) {
-            pageObjectArray.push(`\"${pageObjects[i]}\"`)
+            pageObjectArray.push(`\"${pageObjects[v]}\"`)
         }
         GridObject.insertElement(coordinateArray,'node',typeDropdown.value,{
             title: document.getElementById(`cell-${x}-${y}-title`).value,

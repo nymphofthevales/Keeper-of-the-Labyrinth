@@ -323,6 +323,21 @@ button:visited {
   justify-content: center;
 }
 
+#ingame-menu-button {
+  position: absolute;
+  left: 4vw;
+  top: 4vw;
+  background-image: url('./assets/ui/ingame-menu-button.png')
+}
+
+#ingame-menu-button:hover {
+  background-image: url('./assets/ui/ingame-menu-button-hover.png')
+}
+
+#ingame-menu-button:hover {
+  background-image: url('./assets/ui/ingame-menu-button-active.png')
+}
+
 #ingame-menu-overlay {
   position: absolute;
   z-index: 5;

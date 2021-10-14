@@ -417,6 +417,10 @@ document.getElementById('main-quit-button').addEventListener('click',()=>{
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //v ingame menu
 let ingame_menu = document.getElementById('ingame-menu-overlay');
+let ingame_menu_button = document.getElementById('ingame-menu-button');
+ingame_menu_button.addEventListener('mouseup',()=>{
+
+})
 document.addEventListener('keydown',(k)=>{
     if (k.code === 'Escape') {
         if (overlayOpen === true) {
@@ -432,6 +436,10 @@ document.addEventListener('keydown',(k)=>{
         }
     }
 })
+
+function manageIngameMenu() {
+    
+}
 //ingame continue
 document.getElementById('button-housing-10').addEventListener('mouseup',()=>{
     ingame_menu.classList.add('invisible')
