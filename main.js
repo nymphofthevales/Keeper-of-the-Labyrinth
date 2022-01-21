@@ -59,26 +59,33 @@ let optSave = new Save({
     defaults: "{\"textSize\": \"default\",\"enableMusic\": true,\"volume\": 25,\"enableParallax\": true,\"enableWarnings\": false}"
 })
 fs.readFile(latestSave.path,'utf8',function(err,data){
-    if (err===null) {
+    if (err===null && checkSafeSaveData(data)) {
         latestSave.data = JSON.parse(data)
     } else {
         latestSave.data = ''
     }
 })
 fs.readFile(masterSave.path,'utf8',function(err,data){
-    if (err===null) {
+    if (err===null && checkSafeSaveData(data)) {
         masterSave.data = JSON.parse(data)
     } else {
         masterSave.data = `{}`;
     }
 })
 fs.readFile(optSave.path,'utf8',function(err,data){
-    if (err===null) {
+    if (err===null && checkSafeSaveData(data)) {
         optSave.data = JSON.parse(data)
     } else {
         optSave.data = ''
     }
 })
+
+function checkSafeSaveData(data) {
+    switch (data) {
+        case '': return false;
+        default: return true;
+    }
+}
 
 ipcMain.on('saveData', (event,arg)=>{
     latestSave.set(JSON.stringify(arg))
