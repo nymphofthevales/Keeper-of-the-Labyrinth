@@ -1,2 +1,4 @@
 node_modules/
 .DS_Store
+map_test/assets/ui/tileset/
+assets/ui/tileset/

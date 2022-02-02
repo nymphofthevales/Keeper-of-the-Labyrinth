@@ -24,6 +24,7 @@ let gameStats = {
     ritualLines: false,
     ritualWands: false,
     ritualLights: false,
+    ritualBlades: false,
     ritualBladesSuccess: false,
     ritualBladesDrowned: false,
     lostShadow: false,
@@ -31,32 +32,6 @@ let gameStats = {
     scornedLight: false,
     contaminatedHand: false,
     candlesUsed: 0,
-}
-
-function setGameStats() {
-    //this needs to run just after the current page has been added to the visited array
-    for (let i=0; i<PageInstances.length; i++) {
-        for (let j=0; j<visited.length; j++) {
-            if (PageInstances[i].title === visited[j]) {
-                switch (PageInstances[i].title) {
-                    case "" || "" || "": 
-                    break;
-                    case "": 
-                    break;
-                    case "": 
-                    break;
-                    case "": 
-                    break;
-                    case "": 
-                    break;
-                    case "": 
-                    break;
-                    case "": 
-                    break;
-                }
-            }
-        }
-    }
 }
 
 function manageMusic(current) {
