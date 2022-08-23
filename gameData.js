@@ -764,6 +764,7 @@ darkApproachTree.setNext(darkTreeNode);
 //CONTENT BREAK//////////////////////////////////////////////////////////////////////////////////////////////
 //v noises
 const darkNoisesLeaveSecondChamber = new Sequence();
+darkNoisesLeaveSecondChamber.title = "darkNoisesLeaveSecondChamber"
 darkNoisesLeaveSecondChamber.addPage('I circle the fountain, following the path of one of those ripples. It brings me clockwise around once, then twice, then thrice, then the wave crashes against the rim of the fountain, reverberates like a taut string, and sends me shooting out through the arch at the far side of the chamber. With a new spring in my step I continue into the passages beyond the music.','Continue');
 darkNoisesLeaveSecondChamber.setNext(darkApproachBench);
 
@@ -1094,21 +1095,21 @@ StrangerNode.setText('She looks about like a younger version of me, an inch shor
 StrangerNode.addOption('Speak',StrangerSpeak);
 StrangerNode.addOption('Touch her shoulder',StrangerTouch);
 
-const approachStranger = new Sequence();
-approachStranger.title="approachStranger"
-approachStranger.addBatchPage(['As I approach, they stand stone-still, reminiscent of a runestone haloed in the rising sun.<br><br>Why do I think of sun when I look upon them?','The sky is dim still, overcast in the winter fugue. I stop, standing just a pace away from them now, close enough that I could touch them, close enough I can see the details in her coat, the circular brand embroidered upon its collar, the strands of her hair messy and loose, tearing free from her hastily done braids, her smooth skin limned in silver as of frost or spirit.','Still she does not face me. I am ignored.'],'next');
-approachStranger.setNext();
+const StrangerDrawClose = new Sequence();
+StrangerDrawClose.title="StrangerDrawClose"
+StrangerDrawClose.addBatchPage(['As I approach, they stand stone-still, reminiscent of a runestone haloed in the rising sun.<br><br>Why do I think of sun when I look upon them?','The sky is dim still, overcast in the winter fugue. I stop, standing just a pace away from them now, close enough that I could touch them, close enough I can see the details in her coat, the circular brand embroidered upon its collar, the strands of her hair messy and loose, tearing free from her hastily done braids, her smooth skin limned in silver as of frost or spirit.','Still she does not face me. I am ignored.'],'next');
+StrangerDrawClose.setNext(StrangerNode);
 
 const approachQuietly = new Sequence();
 approachQuietly.title="approachQuietly"
 approachQuietly.addPage('I approach warily, trying not to disturb them.','next')
-approachQuietly.setNext();
+approachQuietly.setNext(StrangerDrawClose);
 
 const getAttention = new Sequence();
 getAttention.title="getAttention"
 getAttention.addPage('I call out to them—could they be lost? Any of the people from the village would know not to come close to the <span class="labyrinth-color">labyrinth</span>, but an outsider may have been curious and become lost. <br><br>They don\'t seem to hear me, or else they ignore me.','approach')
 getAttention.addPage('I approach warily. When I get a little closer, I call out again, and again I am greeted with no response.','next');
-getAttention.setNext();
+getAttention.setNext(StrangerDrawClose);
 
 const Stranger = new StoryNode();
 Stranger.title="Stranger"
