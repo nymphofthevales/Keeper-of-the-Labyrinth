@@ -1,0 +1,11 @@
+{
+    "compilerOptions": {
+        "target": "ES6",
+        "watch": true,
+        "lib": ["DOM","ES2021"],
+        "moduleResolution": "node"
+    },
+    "files": [
+        "./game-process.ts"
+      ]
+}

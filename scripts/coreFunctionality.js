@@ -908,7 +908,6 @@ function selectMapButton(buttonArray,refNumber) {
     manageSavesMenu();
 }
 function printMap(visitedArray) {
-    //console.log(visitedArray)
     let nodes = labyrinthMap.getNodes();
     for (let i=0; i<nodes.length; i++) {
         let successes = [];
