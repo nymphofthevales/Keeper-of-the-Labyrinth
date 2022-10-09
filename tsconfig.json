@@ -1,11 +1,14 @@
 {
-    "compilerOptions": {
+  "extends": "@tsconfig/svelte/tsconfig.json",
+  "include": ["src/**/*"],
+  "exclude": ["node_modules/*", "__sapper__/*", "public/*"],
+  "compilerOptions": {
         "target": "ES6",
         "watch": true,
         "lib": ["DOM","ES2021"],
-        "moduleResolution": "node"
+        "moduleResolution": "node",
+        "sourceMap": true,
     },
-    "files": [
-        "./game-process.ts"
+  "files": [
       ]
 }

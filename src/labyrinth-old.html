@@ -1,0 +1,433 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <script src="game-process.js" defer type="module"></script>
+
+    <link href="./main-sheet.css" rel="stylesheet" id="main-stylesheet">
+    <link href="./small-text-sheet.css" rel="stylesheet" id="small-style" disabled>
+    <link href="./default-text-sheet.css" rel="stylesheet" id="default-style">
+    <link href="./medium-text-sheet.css" rel="stylesheet" id="medium-style" disabled>
+    <link href="./large-text-sheet.css" rel="stylesheet" id="large-style" disabled>
+</head>
+<body>
+    <button id="focus-clear"></button>
+    <div id="content">
+        <button id="ingame-menu-button"></button>
+        <section id="story-frame">
+            <section id="story-text"></section>
+            <section id="story-options"></section>
+        </section>
+        <section id="image-frame"></section>
+    </div>
+    <div id="popup-menu" class="invisible">
+            <div id="popup-contents">
+                <div id="load-popup" class="invisible">
+                    <p>The <span class="labyrinth-color">labyrinth</span> remembers you. Would you like to continue where you left off?</p>
+                    <button id="popup-yes">Yes, load my saved game</button>
+                    <button id="popup-no">No, start from the beginning</button>
+                </div>
+                <div id="warning-popup" class="invisible">
+                    <h4>Content Warning</h4>
+                        <p>This scene contains:</p>
+                        <ul id="warnings-list">
+                            <li>Descriptions of gore/injury</li>
+                            <li>Self harm/self destructive behaviour</li>
+                        </ul>
+                        <button id="warning-back">Go back</button>
+                        <button id="warning-skip">Skip this scene</button>
+                        <button id="warning-show">Show me anyway</button>
+                </div>
+            </div>
+
+    </div>
+    <div id="journal-overlay" class="invisible">
+        <header>
+            <button id="journal-close" class="overlay-close"></button>
+            <h1 id="journal-title">Journal</h1>
+        </header>
+        <main>
+            <div id="journal-table">
+                <button id="contents-button-intro">Ingress</button>
+                <button id="contents-button-ante">The Antechamber</button>
+                <button id="contents-button-castRunes">Ritual of Runes</button>
+                <button id="contents-button-enterProper">The Labyrinth Proper</button>
+                <button id="contents-button-Fleeing">Chasing Shadow</button>
+                <button id="contents-button-BridgeWall">Mazes & Labyrinths</button>
+                <button id="contents-button-Watching">Mossy Corner</button>
+                <button id="contents-button-ApproachWall">The Wall</button>
+                <button id="contents-button-Lines">Ritual of Lines</button>
+                <button id="contents-button-Pressing">Pressing</button>
+                <button id="contents-button-BridgeGarden">Growth & Change</button>
+                <button id="contents-button-Garden">The Garden</button>
+                <button id="contents-button-Approach">The Rowan</button>
+                <button id="contents-button-Wands">Ritual of Wands</button>
+                <button id="contents-button-Stranger">The Stranger</button>
+                <button id="contents-button-dyingLight">In Darkness</button>
+                <button id="contents-button-corpses">The Corpses</button>
+                <button id="contents-button-darkWindow">The Window</button>
+                <button id="contents-button-mothNode">The Moth</button>
+                <button id="contents-button-darkApproachTree">The Towering Oak</button>
+                <button id="contents-button-darkNoises">Noises in the Dark</button>
+                <button id="contents-button-crow">The Crow</button>
+                <button id="contents-button-Falling">Falling</button>
+                <button id="contents-button-darkContemplation">Festivities & Responsibilities</button>
+                <button id="contents-button-pit">The Pit</button>
+                <button id="contents-button-Lights">Ritual of Lights</button>
+                <button id="contents-button-scorn">Scorn the Light</button>
+                <button id="contents-button-alone">Travelling Alone</button>
+                <button id="contents-button-fungus">Contaminant</button>
+                <button id="contents-button-fungusCistern">The Cistern</button>
+                <button id="contents-button-enterCistern">The Cistern</button>
+                <button id="contents-button-echoesCistern">Echoes</button>
+                <button id="contents-button-Blades">Ritual of Blades</button>
+                <button id="contents-button-Apathy">Apathy</button>
+                <button id="contents-button-Cowardice">Cowardice</button>
+                <button id="contents-button-Doubt">Doubt</button>
+                <button id="contents-button-failApathy">Apathy Sinks</button>
+                <button id="contents-button-failCowardice">Cowardice Drowns</button>
+                <button id="contents-button-failDoubt">Doubt Tempts</button>
+                <button id="contents-button-drowningCistern">Drowned</button>
+                <button id="contents-button-freeCistern">Freedom</button>
+                <button id="contents-button-tools">Tools & Gifts</button>
+                <button id="contents-button-swimCaveCistern">Swimming</button>
+                <button id="contents-button-enterCave">The Cave</button>
+                <button id="contents-button-Waiting">Eyes of the Stranger</button>
+                <button id="contents-button-Altar">The Altar</button>
+
+                <button id="contents-button-egress">Egress</button>
+            </div>
+            <div id="journal-contents"></div>
+        </main>
+        <div id="journal-gradient-cover"></div>
+    </div> 
+    <div id="map-overlay" class="invisible">
+        <header id="map-overlay-header">
+            <h1>Map</h1>
+        </header>
+        <main>
+            <div id="map-ui-overlays">
+                <nav id="map-saves-frame" class="invisible">
+                    <button id="map-saves-show-hide"></button>
+                    <header id="map-saves-header">
+                        <h2>Unique<br>Journeys</h2>
+                    </header>
+                    <div id="map-saves-list">
+                    </div>
+                    <img src="./assets/ui/save-menu-frame-fancy.png" id="save-menu-frame-border">
+                </nav>
+                <div id="map-node-inspector-frame" class="invisible">
+                    <div id="node-inspector-header">
+                        <h2 id="node-inspector-title"></h2>
+                        <nav id="node-inspector-actions">
+                            <button id="node-inspector-load-in">Start new game from here</button>
+                        </nav>
+                    </div>
+                    <div id="node-inspector-text-content"></div>
+                    <div id="node-inspector-choices"></div>
+                    <button id="node-inspector-close"></button>
+                </div>
+            </div>
+            <div id="map-housing">
+                <div id="map-center-block">
+                    <div id="map"></div>
+                </div>
+            </div>
+        </main>
+        <nav id="map-options-nav">
+            <button id="map-toggle-saves">toggle saves menu</button>
+            <button id="map-zoom-in">zoom in</button>
+            <button id="map-zoom-out">zoom out</button>
+        </nav>
+        <img src="./assets/ui/overlay-frame-transparent.png" class="overlay-frame-top"/>
+        <button id="map-close" class="overlay-close"></button>
+    </div>
+    <div id="options-overlay" class="invisible">
+        <button id="options-close" class="overlay-close"></button>
+        <header>
+            <h1>Options</h1>
+        </header>
+        <main>
+            <form id="options-form" action="javascript:void(0);">
+                <p id="save-notice">Note: Your progress ingame will always be saved automatically unless the application is force quit or crashed. If you have a save, you will be asked upon entering if you want to load it or start from the beginning.<br><br>Your options selections will also be saved as soon as you close this menu.</p>
+                <fieldset id="text-size-form-field">
+                    <legend>Text size</legend>
+                    <div id="text-size-selectors">
+                        <input type="radio" id="small-text" value="small-text" name="text">
+                        <label for="small-text">Small</label>
+                        <input type="radio" id="default-text" value="default-text" name="text" checked>
+                        <label for="default-text">Default</label>
+                        <input type="radio" id="medium-text" value="medium-text" name="text">
+                        <label for="medium-text">Medium</label>
+                        <input type="radio" id="large-text" value="large-text" name="text">
+                        <label for="large-text">Large</label>
+                    </div>
+                    <div>
+                        <p>Sample text:</p>
+                        <p>No such thing as light nor shadow, just shades of grey blending together until suddenly what you thought <em>was</em> is something else. Blurred shapes darting through your periphery. Despite this, we have to delineate these boundaries. Obelisk in the woods, talisman on the door, walls drawing the line around our little village. It keeps us safe. Keeps what's out there, there, and what's here, here. Even if it is abstract.</p>
+                    </div>
+                </fieldset>
+                <fieldset id="music-form-field">
+                    <legend>Music</legend>
+                    <input type="radio" id="music-on" value="music-on" name="music" checked>
+                    <label for="music-on">On</label>
+                    <input type="radio" id="music-off" value="music-off" name="music">
+                    <label for="music-off">Off</label><br><br>
+                    <label for="volume-slider">Volume</label>
+                    <input type="range" id="volume-slider" min="0" max="50" name="volume">
+                </fieldset>
+                <fieldset id="parallax-form-field">
+                    <legend>Animations</legend>
+                    <fieldset>
+                        <legend>Parallax</legend>
+                        <input type="radio" id="parallax-on" value="parallax-on" name="parallax" checked>
+                        <label for="parallax-on">On</label>
+                        <input type="radio" id="parallax-off" value="parallax-off" name="parallax">
+                        <label for="parallax-off">Off</label>
+                        <p>Whether images shift with mouse movement.</p>
+                    </fieldset>
+                    <fieldset>
+                        <legend>Text Fade</legend>
+                        <input type="radio" id="text-fade-on" value="text-fade-on" name="text-fade" checked>
+                        <label for="text-fade-on">On</label>
+                        <input type="radio" id="text-fade-off" value="text-fade-off" name="text-fade">
+                        <label for="text-fade-off">Off</label>
+                        <p>Whether text fades in/out when changing pages.</p>
+                    </fieldset>
+                </fieldset>
+                <fieldset id="content-warnings-form-field">
+                    <legend>Content warnings</legend>
+                    <input type="radio" id="warnings-on" value="warnings-on" name="warnings">
+                    <label for="warnings-on">On</label>
+                    <input type="radio" id="warnings-off" value="warnings-off" name="warnings" checked>
+                    <label for="warnings-off">Off</label>
+                    <div id="example-content-warning" class="">
+                        <p>Content warnings look like this:</p>
+                        <div id="content-warning-preview">
+                            <div>
+                                <h4>Content Warning</h4>
+                                <p>This scene contains:</p>
+                                <ul>
+                                    <li>Descriptions of gore/injury</li>
+                                    <li>Self harm/self destructive behaviour</li>
+                                </ul>
+                                <button>Go back</button>
+                                <button>Skip past this scene</button>
+                                <button>Show me anyway</button>
+                            </div>
+                        </div>
+                    </div>
+                </fieldset>
+                <input type="submit" id="submit-options" value="Save options" class="invisible">
+            </form>
+        </main>
+    </div>
+    <div id="credits-overlay" class="invisible">
+        <button id="credits-close" class="overlay-close"></button>
+        <header>
+            <h1>Credits</h1>
+        </header>
+        <main>
+            <p><i>Keeper of the Labyrinth</i> was made by Athena Abbott through November 2020 - July 2021. All the writing, programming, artwork, and music is her work.</p>
+            <p>Thank you to all my gorgeous friends, family, and friends who feel more like family, who cheered me on and helped me with programming advice, good conversation, love, and patience as I made this project my heart and soul for these past nine months. I'm so grateful for the support. </p>
+            <p>Libre Baskerville, for all UI and story text, is used under the <span><button id="license-button" style="margin:0;padding:0;">Open Font License (OFL)</button></span>.</p>
+            <p>Titles created with Luminari, courtesy of Canada Type. (<span><button id="license-button-2" style="margin:0;padding:0;">License</button></span>)</p>
+        </main>
+    </div>
+    <div id="font-license-overlay" class="invisible">
+        <button id="license-close" class="overlay-close"></button>
+        <main id="font-license">
+            <p>Fonts used are Copyright (c) 2012, Pablo Impallari (www.impallari.com|impallari@gmail.com),<br>
+            Copyright (c) 2012, Rodrigo Fuenzalida (www.rfuenzalida.com|hello@rfuenzalida.com), with Reserved Font Name Libre Baskerville.</p>
+
+            <h2>SIL OPEN FONT LICENSE Version 1.1 - 26 February 2007</h2>
+            <hr>
+            <h4>PREAMBLE</h4>
+            <p>The goals of the Open Font License (OFL) are to stimulate worldwide
+            development of collaborative font projects, to support the font creation
+            efforts of academic and linguistic communities, and to provide a free and
+            open framework in which fonts may be shared and improved in partnership
+            with others.</p>
+            
+            <p>The OFL allows the licensed fonts to be used, studied, modified and
+            redistributed freely as long as they are not sold by themselves. The
+            fonts, including any derivative works, can be bundled, embedded, 
+            redistributed and/or sold with any software provided that any reserved
+            names are not used by derivative works. The fonts and derivatives,
+            however, cannot be released under any other type of license. The
+            requirement for fonts to remain under this license does not apply
+            to any document created using the fonts or their derivatives.</p>
+            
+            <h4>DEFINITIONS</h4>
+            <p>"Font Software" refers to the set of files released by the Copyright
+            Holder(s) under this license and clearly marked as such. This may
+            include source files, build scripts and documentation.<br><br>
+            
+            "Reserved Font Name" refers to any names specified as such after the
+            copyright statement(s).<br><br>
+            
+            "Original Version" refers to the collection of Font Software components as
+            distributed by the Copyright Holder(s).<br><br>
+            
+            "Modified Version" refers to any derivative made by adding to, deleting,
+            or substituting -- in part or in whole -- any of the components of the
+            Original Version, by changing formats or by porting the Font Software to a
+            new environment.<br><br>
+            
+            "Author" refers to any designer, engineer, programmer, technical
+            writer or other person who contributed to the Font Software.</p>
+            
+            <h4>PERMISSION & CONDITIONS</h4>
+            <p>Permission is hereby granted, free of charge, to any person obtaining
+            a copy of the Font Software, to use, study, copy, merge, embed, modify,
+            redistribute, and sell modified and unmodified copies of the Font
+            Software, subject to the following conditions:</p>
+            <ol type="1">
+            <li>Neither the Font Software nor any of its individual components,
+            in Original or Modified Versions, may be sold by itself.</li>
+            
+            <li>Original or Modified Versions of the Font Software may be bundled,
+            redistributed and/or sold with any software, provided that each copy
+            contains the above copyright notice and this license. These can be
+            included either as stand-alone text files, human-readable headers or
+            in the appropriate machine-readable metadata fields within text or
+            binary files as long as those fields can be easily viewed by the user.</li>
+            
+            <li>No Modified Version of the Font Software may use the Reserved Font
+            Name(s) unless explicit written permission is granted by the corresponding
+            Copyright Holder. This restriction only applies to the primary font name as
+            presented to the users.</li>
+            
+            <li>The name(s) of the Copyright Holder(s) or the Author(s) of the Font
+            Software shall not be used to promote, endorse or advertise any
+            Modified Version, except to acknowledge the contribution(s) of the
+            Copyright Holder(s) and the Author(s) or with their explicit written
+            permission.</li>
+            
+            <li>The Font Software, modified or unmodified, in part or in whole,
+            must be distributed entirely under this license, and must not be
+            distributed under any other license. The requirement for fonts to
+            remain under this license does not apply to any document created
+            using the Font Software.</li>
+            </ol>
+            <h4>TERMINATION</h4>
+            <p>This license becomes null and void if any of the above conditions are
+            not met.</p>
+            
+            <h4>DISCLAIMER</h4>
+            <p>THE FONT SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+            EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO ANY WARRANTIES OF
+            MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT
+            OF COPYRIGHT, PATENT, TRADEMARK, OR OTHER RIGHT. IN NO EVENT SHALL THE
+            COPYRIGHT HOLDER BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY,
+            INCLUDING ANY GENERAL, SPECIAL, INDIRECT, INCIDENTAL, OR CONSEQUENTIAL
+            DAMAGES, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING
+            FROM, OUT OF THE USE OR INABILITY TO USE THE FONT SOFTWARE OR FROM
+            OTHER DEALINGS IN THE FONT SOFTWARE.
+            </p>
+        </main>
+    </div>
+    <div id="font-license-2-overlay" class="invisible">
+        <button id="license-2-close" class="overlay-close"></button>
+        <main id="font-license-2">
+            <h2>Canada Type Desktop Fonts Agreement<h2>
+            <p>We have tried our best to make our licensing terms very clear and reasonable, but if you have any questions about any of them, you can always contact us using the information in section F below, and we promise to do our best to clarify things further for you. If you do not like the terms of this agreement, please contact us with any suggestions you may have for improving it. We want to satisfy our customers to the best of our ability, and we want our fonts to fit in your workflow the way you want them to.</p>
+            <p>By installing any Canada Type fonts on a computer you or your company owns, you are indicating that you agree that the fonts being installed are the exclusive property of Canada Type, and you or your company have a license of that property under the following terms and conditions:<br></p> 
+            <h3>A) NUMBER OF MACHINES:</h3>
+            <ul style="list-style-type:none;">
+            <li>A1 - You can install the font(s) on one computer used in conjunction with one physical output device. </li>
+            <li>A2 - The physical output device mentioned in item A1 can be an inkjet printer, laser printer, offset press, silkscreener, vinyl cutter, or die-maker (for rubber stamps, as an example). If you have any other physical output devices you think may qualify under this clause, please let us know and we can help you determine whether or not it does. </li>
+            <li>A3 - If you want to license Canada Type fonts for more than one computer or one output device, you must upgrade your license to a multiple-device one. A multiple-device license includes the exact same terms as a standard license, but with a higher number of devices allowed. Multiple-device licenses come with automatic discounts, based on the number of devices you want the license to cover.<br></li>
+            </ul>
+            <h3>B) WHAT YOU CAN DO WITH CANADA TYPE FONTS:</h3>
+            <ul style="list-style-type:none;">
+            <li>B1 - You can use Canada Type fonts with any software that supports them. This includes mainstream retail software such as Microsoft, Adobe, Macromedia, Apple, Corel or any other software retailer’s programs, or proprietary software you or your company may have had custom-made for special tasks.</li>
+            <li>B2 - You can use Canada Type fonts to print as many copies of anything as you like, with no limits on number of impressions or print size. Supermassive national and international marketing campaigns are OK. So are million unit print runs. So are enormous chain-store signs. We love that stuff. It gives our fonts exposure!</li>
+            <li>B3 - You can send Canada Type fonts to your service/prepress bureau if the job requires it, but please make sure the fonts are deleted from there once the job is done. If your service bureau doesn't delete the fonts, they will probably end up being used for a job other than yours, which reduces the value of the fonts you bought and keeps us from being compensated for our work.</li> 
+            <li>B4 - You can embed Canada Type fonts in electronic documents. This includes PDF, Flash and Microsoft Office documents (such as Word or Powerpoint), or multimedia files, but please make sure, if at all possible, that you do not embed the complete character set. Fonts embedded in electronic documents can usually be extracted and pirated, so the less characters are embedded in a document, the less functionally desirable and piratable the font extract becomes.</li> 
+            <li>B5 - You can use Canada Type fonts for anything web-related, except making them available to others for download, or making them available for others to use as part of an interface for a web server-based program. If you want to make Canada Type fonts available as part of a dynamic interface for a server-based program (such as a Flash or PHP/Javascript program) you must contact Canada Type at info@canadatype.com or by phone at 416-806-1362 for a special license.</li> 
+            <li>B6 - You can use Canada Type fonts to print artwork on clothes, cars, mugs, fridge magnets or any other products that you, your company, or your clients are selling.</li> 
+            <li>B7 - You can use Canada Type fonts to make non-digital 3-dimensional shapes, rubber stamps or scrapbooking alphabets that you can sell, but we have a condition if you want to do that: you must label your stamps or scrapbooking alphabets with the same name Canada Type uses for the font, and you must credit us with its design.For example: if you like to produce a complete rubber stamp alphabet using our Press Gothic font, the name of your rubber stamp alphabet has to be Adore, and somewhere on the packaging of the stamps, or on the web site retailing the stamps, you must state that the alphabet was produced using Canada Type's Press Gothic font.</li> 
+            <li>B8 - You can use Canada Type fonts to produce any artwork meant to be part of a corporate identity or branding. This includes logos, slogans, letterheads, business cards, business forms, banners, film titling, tie-in products, etc.</li> 
+            <li>B9 - You can transfer this license to another user for a fee that doesn't exceed the original amount you paid for the license, but you have to inform us of this transfer either by email or by phone, so that we can update our customer support records. If you do transfer this license to another user, you must delete the fonts from all the previously licensed computers.</li> 
+            <li>B10 - You can keep one backup copy of any Canada Type fonts you have licensed, but the backup medium you use should be secure and only privately accessible.</li> 
+            <li>B11 - You can modify Canada Type fonts to your hearts content, but only for uses outlined within the condition of this license, and as long as the modifications are being done by yourself or Canada Type.. Modification also means font format conversion. If you have a Mac and a PC, you can use conversion software (like CrossFont or TransType) to convert the font between platforms. Please make sure to read items C3 and D2 for other conditions on font modification. For example: if you decide that our font Press Gothic can be great for your logo, but you need a differently shaped B for it, you can modify the B of the Press Gothic font you licensed, and use your new B for the logo.</li>
+            <li>B12 - If you are wondering about a particular type of usage we forgot to include in this agreement, just drop us a line or give us a call and we will put your mind at ease.<br></li> 
+            </ul>
+            <h3>C) WHAT YOU CANNOT DO WITH CANADA TYPE FONTS:</h3>
+            <ul style="list-style-type:none;">
+            <li>C1 - You cannot give away copies of Canada Type fonts in ways that do not comply with the rest of this agreement. For example: you cannot make any Canada Type fonts available for download on the internet, email them to your friends, upload them to public internet file transfer or storing channels. Please respect the value of our work, so that we keep having an incentive to continue doing it.</li> 
+            <li>C2 - You cannot resell Canada Type fonts through any medium unless you have written authorization from us to be a Canada Type distributor. This also means you cannot modify Canada Type fonts then sell the resulting modification.</li> 
+            <li>C3 - As relates to item B11, font modification is allowed, but must be done by either Canada Type or the font’s licensee (that’s you or your company or an employee of your company - but not an outside contractor or the creative department of an affiliate company). Third parties to this license are not allowed to modify Canada Type fonts under any circumstance, unless formally authorized in writing by Canada Type.<br></li>
+            </ul> 
+            <h3>D) SUPPORT AND VERSION UPGRADES:</h3>
+            <ul style="list-style-type:none;">
+            <li>D1 - All Canada Type fonts undergo thorough testing before they are available for licensing, but if we did something wrong and the font you licensed doesn't perform up to your expectations, we will replace it with a satisfactory copy. Please make sure you include the order number or have the purchase receipt available when you ask for an exchange.</li> 
+            <li>D2 - All Canada Type fonts come with free lifetime support. This is true of any and all Canada Type fonts, but not of customer-modified fonts (including converted or regenerated fonts), unless the modifications were made by Canada Type. We cannot really support a font unless we know exactly how it came to be the way it is. The production and/or modification of our fonts within Canada Type’s own software and hardware environments is documented and archievd, so we can trust ourselves to be able to troubleshoot fonts made directly by Canada Type, but we cannot vouch for any third party font conversion or editing software or hardware.</li> 
+            <li>D3 - All Canada Type fonts come with free lifetime version upgrades. For example: if you license a font from us, and a year later we upgrade that font, you get the new upgrade for free. If five years later we upgrade the font even further, you get the further upgrade for free as well. We promise to keep providing free version upgrades for as long as Canada Type exists under its current ownership and management, which we project and hope to be a long, long time from now.</li>
+            </ul> 
+            <h3>E) MISCELLANEOUS NOTES:</h3>
+            <ul style="list-style-type:none;">
+            <li>E1 - If you use our fonts in a film or publication, and you generously decide that you have room for creative credits, please credit the fonts to Canada Type, just like you credit the photos to their photographers and illustrations to their illustrators. A font is at least as much of a creative work as a photograph or an illustration, so it deserves its own credit where creative credits are given.</li>
+            <li>E2 - If you don't agree with some of our license terms, please discuss the issue with us. We are always open to new ways of providing our customers with better service. We are a small independent font development studio that thrives only by keeping our customers happy enough to come back for more. We believe that fonts with unreasonable restrictions do not ultimately contribute to anyone’s satisfaction, so we try our best to keep our licensing adaptable to as many workflows as possible.</li> 
+            <li>E3 - Our fonts are made to be used as fonts are normally used. We can guarantee and support their functionality as fonts, but not as anything else. We cannot take responsibility for incidental damages arising from our fonts being used in any application or in a certain way. Also we cannot take responsibility for a user’s level of experience in using fonts within certain workflows. For example: if you license one of our fonts, and one of your employees does not know how to use it, we cannot be held responsible for lost time or an angry client.</li>
+            </ul> 
+            <h3>F) CANADA TYPE CONTACT INFORMATION</h3>
+            <p>Canada Type can be contacted through these usual means of communication:</p>
+            <ul style="list-style-type:'-';"> 
+            <li>Postal Mail: Canada Type 24 Glen Everest Road Toronto, Ontario M1N 1J3 Canada</li> 
+            <li>Email and web: info@canadatype.com http://www.canadatype.com</li> 
+            <li>Telephone: 416-806-1362</li>
+            </ul>
+        </main>
+    </div>
+    <div id="gallery-overlay" class="invisible">
+        <button id="gallery-close" class="overlay-close"></button>
+        <header>
+            <h1>Gallery</h1>
+        </header>
+        <main id="gallery-main">
+            <div id="gallery-frame">
+            </div>
+        </main>
+    </div>
+    <div id="gallery-inspector-overlay" class="invisible">
+        <main>
+            <div id="gallery-inspector-frame">
+            </div>
+        </main>
+        <button id="gallery-inspector-close" class="overlay-close"></button>
+    </div>
+    <div id="loading-overlay" class="invisible">
+        <img id="loading-gif" src="./assets/labyrinth_animation_fast.gif"/>
+    </div>
+    <div id="main-menu-overlay" class="">
+        <div id="main-menu">
+            <img id="background-parallax-back" src="./assets/artwork/labyrinth_gate_shadow.png"/>
+            <img id="background-parallax-front" src="./assets/artwork/labyrinth_gate.png"/>
+            <header id="main-menu-header">
+                <img id="main-title" src="./assets/ui/labyrinth_title.png"/>
+                <img id="header-logo" src="./assets/ui/labyrinth_logo.png"/>
+            </header>
+            <nav id="main-nav">
+                <button id="enter-button">Enter</button>
+                <button id="map-button">Map</button>
+                <button id="gallery-button">Gallery</button>
+                <button id="options-button">Options</button>
+                <button id="credits-button">Credits</button>
+                <button id="main-quit-button">Quit</button>
+            </nav>
+        </div>
+    </div>
+    <div id="ingame-menu-overlay" class="invisible">
+        <nav id="ingame-nav">
+            <div class="button-housing" id="button-housing-10"><div class="left-button-frame" id="button-10-left"></div><button id="button-10-middle" class="middle-button-frame"><p id="button-text-10">Continue</p></button><div class="right-button-frame" id="button-10-right"></div></div>
+            <div class="button-housing" id="button-housing-11"><div class="left-button-frame" id="button-11-left"></div><button id="button-11-middle" class="middle-button-frame"><p id="button-text-11">Journal</p></button><div class="right-button-frame" id="button-11-right"></div></div>
+            <div class="button-housing" id="button-housing-12"><div class="left-button-frame" id="button-12-left"></div><button id="button-12-middle" class="middle-button-frame"><p id="button-text-12">Options</p></button><div class="right-button-frame" id="button-12-right"></div></div>
+            <div class="button-housing" id="button-housing-13"><div class="left-button-frame" id="button-13-left"></div><button id="button-13-middle" class="middle-button-frame"><p id="button-text-13">Quit</p></button><div class="right-button-frame" id="button-13-right"></div></div>
+        </nav>
+    </div>
+    <div id="custom-cursor"></div>
+</body>
+</html>
+
