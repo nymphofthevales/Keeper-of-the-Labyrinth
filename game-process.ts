@@ -13,13 +13,19 @@ const existingRootNode = "intro";
 const labyrinthStory = prepareStoryInstance(storyFileName, existingRootNode);
 const labyrinthStoryRenderer = new StoryRenderer(labyrinthStory, storyTitle);
 
-const globalGameState = new EventTarget()
+const globalGameState = new GameStateManager()
 
 /**
  * Events:
+ *      onNodeEnter
+ *      onPrintText
+ *      onPrintOptions
+ *      onNodeExit
+ * 
+ *      onMenuOpen
+ *      onMenuClose
  *      
- * 
- * 
+ *      
 */
 
 /**
