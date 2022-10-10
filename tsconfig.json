@@ -9,6 +9,5 @@
         "moduleResolution": "node",
         "sourceMap": true,
     },
-  "files": [
-      ]
+  "types": ["node", "svelte"]
 }

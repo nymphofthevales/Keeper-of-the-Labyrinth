@@ -1,0 +1,68 @@
+* {
+  margin: 0 0 0 0;
+  padding: 0 0 0 0;
+  box-sizing: border-box;
+  font-family: "EB Garamond", serif;
+}
+@font-face {
+  font-family: "EB Garamond";
+  src: url("./assets/fonts/EB_Garamond/EBGaramond-VariableFont_wght.ttf");
+}
+@font-face {
+  font-family: "EB Garamond Italic";
+  src: url("./assets/fonts/EB_Garamond/EBGaramond-Italic-VariableFont_wght.ttf");
+}
+::selection {
+  color: white !important;
+  background-color: #8020b0;
+}
+p {
+  line-height: 2;
+  margin: 0 auto;
+  max-width: calc(calc(3/5)*100vw);
+  padding: 10px;
+}
+i, em {
+  font-family: "EB Garamond Italic", serif;
+}
+i em {
+  font-family: "EB Garamond", serif;
+}
+strong {
+  font-family: "EB Garamond", serif;
+  font-weight: 500;
+}
+
+html {
+  height: 100vh;
+  width: 100vw;
+}
+body {
+  position: relative;
+  text-align: center;
+  height: 100vh;
+  max-height: 100vh;
+  overflow: hidden;
+  color: white;
+  background-color: black;
+}
+*::-webkit-scrollbar-track {
+  border-radius: 0px;
+  background-color: transparent;
+}
+
+*::-webkit-scrollbar {
+  width: 10px;
+  background-color: black;
+  pointer-events: none;
+  cursor: none;
+}
+
+*::-webkit-scrollbar-thumb {
+  border-radius: 0px;
+  background-color: white;
+}
+
+.hidden {
+  display: none !important; 
+}

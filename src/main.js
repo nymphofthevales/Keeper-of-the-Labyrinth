@@ -2,7 +2,7 @@ import Game from './Labyrinth.svelte';
 const game = new Game({
     target: document.body,
     props: {
-        name: 'world'
+        name: 'Keeper of the Labyrinth'
     }
 });
 export default game;

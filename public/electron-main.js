@@ -51,7 +51,7 @@ app.on('window-all-closed', () => {
         app.quit()
     //}
 }) 
-
+/*
 let latestSave = new Save({
     configName: 'save',
     defaults: ''
@@ -148,3 +148,4 @@ ipcMain.on('requestMasterSave',(event)=>{
 ipcMain.on('quitGame',(event)=>{
     labyrinth_window.close();
 })
+*/
