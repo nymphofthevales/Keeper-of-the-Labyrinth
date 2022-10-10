@@ -1,7 +1,6 @@
 <script>
-    import { GameState } from "../GameState.js"
-    let context = GameState.currentContext;
-    $: visible = $context === "GameView"
+    import { currentContext }  from "../GameState.js"
+    $: visible = $currentContext === "GameView"
 </script>
 
 <div class:hidden={!visible}>

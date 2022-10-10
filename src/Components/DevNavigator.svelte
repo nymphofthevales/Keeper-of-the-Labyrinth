@@ -3,7 +3,7 @@
 </script>
 
 
-<nav class:hidden={!$devMode === true}>
+<nav class:hidden={!devMode === true}>
     <h3>Developer Navigator</h3>
     {#each contexts as x}
         <button on:click={()=> $currentContext = x}>{x}</button>

@@ -1,13 +1,13 @@
 <script>
-    import { GameState } from "../GameState.js"
+    import OpaqueMenuOverlay from "./OpaqueMenuOverlay.svelte";
+    import { currentContext }  from "../GameState.js"
     let name = "Journal";
-    let context = GameState.currentContext;
-    $: visible = $context === name;
+    $: visible = $currentContext === name;
 </script>
 
-<div class:hidden={!visible}>
-    <h2>{name}</h2>
-</div>
+<OpaqueMenuOverlay {name} {visible}>
+    
+</OpaqueMenuOverlay>
 
 
 <style></style>

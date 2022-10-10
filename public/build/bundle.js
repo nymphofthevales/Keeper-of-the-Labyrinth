@@ -4,6 +4,12 @@ var app = (function () {
     'use strict';
 
     function noop() { }
+    function assign(tar, src) {
+        // @ts-ignore
+        for (const k in src)
+            tar[k] = src[k];
+        return tar;
+    }
     function add_location(element, file, line, column, char) {
         element.__svelte_meta = {
             loc: { file, line, column, char }
@@ -24,6 +30,14 @@ var app = (function () {
     function safe_not_equal(a, b) {
         return a != a ? b == b : a !== b || ((a && typeof a === 'object') || typeof a === 'function');
     }
+    let src_url_equal_anchor;
+    function src_url_equal(element_src, url) {
+        if (!src_url_equal_anchor) {
+            src_url_equal_anchor = document.createElement('a');
+        }
+        src_url_equal_anchor.href = url;
+        return element_src === src_url_equal_anchor.href;
+    }
     function is_empty(obj) {
         return Object.keys(obj).length === 0;
     }
@@ -41,6 +55,52 @@ var app = (function () {
     }
     function component_subscribe(component, store, callback) {
         component.$$.on_destroy.push(subscribe(store, callback));
+    }
+    function create_slot(definition, ctx, $$scope, fn) {
+        if (definition) {
+            const slot_ctx = get_slot_context(definition, ctx, $$scope, fn);
+            return definition[0](slot_ctx);
+        }
+    }
+    function get_slot_context(definition, ctx, $$scope, fn) {
+        return definition[1] && fn
+            ? assign($$scope.ctx.slice(), definition[1](fn(ctx)))
+            : $$scope.ctx;
+    }
+    function get_slot_changes(definition, $$scope, dirty, fn) {
+        if (definition[2] && fn) {
+            const lets = definition[2](fn(dirty));
+            if ($$scope.dirty === undefined) {
+                return lets;
+            }
+            if (typeof lets === 'object') {
+                const merged = [];
+                const len = Math.max($$scope.dirty.length, lets.length);
+                for (let i = 0; i < len; i += 1) {
+                    merged[i] = $$scope.dirty[i] | lets[i];
+                }
+                return merged;
+            }
+            return $$scope.dirty | lets;
+        }
+        return $$scope.dirty;
+    }
+    function update_slot_base(slot, slot_definition, ctx, $$scope, slot_changes, get_slot_context_fn) {
+        if (slot_changes) {
+            const slot_context = get_slot_context(slot_definition, ctx, $$scope, get_slot_context_fn);
+            slot.p(slot_context, slot_changes);
+        }
+    }
+    function get_all_dirty_from_scope($$scope) {
+        if ($$scope.ctx.length > 32) {
+            const dirty = [];
+            const length = $$scope.ctx.length / 32;
+            for (let i = 0; i < length; i++) {
+                dirty[i] = -1;
+            }
+            return dirty;
+        }
+        return -1;
     }
     function set_store_value(store, ret, value) {
         store.set(value);
@@ -205,6 +265,12 @@ var app = (function () {
             callback();
         }
     }
+
+    const globals = (typeof window !== 'undefined'
+        ? window
+        : typeof globalThis !== 'undefined'
+            ? globalThis
+            : global);
     function create_component(block) {
         block && block.c();
     }
@@ -469,25 +535,75 @@ var app = (function () {
         }
         return { set, update, subscribe };
     }
+    function derived(stores, fn, initial_value) {
+        const single = !Array.isArray(stores);
+        const stores_array = single
+            ? [stores]
+            : stores;
+        const auto = fn.length < 2;
+        return readable(initial_value, (set) => {
+            let inited = false;
+            const values = [];
+            let pending = 0;
+            let cleanup = noop;
+            const sync = () => {
+                if (pending) {
+                    return;
+                }
+                cleanup();
+                const result = fn(single ? values[0] : values, set);
+                if (auto) {
+                    set(result);
+                }
+                else {
+                    cleanup = is_function(result) ? result : noop;
+                }
+            };
+            const unsubscribers = stores_array.map((store, i) => subscribe(store, (value) => {
+                values[i] = value;
+                pending &= ~(1 << i);
+                if (inited) {
+                    sync();
+                }
+            }, () => {
+                pending |= (1 << i);
+            }));
+            inited = true;
+            sync();
+            return function stop() {
+                run_all(unsubscribers);
+                cleanup();
+            };
+        });
+    }
 
-    const GameState = {
-        devMode: readable(true),
-        currentContext: writable("SplashScreen"),
-        contexts: [
-            "SplashScreen",
-            "MainMenu",
-            "Gallery",
-            "MapViewer",
-            "OptionsMenu",
-            "CreditsPage",
-            "GameView"
-        ]
-    };
+    const devMode = true;
+    const currentContext = writable("SplashScreen");
+    let _lastMajorContext = "MainMenu";
+    const lastMajorContext = derived(currentContext, $currentContext => {
+        if (majorContexts.includes($currentContext)) {
+            _lastMajorContext = $currentContext;
+        }
+        return _lastMajorContext;
+    });
+    const contexts = [
+        "SplashScreen",
+        "MainMenu",
+        "Gallery",
+        "Map",
+        "Options",
+        "Credits",
+        "GameView"
+    ];
+    const majorContexts = [
+        "MainMenu",
+        "GameView"
+    ];
 
     /* src/Components/SplashScreen.svelte generated by Svelte v3.50.1 */
     const file$8 = "src/Components/SplashScreen.svelte";
 
-    function create_fragment$a(ctx) {
+    function create_fragment$c(ctx) {
     	let div;
     	let h2;
 
@@ -496,9 +612,9 @@ var app = (function () {
     			div = element("div");
     			h2 = element("h2");
     			h2.textContent = "SplashScreen";
-    			add_location(h2, file$8, 7, 4, 191);
+    			add_location(h2, file$8, 7, 4, 181);
     			toggle_class(div, "hidden", !/*visible*/ ctx[0]);
-    			add_location(div, file$8, 6, 0, 157);
+    			add_location(div, file$8, 6, 0, 147);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -516,6 +632,336 @@ var app = (function () {
     		o: noop,
     		d: function destroy(detaching) {
     			if (detaching) detach_dev(div);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$c.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$c($$self, $$props, $$invalidate) {
+    	let visible;
+    	let $currentContext;
+    	validate_store(currentContext, 'currentContext');
+    	component_subscribe($$self, currentContext, $$value => $$invalidate(1, $currentContext = $$value));
+    	let { $$slots: slots = {}, $$scope } = $$props;
+    	validate_slots('SplashScreen', slots, []);
+    	let name = "SplashScreen";
+    	const writable_props = [];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<SplashScreen> was created with unknown prop '${key}'`);
+    	});
+
+    	$$self.$capture_state = () => ({
+    		currentContext,
+    		name,
+    		visible,
+    		$currentContext
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ('name' in $$props) $$invalidate(2, name = $$props.name);
+    		if ('visible' in $$props) $$invalidate(0, visible = $$props.visible);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*$currentContext*/ 2) {
+    			$$invalidate(0, visible = $currentContext === name);
+    		}
+    	};
+
+    	return [visible, $currentContext];
+    }
+
+    class SplashScreen extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$c, create_fragment$c, safe_not_equal, {});
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "SplashScreen",
+    			options,
+    			id: create_fragment$c.name
+    		});
+    	}
+    }
+
+    /* src/Components/MainMenu.svelte generated by Svelte v3.50.1 */
+    const file$7 = "src/Components/MainMenu.svelte";
+
+    function create_fragment$b(ctx) {
+    	let div;
+    	let h2;
+
+    	const block = {
+    		c: function create() {
+    			div = element("div");
+    			h2 = element("h2");
+    			h2.textContent = "Main Menu";
+    			add_location(h2, file$7, 6, 4, 156);
+    			toggle_class(div, "hidden", !/*visible*/ ctx[0]);
+    			add_location(div, file$7, 5, 0, 122);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, div, anchor);
+    			append_dev(div, h2);
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (dirty & /*visible*/ 1) {
+    				toggle_class(div, "hidden", !/*visible*/ ctx[0]);
+    			}
+    		},
+    		i: noop,
+    		o: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(div);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_fragment$b.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$b($$self, $$props, $$invalidate) {
+    	let visible;
+    	let $currentContext;
+    	validate_store(currentContext, 'currentContext');
+    	component_subscribe($$self, currentContext, $$value => $$invalidate(1, $currentContext = $$value));
+    	let { $$slots: slots = {}, $$scope } = $$props;
+    	validate_slots('MainMenu', slots, []);
+    	const writable_props = [];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<MainMenu> was created with unknown prop '${key}'`);
+    	});
+
+    	$$self.$capture_state = () => ({ currentContext, visible, $currentContext });
+
+    	$$self.$inject_state = $$props => {
+    		if ('visible' in $$props) $$invalidate(0, visible = $$props.visible);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	$$self.$$.update = () => {
+    		if ($$self.$$.dirty & /*$currentContext*/ 2) {
+    			$$invalidate(0, visible = $currentContext === "MainMenu");
+    		}
+    	};
+
+    	return [visible, $currentContext];
+    }
+
+    class MainMenu extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$b, create_fragment$b, safe_not_equal, {});
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "MainMenu",
+    			options,
+    			id: create_fragment$b.name
+    		});
+    	}
+    }
+
+    /* src/Components/CloseContextButton.svelte generated by Svelte v3.50.1 */
+
+    const { console: console_1 } = globals;
+    const file$6 = "src/Components/CloseContextButton.svelte";
+
+    // (37:4) {:else}
+    function create_else_block(ctx) {
+    	let img;
+    	let img_src_value;
+
+    	const block = {
+    		c: function create() {
+    			img = element("img");
+    			if (!src_url_equal(img.src, img_src_value = "./assets/ui/close-button.png")) attr_dev(img, "src", img_src_value);
+    			attr_dev(img, "alt", "Close current menu.");
+    			attr_dev(img, "class", "svelte-zh9vxg");
+    			add_location(img, file$6, 37, 8, 1058);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, img, anchor);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(img);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_else_block.name,
+    		type: "else",
+    		source: "(37:4) {:else}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (35:23) 
+    function create_if_block_1(ctx) {
+    	let img;
+    	let img_src_value;
+
+    	const block = {
+    		c: function create() {
+    			img = element("img");
+    			if (!src_url_equal(img.src, img_src_value = "./assets/ui/close-button-active.png")) attr_dev(img, "src", img_src_value);
+    			attr_dev(img, "alt", "Close current menu.");
+    			attr_dev(img, "class", "svelte-zh9vxg");
+    			add_location(img, file$6, 35, 8, 964);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, img, anchor);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(img);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block_1.name,
+    		type: "if",
+    		source: "(35:23) ",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    // (33:4) {#if isHovered}
+    function create_if_block(ctx) {
+    	let img;
+    	let img_src_value;
+
+    	const block = {
+    		c: function create() {
+    			img = element("img");
+    			if (!src_url_equal(img.src, img_src_value = "./assets/ui/close-button-hover.png")) attr_dev(img, "src", img_src_value);
+    			attr_dev(img, "alt", "Close current menu.");
+    			attr_dev(img, "class", "svelte-zh9vxg");
+    			add_location(img, file$6, 33, 8, 859);
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, img, anchor);
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(img);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
+    		id: create_if_block.name,
+    		type: "if",
+    		source: "(33:4) {#if isHovered}",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function create_fragment$a(ctx) {
+    	let button;
+    	let p;
+    	let t1;
+    	let mounted;
+    	let dispose;
+
+    	function select_block_type(ctx, dirty) {
+    		if (/*isHovered*/ ctx[0]) return create_if_block;
+    		if (/*isActive*/ ctx[1]) return create_if_block_1;
+    		return create_else_block;
+    	}
+
+    	let current_block_type = select_block_type(ctx);
+    	let if_block = current_block_type(ctx);
+
+    	const block = {
+    		c: function create() {
+    			button = element("button");
+    			p = element("p");
+    			p.textContent = "Close menu.";
+    			t1 = space();
+    			if_block.c();
+    			add_location(p, file$6, 31, 4, 812);
+    			attr_dev(button, "id", "context-exit");
+    			attr_dev(button, "class", "svelte-zh9vxg");
+    			add_location(button, file$6, 22, 0, 498);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			insert_dev(target, button, anchor);
+    			append_dev(button, p);
+    			append_dev(button, t1);
+    			if_block.m(button, null);
+
+    			if (!mounted) {
+    				dispose = [
+    					listen_dev(button, "mouseover", /*renderHover*/ ctx[2], false, false, false),
+    					listen_dev(button, "mousedown", /*renderActive*/ ctx[3], false, false, false),
+    					listen_dev(button, "mouseup", /*action*/ ctx[4], false, false, false),
+    					listen_dev(button, "mouseleave", /*clear*/ ctx[5], false, false, false),
+    					listen_dev(button, "focus", /*renderHover*/ ctx[2], false, false, false),
+    					listen_dev(button, "keydown", /*keydown_handler*/ ctx[6], false, false, false),
+    					listen_dev(button, "keyup", /*keyup_handler*/ ctx[7], false, false, false),
+    					listen_dev(button, "focusout", /*clear*/ ctx[5], false, false, false)
+    				];
+
+    				mounted = true;
+    			}
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (current_block_type !== (current_block_type = select_block_type(ctx))) {
+    				if_block.d(1);
+    				if_block = current_block_type(ctx);
+
+    				if (if_block) {
+    					if_block.c();
+    					if_block.m(button, null);
+    				}
+    			}
+    		},
+    		i: noop,
+    		o: noop,
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(button);
+    			if_block.d();
+    			mounted = false;
+    			run_all(dispose);
     		}
     	};
 
@@ -531,85 +977,175 @@ var app = (function () {
     }
 
     function instance$a($$self, $$props, $$invalidate) {
-    	let visible;
-    	let $context;
+    	let isHovered;
+    	let isActive;
+    	let $lastMajorContext;
+    	validate_store(lastMajorContext, 'lastMajorContext');
+    	component_subscribe($$self, lastMajorContext, $$value => $$invalidate(8, $lastMajorContext = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots('SplashScreen', slots, []);
-    	let context = GameState.currentContext;
-    	validate_store(context, 'context');
-    	component_subscribe($$self, context, value => $$invalidate(2, $context = value));
+    	validate_slots('CloseContextButton', slots, []);
+
+    	function renderHover() {
+    		$$invalidate(0, isHovered = true);
+    	}
+
+    	function renderActive() {
+    		$$invalidate(1, isActive = true);
+    	}
+
+    	function action() {
+    		console.log("going to" + $lastMajorContext);
+    		currentContext.update(c => $lastMajorContext);
+    		clear();
+    	}
+
+    	function clear() {
+    		$$invalidate(1, isActive = false);
+    		$$invalidate(0, isHovered = false);
+    	}
+
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<SplashScreen> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console_1.warn(`<CloseContextButton> was created with unknown prop '${key}'`);
     	});
 
-    	$$self.$capture_state = () => ({ GameState, context, visible, $context });
+    	const keydown_handler = e => {
+    		e.key == "Enter" ? renderActive() : null;
+    	};
+
+    	const keyup_handler = e => {
+    		e.key == "Enter" ? action() : null;
+    	};
+
+    	$$self.$capture_state = () => ({
+    		currentContext,
+    		lastMajorContext,
+    		renderHover,
+    		renderActive,
+    		action,
+    		clear,
+    		isHovered,
+    		isActive,
+    		$lastMajorContext
+    	});
 
     	$$self.$inject_state = $$props => {
-    		if ('context' in $$props) $$invalidate(1, context = $$props.context);
-    		if ('visible' in $$props) $$invalidate(0, visible = $$props.visible);
+    		if ('isHovered' in $$props) $$invalidate(0, isHovered = $$props.isHovered);
+    		if ('isActive' in $$props) $$invalidate(1, isActive = $$props.isActive);
     	};
 
     	if ($$props && "$$inject" in $$props) {
     		$$self.$inject_state($$props.$$inject);
     	}
 
-    	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*$context*/ 4) {
-    			$$invalidate(0, visible = $context === "SplashScreen");
-    		}
-    	};
+    	$$invalidate(0, isHovered = false);
+    	$$invalidate(1, isActive = false);
 
-    	return [visible, context, $context];
+    	return [
+    		isHovered,
+    		isActive,
+    		renderHover,
+    		renderActive,
+    		action,
+    		clear,
+    		keydown_handler,
+    		keyup_handler
+    	];
     }
 
-    class SplashScreen extends SvelteComponentDev {
+    class CloseContextButton extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
     		init(this, options, instance$a, create_fragment$a, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
-    			tagName: "SplashScreen",
+    			tagName: "CloseContextButton",
     			options,
     			id: create_fragment$a.name
     		});
     	}
     }
 
-    /* src/Components/MainMenu.svelte generated by Svelte v3.50.1 */
-    const file$7 = "src/Components/MainMenu.svelte";
+    /* src/Components/FloatingUIFrame.svelte generated by Svelte v3.50.1 */
+    const file$5 = "src/Components/FloatingUIFrame.svelte";
 
     function create_fragment$9(ctx) {
+    	let closecontextbutton;
+    	let t0;
     	let div;
-    	let h2;
+    	let img;
+    	let img_src_value;
+    	let t1;
+    	let current;
+    	closecontextbutton = new CloseContextButton({ $$inline: true });
+    	const default_slot_template = /*#slots*/ ctx[1].default;
+    	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[0], null);
 
     	const block = {
     		c: function create() {
+    			create_component(closecontextbutton.$$.fragment);
+    			t0 = space();
     			div = element("div");
-    			h2 = element("h2");
-    			h2.textContent = "Main Menu";
-    			add_location(h2, file$7, 7, 4, 187);
-    			toggle_class(div, "hidden", !/*visible*/ ctx[0]);
-    			add_location(div, file$7, 6, 0, 153);
+    			img = element("img");
+    			t1 = space();
+    			if (default_slot) default_slot.c();
+    			if (!src_url_equal(img.src, img_src_value = "./assets/ui/overlay-frame-transparent.png")) attr_dev(img, "src", img_src_value);
+    			attr_dev(img, "alt", "");
+    			attr_dev(img, "class", "svelte-12kbc");
+    			add_location(img, file$5, 6, 4, 118);
+    			attr_dev(div, "class", "svelte-12kbc");
+    			add_location(div, file$5, 5, 0, 108);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
+    			mount_component(closecontextbutton, target, anchor);
+    			insert_dev(target, t0, anchor);
     			insert_dev(target, div, anchor);
-    			append_dev(div, h2);
+    			append_dev(div, img);
+    			append_dev(div, t1);
+
+    			if (default_slot) {
+    				default_slot.m(div, null);
+    			}
+
+    			current = true;
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*visible*/ 1) {
-    				toggle_class(div, "hidden", !/*visible*/ ctx[0]);
+    			if (default_slot) {
+    				if (default_slot.p && (!current || dirty & /*$$scope*/ 1)) {
+    					update_slot_base(
+    						default_slot,
+    						default_slot_template,
+    						ctx,
+    						/*$$scope*/ ctx[0],
+    						!current
+    						? get_all_dirty_from_scope(/*$$scope*/ ctx[0])
+    						: get_slot_changes(default_slot_template, /*$$scope*/ ctx[0], dirty, null),
+    						null
+    					);
+    				}
     			}
     		},
-    		i: noop,
-    		o: noop,
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(closecontextbutton.$$.fragment, local);
+    			transition_in(default_slot, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(closecontextbutton.$$.fragment, local);
+    			transition_out(default_slot, local);
+    			current = false;
+    		},
     		d: function destroy(detaching) {
+    			destroy_component(closecontextbutton, detaching);
+    			if (detaching) detach_dev(t0);
     			if (detaching) detach_dev(div);
+    			if (default_slot) default_slot.d(detaching);
     		}
     	};
 
@@ -625,66 +1161,99 @@ var app = (function () {
     }
 
     function instance$9($$self, $$props, $$invalidate) {
-    	let visible;
-    	let $context;
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots('MainMenu', slots, []);
-    	let context = GameState.currentContext;
-    	validate_store(context, 'context');
-    	component_subscribe($$self, context, value => $$invalidate(2, $context = value));
+    	validate_slots('FloatingUIFrame', slots, ['default']);
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<MainMenu> was created with unknown prop '${key}'`);
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<FloatingUIFrame> was created with unknown prop '${key}'`);
     	});
 
-    	$$self.$capture_state = () => ({ GameState, context, visible, $context });
-
-    	$$self.$inject_state = $$props => {
-    		if ('context' in $$props) $$invalidate(1, context = $$props.context);
-    		if ('visible' in $$props) $$invalidate(0, visible = $$props.visible);
+    	$$self.$$set = $$props => {
+    		if ('$$scope' in $$props) $$invalidate(0, $$scope = $$props.$$scope);
     	};
 
-    	if ($$props && "$$inject" in $$props) {
-    		$$self.$inject_state($$props.$$inject);
-    	}
-
-    	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*$context*/ 4) {
-    			$$invalidate(0, visible = $context === "MainMenu");
-    		}
-    	};
-
-    	return [visible, context, $context];
+    	$$self.$capture_state = () => ({ CloseContextButton });
+    	return [$$scope, slots];
     }
 
-    class MainMenu extends SvelteComponentDev {
+    class FloatingUIFrame extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
     		init(this, options, instance$9, create_fragment$9, safe_not_equal, {});
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
-    			tagName: "MainMenu",
+    			tagName: "FloatingUIFrame",
     			options,
     			id: create_fragment$9.name
     		});
     	}
     }
 
-    /* src/Components/FloatingUIFrame.svelte generated by Svelte v3.50.1 */
+    /* src/Components/FullscreenOverlay.svelte generated by Svelte v3.50.1 */
+
+    const file$4 = "src/Components/FullscreenOverlay.svelte";
 
     function create_fragment$8(ctx) {
+    	let main;
+    	let current;
+    	const default_slot_template = /*#slots*/ ctx[2].default;
+    	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[1], null);
+
     	const block = {
-    		c: noop,
+    		c: function create() {
+    			main = element("main");
+    			if (default_slot) default_slot.c();
+    			attr_dev(main, "class", "svelte-1ih5cma");
+    			toggle_class(main, "hidden", /*hidden*/ ctx[0]);
+    			add_location(main, file$4, 3, 0, 48);
+    		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
-    		m: noop,
-    		p: noop,
-    		i: noop,
-    		o: noop,
-    		d: noop
+    		m: function mount(target, anchor) {
+    			insert_dev(target, main, anchor);
+
+    			if (default_slot) {
+    				default_slot.m(main, null);
+    			}
+
+    			current = true;
+    		},
+    		p: function update(ctx, [dirty]) {
+    			if (default_slot) {
+    				if (default_slot.p && (!current || dirty & /*$$scope*/ 2)) {
+    					update_slot_base(
+    						default_slot,
+    						default_slot_template,
+    						ctx,
+    						/*$$scope*/ ctx[1],
+    						!current
+    						? get_all_dirty_from_scope(/*$$scope*/ ctx[1])
+    						: get_slot_changes(default_slot_template, /*$$scope*/ ctx[1], dirty, null),
+    						null
+    					);
+    				}
+    			}
+
+    			if (!current || dirty & /*hidden*/ 1) {
+    				toggle_class(main, "hidden", /*hidden*/ ctx[0]);
+    			}
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(default_slot, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(default_slot, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			if (detaching) detach_dev(main);
+    			if (default_slot) default_slot.d(detaching);
+    		}
     	};
 
     	dispatch_dev("SvelteRegisterBlock", {
@@ -698,103 +1267,125 @@ var app = (function () {
     	return block;
     }
 
-    function instance$8($$self, $$props) {
+    function instance$8($$self, $$props, $$invalidate) {
     	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots('FloatingUIFrame', slots, []);
-    	const writable_props = [];
-
-    	Object.keys($$props).forEach(key => {
-    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<FloatingUIFrame> was created with unknown prop '${key}'`);
-    	});
-
-    	return [];
-    }
-
-    class FloatingUIFrame extends SvelteComponentDev {
-    	constructor(options) {
-    		super(options);
-    		init(this, options, instance$8, create_fragment$8, safe_not_equal, {});
-
-    		dispatch_dev("SvelteRegisterComponent", {
-    			component: this,
-    			tagName: "FloatingUIFrame",
-    			options,
-    			id: create_fragment$8.name
-    		});
-    	}
-    }
-
-    /* src/Components/FullscreenOverlay.svelte generated by Svelte v3.50.1 */
-
-    function create_fragment$7(ctx) {
-    	const block = {
-    		c: noop,
-    		l: function claim(nodes) {
-    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
-    		},
-    		m: noop,
-    		p: noop,
-    		i: noop,
-    		o: noop,
-    		d: noop
-    	};
-
-    	dispatch_dev("SvelteRegisterBlock", {
-    		block,
-    		id: create_fragment$7.name,
-    		type: "component",
-    		source: "",
-    		ctx
-    	});
-
-    	return block;
-    }
-
-    function instance$7($$self, $$props) {
-    	let { $$slots: slots = {}, $$scope } = $$props;
-    	validate_slots('FullscreenOverlay', slots, []);
-    	const writable_props = [];
+    	validate_slots('FullscreenOverlay', slots, ['default']);
+    	let { hidden } = $$props;
+    	const writable_props = ['hidden'];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<FullscreenOverlay> was created with unknown prop '${key}'`);
     	});
 
-    	return [];
+    	$$self.$$set = $$props => {
+    		if ('hidden' in $$props) $$invalidate(0, hidden = $$props.hidden);
+    		if ('$$scope' in $$props) $$invalidate(1, $$scope = $$props.$$scope);
+    	};
+
+    	$$self.$capture_state = () => ({ hidden });
+
+    	$$self.$inject_state = $$props => {
+    		if ('hidden' in $$props) $$invalidate(0, hidden = $$props.hidden);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	return [hidden, $$scope, slots];
     }
 
     class FullscreenOverlay extends SvelteComponentDev {
     	constructor(options) {
     		super(options);
-    		init(this, options, instance$7, create_fragment$7, safe_not_equal, {});
+    		init(this, options, instance$8, create_fragment$8, safe_not_equal, { hidden: 0 });
 
     		dispatch_dev("SvelteRegisterComponent", {
     			component: this,
     			tagName: "FullscreenOverlay",
     			options,
-    			id: create_fragment$7.name
+    			id: create_fragment$8.name
     		});
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+
+    		if (/*hidden*/ ctx[0] === undefined && !('hidden' in props)) {
+    			console.warn("<FullscreenOverlay> was created without expected prop 'hidden'");
+    		}
+    	}
+
+    	get hidden() {
+    		throw new Error("<FullscreenOverlay>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set hidden(value) {
+    		throw new Error("<FullscreenOverlay>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
     	}
     }
 
-    /* src/Components/Gallery.svelte generated by Svelte v3.50.1 */
-    const file$6 = "src/Components/Gallery.svelte";
+    /* src/Components/OpaqueMenuOverlay.svelte generated by Svelte v3.50.1 */
+    const file$3 = "src/Components/OpaqueMenuOverlay.svelte";
 
     // (11:4) <FloatingUiFrame>
     function create_default_slot_1(ctx) {
-    	let h2;
+    	let h1;
+    	let t0;
+    	let t1;
+    	let current;
+    	const default_slot_template = /*#slots*/ ctx[2].default;
+    	const default_slot = create_slot(default_slot_template, ctx, /*$$scope*/ ctx[3], null);
 
     	const block = {
     		c: function create() {
-    			h2 = element("h2");
-    			h2.textContent = `${/*name*/ ctx[1]}`;
-    			add_location(h2, file$6, 11, 8, 363);
+    			h1 = element("h1");
+    			t0 = text(/*name*/ ctx[1]);
+    			t1 = space();
+    			if (default_slot) default_slot.c();
+    			add_location(h1, file$3, 11, 8, 259);
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, h2, anchor);
+    			insert_dev(target, h1, anchor);
+    			append_dev(h1, t0);
+    			insert_dev(target, t1, anchor);
+
+    			if (default_slot) {
+    				default_slot.m(target, anchor);
+    			}
+
+    			current = true;
     		},
-    		p: noop,
+    		p: function update(ctx, dirty) {
+    			if (!current || dirty & /*name*/ 2) set_data_dev(t0, /*name*/ ctx[1]);
+
+    			if (default_slot) {
+    				if (default_slot.p && (!current || dirty & /*$$scope*/ 8)) {
+    					update_slot_base(
+    						default_slot,
+    						default_slot_template,
+    						ctx,
+    						/*$$scope*/ ctx[3],
+    						!current
+    						? get_all_dirty_from_scope(/*$$scope*/ ctx[3])
+    						: get_slot_changes(default_slot_template, /*$$scope*/ ctx[3], dirty, null),
+    						null
+    					);
+    				}
+    			}
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(default_slot, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(default_slot, local);
+    			current = false;
+    		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(h2);
+    			if (detaching) detach_dev(h1);
+    			if (detaching) detach_dev(t1);
+    			if (default_slot) default_slot.d(detaching);
     		}
     	};
 
@@ -833,7 +1424,7 @@ var app = (function () {
     		p: function update(ctx, dirty) {
     			const floatinguiframe_changes = {};
 
-    			if (dirty & /*$$scope*/ 16) {
+    			if (dirty & /*$$scope, name*/ 10) {
     				floatinguiframe_changes.$$scope = { dirty, ctx };
     			}
 
@@ -864,7 +1455,7 @@ var app = (function () {
     	return block;
     }
 
-    function create_fragment$6(ctx) {
+    function create_fragment$7(ctx) {
     	let fullscreenoverlay;
     	let current;
 
@@ -892,7 +1483,7 @@ var app = (function () {
     			const fullscreenoverlay_changes = {};
     			if (dirty & /*visible*/ 1) fullscreenoverlay_changes.hidden = !/*visible*/ ctx[0];
 
-    			if (dirty & /*$$scope*/ 16) {
+    			if (dirty & /*$$scope, name*/ 10) {
     				fullscreenoverlay_changes.$$scope = { dirty, ctx };
     			}
 
@@ -914,6 +1505,138 @@ var app = (function () {
 
     	dispatch_dev("SvelteRegisterBlock", {
     		block,
+    		id: create_fragment$7.name,
+    		type: "component",
+    		source: "",
+    		ctx
+    	});
+
+    	return block;
+    }
+
+    function instance$7($$self, $$props, $$invalidate) {
+    	let { $$slots: slots = {}, $$scope } = $$props;
+    	validate_slots('OpaqueMenuOverlay', slots, ['default']);
+    	let { visible } = $$props;
+    	let { name } = $$props;
+    	const writable_props = ['visible', 'name'];
+
+    	Object.keys($$props).forEach(key => {
+    		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<OpaqueMenuOverlay> was created with unknown prop '${key}'`);
+    	});
+
+    	$$self.$$set = $$props => {
+    		if ('visible' in $$props) $$invalidate(0, visible = $$props.visible);
+    		if ('name' in $$props) $$invalidate(1, name = $$props.name);
+    		if ('$$scope' in $$props) $$invalidate(3, $$scope = $$props.$$scope);
+    	};
+
+    	$$self.$capture_state = () => ({
+    		FullscreenOverlay,
+    		FloatingUiFrame: FloatingUIFrame,
+    		visible,
+    		name
+    	});
+
+    	$$self.$inject_state = $$props => {
+    		if ('visible' in $$props) $$invalidate(0, visible = $$props.visible);
+    		if ('name' in $$props) $$invalidate(1, name = $$props.name);
+    	};
+
+    	if ($$props && "$$inject" in $$props) {
+    		$$self.$inject_state($$props.$$inject);
+    	}
+
+    	return [visible, name, slots, $$scope];
+    }
+
+    class OpaqueMenuOverlay extends SvelteComponentDev {
+    	constructor(options) {
+    		super(options);
+    		init(this, options, instance$7, create_fragment$7, safe_not_equal, { visible: 0, name: 1 });
+
+    		dispatch_dev("SvelteRegisterComponent", {
+    			component: this,
+    			tagName: "OpaqueMenuOverlay",
+    			options,
+    			id: create_fragment$7.name
+    		});
+
+    		const { ctx } = this.$$;
+    		const props = options.props || {};
+
+    		if (/*visible*/ ctx[0] === undefined && !('visible' in props)) {
+    			console.warn("<OpaqueMenuOverlay> was created without expected prop 'visible'");
+    		}
+
+    		if (/*name*/ ctx[1] === undefined && !('name' in props)) {
+    			console.warn("<OpaqueMenuOverlay> was created without expected prop 'name'");
+    		}
+    	}
+
+    	get visible() {
+    		throw new Error("<OpaqueMenuOverlay>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set visible(value) {
+    		throw new Error("<OpaqueMenuOverlay>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	get name() {
+    		throw new Error("<OpaqueMenuOverlay>: Props cannot be read directly from the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+
+    	set name(value) {
+    		throw new Error("<OpaqueMenuOverlay>: Props cannot be set directly on the component instance unless compiling with 'accessors: true' or '<svelte:options accessors/>'");
+    	}
+    }
+
+    /* src/Components/Gallery.svelte generated by Svelte v3.50.1 */
+
+    function create_fragment$6(ctx) {
+    	let opaquemenuoverlay;
+    	let current;
+
+    	opaquemenuoverlay = new OpaqueMenuOverlay({
+    			props: {
+    				name: /*name*/ ctx[1],
+    				visible: /*visible*/ ctx[0]
+    			},
+    			$$inline: true
+    		});
+
+    	const block = {
+    		c: function create() {
+    			create_component(opaquemenuoverlay.$$.fragment);
+    		},
+    		l: function claim(nodes) {
+    			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
+    		},
+    		m: function mount(target, anchor) {
+    			mount_component(opaquemenuoverlay, target, anchor);
+    			current = true;
+    		},
+    		p: function update(ctx, [dirty]) {
+    			const opaquemenuoverlay_changes = {};
+    			if (dirty & /*visible*/ 1) opaquemenuoverlay_changes.visible = /*visible*/ ctx[0];
+    			opaquemenuoverlay.$set(opaquemenuoverlay_changes);
+    		},
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(opaquemenuoverlay.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(opaquemenuoverlay.$$.fragment, local);
+    			current = false;
+    		},
+    		d: function destroy(detaching) {
+    			destroy_component(opaquemenuoverlay, detaching);
+    		}
+    	};
+
+    	dispatch_dev("SvelteRegisterBlock", {
+    		block,
     		id: create_fragment$6.name,
     		type: "component",
     		source: "",
@@ -925,13 +1648,12 @@ var app = (function () {
 
     function instance$6($$self, $$props, $$invalidate) {
     	let visible;
-    	let $context;
+    	let $currentContext;
+    	validate_store(currentContext, 'currentContext');
+    	component_subscribe($$self, currentContext, $$value => $$invalidate(2, $currentContext = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('Gallery', slots, []);
     	let name = "Gallery";
-    	let context = GameState.currentContext;
-    	validate_store(context, 'context');
-    	component_subscribe($$self, context, value => $$invalidate(3, $context = value));
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
@@ -939,18 +1661,18 @@ var app = (function () {
     	});
 
     	$$self.$capture_state = () => ({
-    		GameState,
+    		currentContext,
+    		lastMajorContext,
     		FloatingUiFrame: FloatingUIFrame,
     		FullscreenOverlay,
+    		OpaqueMenuOverlay,
     		name,
-    		context,
     		visible,
-    		$context
+    		$currentContext
     	});
 
     	$$self.$inject_state = $$props => {
     		if ('name' in $$props) $$invalidate(1, name = $$props.name);
-    		if ('context' in $$props) $$invalidate(2, context = $$props.context);
     		if ('visible' in $$props) $$invalidate(0, visible = $$props.visible);
     	};
 
@@ -959,12 +1681,12 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*$context*/ 8) {
-    			$$invalidate(0, visible = $context === name);
+    		if ($$self.$$.dirty & /*$currentContext*/ 4) {
+    			$$invalidate(0, visible = $currentContext === name);
     		}
     	};
 
-    	return [visible, name, context, $context];
+    	return [visible, name, $currentContext];
     }
 
     class Gallery extends SvelteComponentDev {
@@ -982,37 +1704,46 @@ var app = (function () {
     }
 
     /* src/Components/MapViewer.svelte generated by Svelte v3.50.1 */
-    const file$5 = "src/Components/MapViewer.svelte";
 
     function create_fragment$5(ctx) {
-    	let div;
-    	let h2;
+    	let opaquemenuoverlay;
+    	let current;
+
+    	opaquemenuoverlay = new OpaqueMenuOverlay({
+    			props: {
+    				name: /*name*/ ctx[1],
+    				visible: /*visible*/ ctx[0]
+    			},
+    			$$inline: true
+    		});
 
     	const block = {
     		c: function create() {
-    			div = element("div");
-    			h2 = element("h2");
-    			h2.textContent = "Map Viewer";
-    			add_location(h2, file$5, 7, 4, 188);
-    			toggle_class(div, "hidden", !/*visible*/ ctx[0]);
-    			add_location(div, file$5, 6, 0, 154);
+    			create_component(opaquemenuoverlay.$$.fragment);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div, anchor);
-    			append_dev(div, h2);
+    			mount_component(opaquemenuoverlay, target, anchor);
+    			current = true;
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*visible*/ 1) {
-    				toggle_class(div, "hidden", !/*visible*/ ctx[0]);
-    			}
+    			const opaquemenuoverlay_changes = {};
+    			if (dirty & /*visible*/ 1) opaquemenuoverlay_changes.visible = /*visible*/ ctx[0];
+    			opaquemenuoverlay.$set(opaquemenuoverlay_changes);
     		},
-    		i: noop,
-    		o: noop,
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(opaquemenuoverlay.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(opaquemenuoverlay.$$.fragment, local);
+    			current = false;
+    		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
+    			destroy_component(opaquemenuoverlay, detaching);
     		}
     	};
 
@@ -1029,22 +1760,28 @@ var app = (function () {
 
     function instance$5($$self, $$props, $$invalidate) {
     	let visible;
-    	let $context;
+    	let $currentContext;
+    	validate_store(currentContext, 'currentContext');
+    	component_subscribe($$self, currentContext, $$value => $$invalidate(2, $currentContext = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('MapViewer', slots, []);
-    	let context = GameState.currentContext;
-    	validate_store(context, 'context');
-    	component_subscribe($$self, context, value => $$invalidate(2, $context = value));
+    	let name = "Map";
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<MapViewer> was created with unknown prop '${key}'`);
     	});
 
-    	$$self.$capture_state = () => ({ GameState, context, visible, $context });
+    	$$self.$capture_state = () => ({
+    		OpaqueMenuOverlay,
+    		currentContext,
+    		name,
+    		visible,
+    		$currentContext
+    	});
 
     	$$self.$inject_state = $$props => {
-    		if ('context' in $$props) $$invalidate(1, context = $$props.context);
+    		if ('name' in $$props) $$invalidate(1, name = $$props.name);
     		if ('visible' in $$props) $$invalidate(0, visible = $$props.visible);
     	};
 
@@ -1053,12 +1790,12 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*$context*/ 4) {
-    			$$invalidate(0, visible = $context === "MapViewer");
+    		if ($$self.$$.dirty & /*$currentContext*/ 4) {
+    			$$invalidate(0, visible = $currentContext === name);
     		}
     	};
 
-    	return [visible, context, $context];
+    	return [visible, name, $currentContext];
     }
 
     class MapViewer extends SvelteComponentDev {
@@ -1076,37 +1813,46 @@ var app = (function () {
     }
 
     /* src/Components/OptionsMenu.svelte generated by Svelte v3.50.1 */
-    const file$4 = "src/Components/OptionsMenu.svelte";
 
     function create_fragment$4(ctx) {
-    	let div;
-    	let h2;
+    	let opaquemenuoverlay;
+    	let current;
+
+    	opaquemenuoverlay = new OpaqueMenuOverlay({
+    			props: {
+    				name: /*name*/ ctx[1],
+    				visible: /*visible*/ ctx[0]
+    			},
+    			$$inline: true
+    		});
 
     	const block = {
     		c: function create() {
-    			div = element("div");
-    			h2 = element("h2");
-    			h2.textContent = "Options Menu";
-    			add_location(h2, file$4, 7, 4, 190);
-    			toggle_class(div, "hidden", !/*visible*/ ctx[0]);
-    			add_location(div, file$4, 6, 0, 156);
+    			create_component(opaquemenuoverlay.$$.fragment);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div, anchor);
-    			append_dev(div, h2);
+    			mount_component(opaquemenuoverlay, target, anchor);
+    			current = true;
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*visible*/ 1) {
-    				toggle_class(div, "hidden", !/*visible*/ ctx[0]);
-    			}
+    			const opaquemenuoverlay_changes = {};
+    			if (dirty & /*visible*/ 1) opaquemenuoverlay_changes.visible = /*visible*/ ctx[0];
+    			opaquemenuoverlay.$set(opaquemenuoverlay_changes);
     		},
-    		i: noop,
-    		o: noop,
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(opaquemenuoverlay.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(opaquemenuoverlay.$$.fragment, local);
+    			current = false;
+    		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
+    			destroy_component(opaquemenuoverlay, detaching);
     		}
     	};
 
@@ -1123,22 +1869,28 @@ var app = (function () {
 
     function instance$4($$self, $$props, $$invalidate) {
     	let visible;
-    	let $context;
+    	let $currentContext;
+    	validate_store(currentContext, 'currentContext');
+    	component_subscribe($$self, currentContext, $$value => $$invalidate(2, $currentContext = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('OptionsMenu', slots, []);
-    	let context = GameState.currentContext;
-    	validate_store(context, 'context');
-    	component_subscribe($$self, context, value => $$invalidate(2, $context = value));
+    	let name = "Options";
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<OptionsMenu> was created with unknown prop '${key}'`);
     	});
 
-    	$$self.$capture_state = () => ({ GameState, context, visible, $context });
+    	$$self.$capture_state = () => ({
+    		OpaqueMenuOverlay,
+    		currentContext,
+    		name,
+    		visible,
+    		$currentContext
+    	});
 
     	$$self.$inject_state = $$props => {
-    		if ('context' in $$props) $$invalidate(1, context = $$props.context);
+    		if ('name' in $$props) $$invalidate(1, name = $$props.name);
     		if ('visible' in $$props) $$invalidate(0, visible = $$props.visible);
     	};
 
@@ -1147,12 +1899,12 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*$context*/ 4) {
-    			$$invalidate(0, visible = $context === "OptionsMenu");
+    		if ($$self.$$.dirty & /*$currentContext*/ 4) {
+    			$$invalidate(0, visible = $currentContext === name);
     		}
     	};
 
-    	return [visible, context, $context];
+    	return [visible, name, $currentContext];
     }
 
     class OptionsMenu extends SvelteComponentDev {
@@ -1170,37 +1922,46 @@ var app = (function () {
     }
 
     /* src/Components/CreditsPage.svelte generated by Svelte v3.50.1 */
-    const file$3 = "src/Components/CreditsPage.svelte";
 
     function create_fragment$3(ctx) {
-    	let div;
-    	let h2;
+    	let opaquemenuoverlay;
+    	let current;
+
+    	opaquemenuoverlay = new OpaqueMenuOverlay({
+    			props: {
+    				name: /*name*/ ctx[1],
+    				visible: /*visible*/ ctx[0]
+    			},
+    			$$inline: true
+    		});
 
     	const block = {
     		c: function create() {
-    			div = element("div");
-    			h2 = element("h2");
-    			h2.textContent = "Credits";
-    			add_location(h2, file$3, 7, 4, 190);
-    			toggle_class(div, "hidden", !/*visible*/ ctx[0]);
-    			add_location(div, file$3, 6, 0, 156);
+    			create_component(opaquemenuoverlay.$$.fragment);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
     		},
     		m: function mount(target, anchor) {
-    			insert_dev(target, div, anchor);
-    			append_dev(div, h2);
+    			mount_component(opaquemenuoverlay, target, anchor);
+    			current = true;
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*visible*/ 1) {
-    				toggle_class(div, "hidden", !/*visible*/ ctx[0]);
-    			}
+    			const opaquemenuoverlay_changes = {};
+    			if (dirty & /*visible*/ 1) opaquemenuoverlay_changes.visible = /*visible*/ ctx[0];
+    			opaquemenuoverlay.$set(opaquemenuoverlay_changes);
     		},
-    		i: noop,
-    		o: noop,
+    		i: function intro(local) {
+    			if (current) return;
+    			transition_in(opaquemenuoverlay.$$.fragment, local);
+    			current = true;
+    		},
+    		o: function outro(local) {
+    			transition_out(opaquemenuoverlay.$$.fragment, local);
+    			current = false;
+    		},
     		d: function destroy(detaching) {
-    			if (detaching) detach_dev(div);
+    			destroy_component(opaquemenuoverlay, detaching);
     		}
     	};
 
@@ -1217,22 +1978,28 @@ var app = (function () {
 
     function instance$3($$self, $$props, $$invalidate) {
     	let visible;
-    	let $context;
+    	let $currentContext;
+    	validate_store(currentContext, 'currentContext');
+    	component_subscribe($$self, currentContext, $$value => $$invalidate(2, $currentContext = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('CreditsPage', slots, []);
-    	let context = GameState.currentContext;
-    	validate_store(context, 'context');
-    	component_subscribe($$self, context, value => $$invalidate(2, $context = value));
+    	let name = "Credits";
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<CreditsPage> was created with unknown prop '${key}'`);
     	});
 
-    	$$self.$capture_state = () => ({ GameState, context, visible, $context });
+    	$$self.$capture_state = () => ({
+    		OpaqueMenuOverlay,
+    		currentContext,
+    		name,
+    		visible,
+    		$currentContext
+    	});
 
     	$$self.$inject_state = $$props => {
-    		if ('context' in $$props) $$invalidate(1, context = $$props.context);
+    		if ('name' in $$props) $$invalidate(1, name = $$props.name);
     		if ('visible' in $$props) $$invalidate(0, visible = $$props.visible);
     	};
 
@@ -1241,12 +2008,12 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*$context*/ 4) {
-    			$$invalidate(0, visible = $context === "CreditsPage");
+    		if ($$self.$$.dirty & /*$currentContext*/ 4) {
+    			$$invalidate(0, visible = $currentContext === name);
     		}
     	};
 
-    	return [visible, context, $context];
+    	return [visible, name, $currentContext];
     }
 
     class CreditsPage extends SvelteComponentDev {
@@ -1275,9 +2042,9 @@ var app = (function () {
     			div = element("div");
     			h2 = element("h2");
     			h2.textContent = "Game View";
-    			add_location(h2, file$2, 7, 4, 187);
+    			add_location(h2, file$2, 6, 4, 156);
     			toggle_class(div, "hidden", !/*visible*/ ctx[0]);
-    			add_location(div, file$2, 6, 0, 153);
+    			add_location(div, file$2, 5, 0, 122);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1311,22 +2078,20 @@ var app = (function () {
 
     function instance$2($$self, $$props, $$invalidate) {
     	let visible;
-    	let $context;
+    	let $currentContext;
+    	validate_store(currentContext, 'currentContext');
+    	component_subscribe($$self, currentContext, $$value => $$invalidate(1, $currentContext = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('GameView', slots, []);
-    	let context = GameState.currentContext;
-    	validate_store(context, 'context');
-    	component_subscribe($$self, context, value => $$invalidate(2, $context = value));
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
     		if (!~writable_props.indexOf(key) && key.slice(0, 2) !== '$$' && key !== 'slot') console.warn(`<GameView> was created with unknown prop '${key}'`);
     	});
 
-    	$$self.$capture_state = () => ({ GameState, context, visible, $context });
+    	$$self.$capture_state = () => ({ currentContext, visible, $currentContext });
 
     	$$self.$inject_state = $$props => {
-    		if ('context' in $$props) $$invalidate(1, context = $$props.context);
     		if ('visible' in $$props) $$invalidate(0, visible = $$props.visible);
     	};
 
@@ -1335,12 +2100,12 @@ var app = (function () {
     	}
 
     	$$self.$$.update = () => {
-    		if ($$self.$$.dirty & /*$context*/ 4) {
-    			$$invalidate(0, visible = $context === "GameView");
+    		if ($$self.$$.dirty & /*$currentContext*/ 2) {
+    			$$invalidate(0, visible = $currentContext === "GameView");
     		}
     	};
 
-    	return [visible, context, $context];
+    	return [visible, $currentContext];
     }
 
     class GameView extends SvelteComponentDev {
@@ -1362,20 +2127,20 @@ var app = (function () {
 
     function get_each_context(ctx, list, i) {
     	const child_ctx = ctx.slice();
-    	child_ctx[6] = list[i];
+    	child_ctx[2] = list[i];
     	return child_ctx;
     }
 
-    // (11:4) {#each contexts as x}
+    // (8:4) {#each contexts as x}
     function create_each_block(ctx) {
     	let button;
-    	let t_value = /*x*/ ctx[6] + "";
+    	let t_value = /*x*/ ctx[2] + "";
     	let t;
     	let mounted;
     	let dispose;
 
     	function click_handler() {
-    		return /*click_handler*/ ctx[5](/*x*/ ctx[6]);
+    		return /*click_handler*/ ctx[1](/*x*/ ctx[2]);
     	}
 
     	const block = {
@@ -1383,7 +2148,7 @@ var app = (function () {
     			button = element("button");
     			t = text(t_value);
     			attr_dev(button, "class", "svelte-1vuraat");
-    			add_location(button, file$1, 11, 8, 304);
+    			add_location(button, file$1, 8, 8, 200);
     		},
     		m: function mount(target, anchor) {
     			insert_dev(target, button, anchor);
@@ -1408,7 +2173,7 @@ var app = (function () {
     		block,
     		id: create_each_block.name,
     		type: "each",
-    		source: "(11:4) {#each contexts as x}",
+    		source: "(8:4) {#each contexts as x}",
     		ctx
     	});
 
@@ -1419,7 +2184,7 @@ var app = (function () {
     	let nav;
     	let h3;
     	let t1;
-    	let each_value = /*contexts*/ ctx[4];
+    	let each_value = contexts;
     	validate_each_argument(each_value);
     	let each_blocks = [];
 
@@ -1438,10 +2203,10 @@ var app = (function () {
     				each_blocks[i].c();
     			}
 
-    			add_location(h3, file$1, 9, 4, 241);
+    			add_location(h3, file$1, 6, 4, 137);
     			attr_dev(nav, "class", "svelte-1vuraat");
-    			toggle_class(nav, "hidden", !/*$devMode*/ ctx[0] === true);
-    			add_location(nav, file$1, 8, 0, 197);
+    			toggle_class(nav, "hidden", !devMode === true);
+    			add_location(nav, file$1, 5, 0, 94);
     		},
     		l: function claim(nodes) {
     			throw new Error("options.hydrate only works if the component was compiled with the `hydratable: true` option");
@@ -1456,8 +2221,8 @@ var app = (function () {
     			}
     		},
     		p: function update(ctx, [dirty]) {
-    			if (dirty & /*$currentContext, contexts*/ 18) {
-    				each_value = /*contexts*/ ctx[4];
+    			if (dirty & /*$currentContext, contexts*/ 1) {
+    				each_value = contexts;
     				validate_each_argument(each_value);
     				let i;
 
@@ -1478,10 +2243,6 @@ var app = (function () {
     				}
 
     				each_blocks.length = each_value.length;
-    			}
-
-    			if (dirty & /*$devMode*/ 1) {
-    				toggle_class(nav, "hidden", !/*$devMode*/ ctx[0] === true);
     			}
     		},
     		i: noop,
@@ -1504,17 +2265,11 @@ var app = (function () {
     }
 
     function instance$1($$self, $$props, $$invalidate) {
-    	let $devMode;
     	let $currentContext;
+    	validate_store(currentContext, 'currentContext');
+    	component_subscribe($$self, currentContext, $$value => $$invalidate(0, $currentContext = $$value));
     	let { $$slots: slots = {}, $$scope } = $$props;
     	validate_slots('DevNavigator', slots, []);
-    	let currentContext = GameState.currentContext;
-    	validate_store(currentContext, 'currentContext');
-    	component_subscribe($$self, currentContext, value => $$invalidate(1, $currentContext = value));
-    	let devMode = GameState.devMode;
-    	validate_store(devMode, 'devMode');
-    	component_subscribe($$self, devMode, value => $$invalidate(0, $devMode = value));
-    	let contexts = GameState.contexts;
     	const writable_props = [];
 
     	Object.keys($$props).forEach(key => {
@@ -1524,25 +2279,13 @@ var app = (function () {
     	const click_handler = x => set_store_value(currentContext, $currentContext = x, $currentContext);
 
     	$$self.$capture_state = () => ({
-    		GameState,
     		currentContext,
-    		devMode,
     		contexts,
-    		$devMode,
+    		devMode,
     		$currentContext
     	});
 
-    	$$self.$inject_state = $$props => {
-    		if ('currentContext' in $$props) $$invalidate(2, currentContext = $$props.currentContext);
-    		if ('devMode' in $$props) $$invalidate(3, devMode = $$props.devMode);
-    		if ('contexts' in $$props) $$invalidate(4, contexts = $$props.contexts);
-    	};
-
-    	if ($$props && "$$inject" in $$props) {
-    		$$self.$inject_state($$props.$$inject);
-    	}
-
-    	return [$devMode, $currentContext, currentContext, devMode, contexts, click_handler];
+    	return [$currentContext, click_handler];
     }
 
     class DevNavigator extends SvelteComponentDev {

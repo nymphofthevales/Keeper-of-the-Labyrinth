@@ -1,7 +1,7 @@
 <script>
-    import { GameState}  from "../GameState.js"
-    let context = GameState.currentContext;
-    $: visible = $context === "SplashScreen"
+    import { currentContext }  from "../GameState.js"
+    let name = "SplashScreen"
+    $: visible = $currentContext === name;
 </script>
 
 <div class:hidden={!visible}>

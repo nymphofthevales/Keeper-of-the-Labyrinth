@@ -1,15 +1,24 @@
-import { writable, readable } from "svelte/store";
-export const GameState = {
-    devMode: readable(true),
-    currentContext: writable("SplashScreen"),
-    contexts: [
-        "SplashScreen",
-        "MainMenu",
-        "Gallery",
-        "MapViewer",
-        "OptionsMenu",
-        "CreditsPage",
-        "GameView"
-    ]
-};
+import { writable, derived } from "svelte/store";
+export const devMode = true;
+export const currentContext = writable("SplashScreen");
+let _lastMajorContext = "MainMenu";
+export const lastMajorContext = derived(currentContext, $currentContext => {
+    if (majorContexts.includes($currentContext)) {
+        _lastMajorContext = $currentContext;
+    }
+    return _lastMajorContext;
+});
+export const contexts = [
+    "SplashScreen",
+    "MainMenu",
+    "Gallery",
+    "Map",
+    "Options",
+    "Credits",
+    "GameView"
+];
+export const majorContexts = [
+    "MainMenu",
+    "GameView"
+];
 //# sourceMappingURL=GameState.js.map
