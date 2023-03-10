@@ -10,5 +10,5 @@ View the game on Steam at https://store.steampowered.com/app/1674260/Keeper_of_t
 
 See more about the game on my website at https://nymphofthevales.com/labyrinth/
 
-<p>Currently in development. Everything published in this repository is ALL RIGHTS RESERVED. By all means, feel free to fork the repo to poke around at my code, but keep it to personal use only, and please do not redistribute the game assets, writing, etc. Thanks!</p>
+<p>Currently in development. Everything published in this repository is ALL RIGHTS RESERVED. Thanks!</p>
 
